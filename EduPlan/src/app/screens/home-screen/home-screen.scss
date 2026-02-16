@@ -4,3 +4,203 @@
 }
 
 
+// Variables
+$primary-blue: #2563eb;
+$primary-hover: #1d4ed8;
+$dark-bg: #111827;
+$light-bg: #f8fafc;
+$text-main: #1f2937;
+$text-muted: #4b5563;
+$white: #ffffff;
+$container-max: 1280px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+
+// Mixins
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Estilos Base
+.container {
+  max-width: $container-max;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.btn {
+  padding: 0.5rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &-primary {
+    background-color: $primary-blue;
+    color: $white;
+    &:hover { background-color: $primary-hover; }
+  }
+
+  &-light {
+    background-color: $white;
+    color: $primary-blue;
+    &:hover { background-color: #f9fafb; }
+  }
+
+  &-large {
+    padding: 1rem 2rem;
+    font-size: 1.125rem;
+  }
+}
+
+// Layout Components
+.main-header {
+  border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  background: $white;
+  z-index: 50;
+
+  .header-content {
+    height: 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      i { color: $primary-blue; font-size: 1.5rem; }
+      h1 { font-size: 1.5rem; font-bold: 700; color: $dark-bg; }
+    }
+  }
+}
+
+.hero-section {
+  padding: 4rem 0;
+  background: linear-gradient(to bottom, #eff6ff, $white);
+  text-align: center;
+
+  .hero-content {
+    max-width: 48rem;
+    margin: 0 auto;
+
+    .hero-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+      .text-accent { color: $primary-blue; }
+
+      @media (min-width: $breakpoint-md) { font-size: 3.75rem; }
+    }
+
+    .hero-description {
+      font-size: 1.125rem;
+      color: $text-muted;
+      margin-bottom: 2rem;
+    }
+  }
+}
+
+.features-grid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: 1fr;
+
+  @media (min-width: $breakpoint-md) { grid-template-columns: repeat(2, 1fr); }
+  @media (min-width: $breakpoint-lg) { grid-template-columns: repeat(3, 1fr); }
+
+  .feature-card {
+    padding: 1.5rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    transition: box-shadow 0.3s;
+
+    &:hover { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+
+    .icon-wrapper {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 0.5rem;
+      @include flex-center;
+      margin-bottom: 1rem;
+    }
+  }
+}
+
+.benefits-section {
+  padding: 4rem 0;
+
+  .benefits-grid {
+    display: grid;
+    gap: 3rem;
+    @media (min-width: $breakpoint-lg) { grid-template-columns: 1fr 1fr; }
+  }
+
+  .benefit-item {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    i { color: #16a34a; font-size: 1.25rem; }
+    h5 { font-weight: 600; }
+  }
+
+  .stats-card {
+    background: linear-gradient(to bottom right, $primary-blue, #9333ea);
+    border-radius: 1rem;
+    padding: 2rem;
+    color: $white;
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+
+      .stat-value { font-size: 2.25rem; font-weight: 700; display: block; }
+      .stat-label { color: #dbeafe; }
+    }
+  }
+}
+
+.cta-section {
+  padding: 4rem 0;
+  background-color: $primary-blue;
+  color: $white;
+  text-align: center;
+
+  h3 { font-size: 2rem; margin-bottom: 1.5rem; }
+  p { font-size: 1.25rem; color: #dbeafe; margin-bottom: 2rem; }
+}
+
+.main-footer {
+  background-color: $dark-bg;
+  color: #9ca3af;
+  padding: 3rem 0 0;
+
+  .footer-grid {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: 1fr;
+    @media (min-width: $breakpoint-md) { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  h5 { color: $white; margin-bottom: 1rem; }
+  ul { list-style: none; padding: 0; }
+  a { color: inherit; text-decoration: none; &:hover { color: $white; } }
+
+  .footer-bottom {
+    margin-top: 2rem;
+    padding: 2rem 0;
+    border-top: 1px solid #1f2937;
+    text-align: center;
+    font-size: 0.875rem;
+  }
+}
