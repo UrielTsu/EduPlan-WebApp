@@ -1,152 +1,190 @@
-<div class="conteiner">
-  <div class="accordion" id="accordionExample">
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-        Accordion Item #1
-      </button>
-    </h2>
-    <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
-      <div class="accordion-body">
-        <strong>This is the first item’s accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It’s also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<div class="min-h-screen bg-white">
+  <!-- Header -->
+  <header class="border-b border-gray-200 sticky top-0 bg-white z-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center gap-2">
+          <i class="bi bi-calendar3 text-blue-600 text-2xl"></i>
+          <h1 class="text-2xl font-bold text-gray-900">EduPlan</h1>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <a
+            routerLink="/login"
+            class="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+          >
+            Iniciar Sesión
+          </a>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-        Accordion Item #2
-      </button>
-    </h2>
-    <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-      <div class="accordion-body">
-        <strong>This is the second item’s accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It’s also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+  </header>
+
+  <!-- Hero Section -->
+  <section class="py-16 sm:py-24 bg-gradient-to-b from-blue-50 to-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto">
+        <h2 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
+          Gestiona tu vida académica
+          <span class="text-blue-600"> en un solo lugar</span>
+        </h2>
+        <p class="text-lg sm:text-xl text-gray-600 mb-8">
+          EduPlan es la plataforma integral que te ayuda a organizar tu horario, seguir tus materias y mantener el control de tu progreso académico.
+        </p>
+        <div class="flex justify-center">
+          <a
+            routerLink="/login"
+            class="px-8 py-4 text-lg font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+          >
+            Ingresar ahora
+          </a>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-        Accordion Item #3
-      </button>
-    </h2>
-    <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-      <div class="accordion-body">
-        <strong>This is the third item’s accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It’s also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+  </section>
+
+  <!-- Features Section -->
+  <section class="py-16 sm:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h3 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+          Todo lo que necesitas para triunfar
+        </h3>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+          Herramientas diseñadas específicamente para estudiantes universitarios
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Feature Loop -->
+        <div *ngFor="let feature of features" class="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-shadow">
+          <div [class]="'w-12 h-12 rounded-lg flex items-center justify-center mb-4 ' + feature.colorClass">
+            <i [class]="'bi ' + feature.icon + ' text-xl'"></i>
+          </div>
+          <h4 class="text-xl font-semibold text-gray-900 mb-2">
+            {{ feature.title }}
+          </h4>
+          <p class="text-gray-600">
+            {{ feature.description }}
+          </p>
+        </div>
       </div>
     </div>
-  </div>
-</div>
-</div>
-<br>
-<br>
-<br>
-<div class="contenedor2">
-  <section>
-  <div class="example-label">Text</div>
-  <div class="example-button-row">
-    <button matButton>Basic</button>
-    <button matButton disabled>Disabled</button>
-    <a matButton href="https://www.google.com/" target="_blank">Link</a>
-  </div>
-</section>
-<mat-divider/>
-<section>
-  <div class="example-label">Elevated</div>
-  <div class="example-button-row">
-    <button matButton="elevated">Basic</button>
-    <button matButton="elevated" disabled>Disabled</button>
-    <a matButton="elevated" href="https://www.google.com/" target="_blank">Link</a>
-  </div>
-</section>
-<mat-divider/>
-<section>
-  <div class="example-label">Outlined</div>
-  <div class="example-button-row">
-    <button matButton="outlined">Basic</button>
-    <button matButton="outlined" disabled>Disabled</button>
-    <a matButton="outlined" href="https://www.google.com/" target="_blank">Link</a>
-  </div>
-</section>
-<mat-divider/>
-<section>
-  <div class="example-label">Filled</div>
-  <div class="example-button-row">
-    <button matButton="filled">Basic</button>
-    <button matButton="filled" disabled>Disabled</button>
-    <a matButton="filled" href="https://www.google.com/" target="_blank">Link</a>
-  </div>
-</section>
-<mat-divider/>
-<section>
-  <div class="example-label">Tonal</div>
-  <div class="example-button-row">
-    <button matButton="tonal" >Basic</button>
-    <button matButton="tonal"  disabled>Disabled</button>
-    <a matButton="tonal" href="https://www.google.com/" target="_blank">Link</a>
-  </div>
-</section>
-<mat-divider/>
-<section>
-  <div class="example-label">Icon</div>
-  <div class="example-button-row">
-    <div class="example-flex-container">
-      <button matIconButton aria-label="Example icon button with a vertical three dot icon">
-        <mat-icon>more_vert</mat-icon>
-      </button>
-      <button matIconButton disabled aria-label="Example icon button with a open in new tab icon">
-        <mat-icon>open_in_new</mat-icon>
-      </button>
+  </section>
+
+  <!-- Benefits Section -->
+  <section class="py-16 sm:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <h3 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
+            Diseñado para estudiantes que buscan la excelencia
+          </h3>
+          <p class="text-lg text-gray-600 mb-8">
+            EduPlan te brinda las herramientas necesarias para maximizar tu rendimiento académico y mantener el equilibrio en tu vida universitaria.
+          </p>
+
+          <div class="space-y-4">
+            <div *ngFor="let benefit of benefits" class="flex items-start gap-3">
+              <i class="bi bi-check-circle-fill text-green-600 text-xl flex-shrink-0 mt-1"></i>
+              <div>
+                <h5 class="font-semibold text-gray-900">
+                  {{ benefit.title }}
+                </h5>
+                <p class="text-gray-600">
+                  {{ benefit.description }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl p-8 text-white">
+          <div class="bg-white/10 backdrop-blur rounded-xl p-6">
+            <h4 class="text-2xl font-bold mb-4">
+              Miles de estudiantes ya confían en EduPlan
+            </h4>
+            <div class="grid grid-cols-2 gap-4 mt-6">
+              <div *ngFor="let stat of stats">
+                <div class="text-4xl font-bold">
+                  {{ stat.value }}
+                </div>
+                <div class="text-blue-100">
+                  {{ stat.label }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-</section>
-<mat-divider/>
-<section>
-  <div class="example-label">Floating Action Button (FAB)</div>
-  <div class="example-button-row">
-    <div class="example-flex-container">
-      <button matFab aria-label="Example icon button with a delete icon">
-        <mat-icon>delete</mat-icon>
-      </button>
-      <button matFab disabled aria-label="Example icon button with a heart icon">
-        <mat-icon>favorite</mat-icon>
-      </button>
-    </div>
-  </div>
-</section>
-<mat-divider/>
-<section>
-  <div class="example-label">Mini FAB</div>
-  <div class="example-button-row">
-    <div class="example-flex-container">
-      <button matMiniFab aria-label="Example icon button with a menu icon">
-        <mat-icon>menu</mat-icon>
-      </button>
-      <button matMiniFab disabled aria-label="Example icon button with a home icon">
-        <mat-icon>home</mat-icon>
-      </button>
-    </div>
-  </div>
-</section>
-<mat-divider/>
-<section>
-  <div class="example-label">Extended FAB</div>
-  <div class="example-button-row">
-    <div class="example-flex-container">
-      <button matFab extended>
-        <mat-icon>favorite</mat-icon>
-        Basic
-      </button>
-      <button matFab extended disabled>
-        <mat-icon>favorite</mat-icon>
-        Disabled
-      </button>
-      <a matFab extended routerLink=".">
-        <mat-icon>favorite</mat-icon>
-        Link
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-16 sm:py-24 bg-blue-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h3 class="text-3xl sm:text-4xl font-bold text-white mb-6">
+        ¿Listo para transformar tu experiencia académica?
+      </h3>
+      <p class="text-xl text-blue-100 mb-8">
+        Únete a miles de estudiantes que ya están mejorando su organización
+      </p>
+      <a
+        routerLink="/login"
+        class="inline-flex items-center gap-2 px-8 py-4 text-lg font-medium text-blue-600 bg-white rounded-lg hover:bg-gray-50 transition-colors shadow-lg"
+      >
+        Ingresar ahora
+        <i class="bi bi-arrow-right"></i>
       </a>
     </div>
-  </div>
-</section>
+  </section>
 
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-gray-400 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <div class="flex items-center gap-2 mb-4">
+            <i class="bi bi-calendar3 text-blue-500 text-xl"></i>
+            <span class="text-xl font-bold text-white">EduPlan</span>
+          </div>
+          <p class="text-sm">
+            La plataforma de gestión académica diseñada para estudiantes universitarios.
+          </p>
+        </div>
+
+        <div>
+          <h5 class="text-white font-semibold mb-4">Producto</h5>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="hover:text-white transition-colors">Características</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h5 class="text-white font-semibold mb-4">Soporte</h5>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="hover:text-white transition-colors">Centro de ayuda</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Contacto</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">FAQ</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h5 class="text-white font-semibold mb-4">Legal</h5>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="hover:text-white transition-colors">Privacidad</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Términos</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Cookies</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-gray-800 mt-8 pt-8 text-sm text-center">
+        © 2025 EduPlan. Todos los derechos reservados.
+      </div>
+    </div>
+  </footer>
 </div>
