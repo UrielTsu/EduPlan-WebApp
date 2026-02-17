@@ -1,0 +1,400 @@
+/* =========================
+   Variables (ajústalas)
+========================= */
+$bg-1: #eff6ff;  // blue-50
+$bg-2: #ffffff;  // white
+$bg-3: #f5f3ff;  // purple-50
+
+$text-900: #111827;
+$text-700: #374151;
+$text-600: #4b5563;
+$text-500: #6b7280;
+
+$border: #e5e7eb;
+
+$primary: #2563eb; // blue-600
+$primary-hover: #1d4ed8; // blue-700
+
+$danger: #dc2626;
+$danger-border: #fca5a5;
+
+$shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.10), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+/* =========================
+   Base layout
+========================= */
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  background: linear-gradient(135deg, $bg-1 0%, $bg-2 45%, $bg-3 100%);
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+}
+
+.card-wrap {
+  width: 100%;
+  max-width: 28rem; // ~max-w-md
+}
+
+/* =========================
+   Header / Topbar
+========================= */
+.topbar {
+  background: #fff;
+  border-bottom: 1px solid $border;
+
+  &__container {
+    max-width: 80rem; // ~max-w-7xl
+    margin: 0 auto;
+    padding: 0 1rem;
+
+    @media (min-width: 640px) {
+      padding: 0 1.5rem;
+    }
+    @media (min-width: 1024px) {
+      padding: 0 2rem;
+    }
+  }
+
+  &__row {
+    height: 4rem; // h-16
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__back {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: $text-600;
+    text-decoration: none;
+
+    &:hover {
+      color: $text-900;
+    }
+  }
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+
+  &__icon {
+    width: 2rem;
+    height: 2rem;
+    color: $primary;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: $text-900;
+    letter-spacing: -0.02em;
+  }
+}
+
+/* =========================
+   Card
+========================= */
+.card {
+  background: #fff;
+  border-radius: 1rem; // rounded-2xl-ish
+  box-shadow: $shadow-xl;
+  padding: 2rem;
+
+  &__head {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  &__title {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.875rem; // text-3xl
+    font-weight: 800;
+    color: $text-900;
+  }
+
+  &__subtitle {
+    margin: 0;
+    color: $text-600;
+  }
+}
+
+/* =========================
+   Form
+========================= */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.field {
+  &__label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: $text-700;
+    margin-bottom: 0.5rem;
+  }
+
+  &__error {
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.875rem;
+    color: $danger;
+  }
+
+  &__error-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+}
+
+/* =========================
+   Inputs with icons
+========================= */
+.input {
+  position: relative;
+
+  &__left {
+    position: absolute;
+    inset: 0 auto 0 0;
+    display: flex;
+    align-items: center;
+    padding-left: 0.75rem;
+    pointer-events: none;
+  }
+
+  &__icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: #9ca3af;
+  }
+
+  &__icon--hover {
+    transition: color 150ms ease;
+
+    &:hover {
+      color: $text-600;
+    }
+  }
+
+  &__control {
+    width: 100%;
+    display: block;
+    padding: 0.75rem 0.75rem 0.75rem 2.5rem; // pl with left icon
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    outline: none;
+    font-size: 1rem;
+    background: #fff;
+
+    &:focus {
+      border-color: transparent;
+      box-shadow: 0 0 0 3px rgba($primary, 0.25);
+    }
+
+    &.is-invalid {
+      border-color: $danger-border;
+      box-shadow: none;
+
+      &:focus {
+        box-shadow: 0 0 0 3px rgba($danger, 0.18);
+      }
+    }
+  }
+
+  &__control--with-right {
+    padding-right: 2.5rem; // space for eye button
+  }
+
+  &__right-btn {
+    position: absolute;
+    inset: 0 0 0 auto;
+    padding-right: 0.75rem;
+    padding-left: 0.75rem;
+    display: flex;
+    align-items: center;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+  }
+}
+
+/* =========================
+   Checkbox row
+========================= */
+.row-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+
+  &__box {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 0.25rem;
+    border: 1px solid #d1d5db;
+    accent-color: $primary;
+  }
+
+  &__text {
+    margin-left: 0.5rem;
+    font-size: 0.875rem;
+    color: $text-600;
+  }
+}
+
+/* =========================
+   Buttons
+========================= */
+.btn {
+  border-radius: 0.5rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease, opacity 150ms ease;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &--block {
+    width: 100%;
+  }
+
+  &--primary {
+    background: $primary;
+    color: #fff;
+    padding: 0.75rem 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    &:hover:not(:disabled) {
+      background: $primary-hover;
+    }
+  }
+
+  &--outline {
+    background: #fff;
+    border-color: #d1d5db;
+    color: $text-700;
+
+    &:hover:not(:disabled) {
+      background: #f9fafb;
+    }
+  }
+
+  &--social {
+    padding: 0.75rem 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+}
+
+.spinner {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 1);
+  border-top-color: transparent;
+  animation: spin 700ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================
+   Divider
+========================= */
+.divider {
+  position: relative;
+  margin: 1.5rem 0;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+    background: #d1d5db;
+    transform: translateY(-50%);
+  }
+
+  &__text {
+    position: relative;
+    display: inline-block;
+    padding: 0 0.5rem;
+    background: #fff;
+    color: $text-500;
+    font-size: 0.875rem;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+/* =========================
+   Social grid
+========================= */
+.social {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+
+  &__icon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+
+/* =========================
+   Links + legal
+========================= */
+.link {
+  text-decoration: none;
+
+  &--primary {
+    color: $primary;
+    font-weight: 600;
+
+    &:hover {
+      color: $primary-hover;
+      text-decoration: underline;
+    }
+  }
+}
+
+.legal {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: $text-500;
+}
