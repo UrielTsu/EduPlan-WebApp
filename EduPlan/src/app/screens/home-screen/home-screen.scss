@@ -132,6 +132,28 @@ $breakpoint-lg: 1024px;
       @include flex-center;
       margin-bottom: 1rem;
     }
+
+    /* Utility color classes (Tailwind-like) used in template */
+    .icon-wrapper i { font-size: 1.25rem; }
+    .icon-wrapper { background: transparent; color: inherit; }
+
+    .bg-blue-100 { background-color: #DBEAFE; }
+    .text-blue-600 { color: #2563EB; }
+
+    .bg-green-100 { background-color: #DCFCE7; }
+    .text-green-600 { color: #16A34A; }
+
+    .bg-purple-100 { background-color: #F3E8FF; }
+    .text-purple-600 { color: #7C3AED; }
+
+    .bg-orange-100 { background-color: #FFEDD5; }
+    .text-orange-600 { color: #EA580C; }
+
+    .bg-red-100 { background-color: #FEE2E2; }
+    .text-red-600 { color: #DC2626; }
+
+    .bg-indigo-100 { background-color: #E0E7FF; }
+    .text-indigo-600 { color: #4F46E5; }
   }
 }
 
