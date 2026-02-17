@@ -207,3 +207,20 @@ $breakpoint-lg: 1024px;
   }
 }
 // hola isaac jwjw
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  mat-icon {
+    color: #2563eb;
+    font-size: 22px;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #111827;
+  }
+}
