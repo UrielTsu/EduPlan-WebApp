@@ -1,13 +1,18 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+
 
 @Component({
   selector: 'app-login',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, MatIconModule],
   templateUrl: './login-screen.html',
   styleUrls: ['./login-screen.scss']
 })
-export class LoginComponent {
+export class LoginScreen {
   loginForm: FormGroup;
   showPassword = false;
   isLoading = false;

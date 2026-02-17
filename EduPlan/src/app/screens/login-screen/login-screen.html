@@ -3,8 +3,9 @@
     <div class="topbar__container">
       <div class="topbar__row">
         <a routerLink="/" class="brand">
-          <i-lucide name="calendar" class="brand__icon"></i-lucide>
+          <mat-icon>school</mat-icon>
           <h1 class="brand__title">EduPlan</h1>
+
         </a>
 
         <a routerLink="/" class="topbar__back">Volver al inicio</a>
@@ -27,7 +28,8 @@
 
             <div class="input">
               <div class="input__left">
-                <i-lucide name="mail" class="input__icon"></i-lucide>
+                  <mat-icon>email</mat-icon>
+
               </div>
 
               <input
@@ -44,7 +46,8 @@
               *ngIf="emailControl?.invalid && emailControl?.touched"
               class="field__error"
             >
-              <i-lucide name="alert-circle" class="field__error-icon"></i-lucide>
+              <i class="bi bi-calendar brand__icon"></i>
+
               <span>{{ getEmailErrorMessage() }}</span>
             </div>
           </div>
@@ -55,7 +58,8 @@
 
             <div class="input">
               <div class="input__left">
-                <i-lucide name="lock" class="input__icon"></i-lucide>
+                  <mat-icon>lock</mat-icon>
+
               </div>
 
               <input
@@ -73,10 +77,8 @@
                 class="input__right-btn"
                 aria-label="Mostrar u ocultar contraseña"
               >
-                <i-lucide
-                  [name]="showPassword ? 'eye-off' : 'eye'"
-                  class="input__icon input__icon--hover"
-                ></i-lucide>
+                <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+
               </button>
             </div>
 
@@ -84,20 +86,21 @@
               *ngIf="passwordControl?.invalid && passwordControl?.touched"
               class="field__error"
             >
-              <i-lucide name="alert-circle" class="field__error-icon"></i-lucide>
+              <i class="bi bi-calendar brand__icon"></i>
+
               <span>{{ getPasswordErrorMessage() }}</span>
             </div>
           </div>
 
           <!-- ROW -->
-          <div class="row-between">
+          <!-- <div class="row-between">
             <label class="check">
               <input type="checkbox" class="check__box" />
               <span class="check__text">Recordarme</span>
             </label>
 
             <a href="#" class="link link--primary">¿Olvidaste tu contraseña?</a>
-          </div>
+          </div> -->
 
           <!-- SUBMIT -->
           <button
@@ -113,12 +116,12 @@
           </button>
 
           <!-- DIVIDER -->
-          <div class="divider" role="separator" aria-label="O continúa con">
+          <!-- <div class="divider" role="separator" aria-label="O continúa con">
             <span class="divider__text">O continúa con</span>
-          </div>
+          </div> -->
 
           <!-- SOCIAL -->
-          <div class="social">
+          <!-- <div class="social">
             <button type="button" class="btn btn--outline btn--social">
               <svg class="social__icon" viewBox="0 0 24 24" aria-hidden="true">
                 <path
@@ -154,7 +157,7 @@
               </svg>
               Facebook
             </button>
-          </div>
+          </div> -->
         </form>
       </div>
 
