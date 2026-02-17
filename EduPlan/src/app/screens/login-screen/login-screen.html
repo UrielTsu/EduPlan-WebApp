@@ -1,1 +1,169 @@
-<p>login-screen works!</p>
+<div class="page">
+  <header class="topbar">
+    <div class="topbar__container">
+      <div class="topbar__row">
+        <a routerLink="/" class="brand">
+          <i-lucide name="calendar" class="brand__icon"></i-lucide>
+          <h1 class="brand__title">EduPlan</h1>
+        </a>
+
+        <a routerLink="/" class="topbar__back">Volver al inicio</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="content">
+    <div class="card-wrap">
+      <div class="card">
+        <div class="card__head">
+          <h2 class="card__title">Bienvenido de nuevo</h2>
+          <p class="card__subtitle">Ingresa a tu cuenta para continuar</p>
+        </div>
+
+        <form [formGroup]="loginForm" (ngSubmit)="submit()" class="form">
+          <!-- EMAIL -->
+          <div class="field">
+            <label for="email" class="field__label">Correo electrónico</label>
+
+            <div class="input">
+              <div class="input__left">
+                <i-lucide name="mail" class="input__icon"></i-lucide>
+              </div>
+
+              <input
+                id="email"
+                type="email"
+                formControlName="email"
+                class="input__control"
+                [class.is-invalid]="emailControl?.invalid && emailControl?.touched"
+                placeholder="estudiante@universidad.edu"
+              />
+            </div>
+
+            <div
+              *ngIf="emailControl?.invalid && emailControl?.touched"
+              class="field__error"
+            >
+              <i-lucide name="alert-circle" class="field__error-icon"></i-lucide>
+              <span>{{ getEmailErrorMessage() }}</span>
+            </div>
+          </div>
+
+          <!-- PASSWORD -->
+          <div class="field">
+            <label for="password" class="field__label">Contraseña</label>
+
+            <div class="input">
+              <div class="input__left">
+                <i-lucide name="lock" class="input__icon"></i-lucide>
+              </div>
+
+              <input
+                id="password"
+                [type]="showPassword ? 'text' : 'password'"
+                formControlName="password"
+                class="input__control input__control--with-right"
+                [class.is-invalid]="passwordControl?.invalid && passwordControl?.touched"
+                placeholder="••••••••"
+              />
+
+              <button
+                type="button"
+                (click)="togglePasswordVisibility()"
+                class="input__right-btn"
+                aria-label="Mostrar u ocultar contraseña"
+              >
+                <i-lucide
+                  [name]="showPassword ? 'eye-off' : 'eye'"
+                  class="input__icon input__icon--hover"
+                ></i-lucide>
+              </button>
+            </div>
+
+            <div
+              *ngIf="passwordControl?.invalid && passwordControl?.touched"
+              class="field__error"
+            >
+              <i-lucide name="alert-circle" class="field__error-icon"></i-lucide>
+              <span>{{ getPasswordErrorMessage() }}</span>
+            </div>
+          </div>
+
+          <!-- ROW -->
+          <div class="row-between">
+            <label class="check">
+              <input type="checkbox" class="check__box" />
+              <span class="check__text">Recordarme</span>
+            </label>
+
+            <a href="#" class="link link--primary">¿Olvidaste tu contraseña?</a>
+          </div>
+
+          <!-- SUBMIT -->
+          <button
+            type="submit"
+            [disabled]="isLoading"
+            class="btn btn--primary btn--block"
+          >
+            <ng-container *ngIf="isLoading; else submitText">
+              <span class="spinner" aria-hidden="true"></span>
+              Iniciando sesión...
+            </ng-container>
+            <ng-template #submitText>Iniciar sesión</ng-template>
+          </button>
+
+          <!-- DIVIDER -->
+          <div class="divider" role="separator" aria-label="O continúa con">
+            <span class="divider__text">O continúa con</span>
+          </div>
+
+          <!-- SOCIAL -->
+          <div class="social">
+            <button type="button" class="btn btn--outline btn--social">
+              <svg class="social__icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  fill="#4285F4"
+                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                />
+                <path
+                  fill="#34A853"
+                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                />
+                <path
+                  fill="#FBBC05"
+                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                />
+                <path
+                  fill="#EA4335"
+                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                />
+              </svg>
+              Google
+            </button>
+
+            <button type="button" class="btn btn--outline btn--social">
+              <svg
+                class="social__icon"
+                fill="#1877F2"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
+                />
+              </svg>
+              Facebook
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <p class="legal">
+        Al iniciar sesión, aceptas nuestros
+        <a href="#" class="link link--primary">Términos de servicio</a>
+        y
+        <a href="#" class="link link--primary">Política de privacidad</a>
+      </p>
+    </div>
+  </div>
+</div>
