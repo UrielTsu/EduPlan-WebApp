@@ -8,7 +8,9 @@
 
         </a>
 
-        <a routerLink="/" class="topbar__back">Volver al inicio</a>
+         <a routerLink="/" class="btn btn-primary">
+    Volver a Inicio
+     </a>
       </div>
     </div>
   </header>
@@ -46,7 +48,7 @@
               *ngIf="emailControl?.invalid && emailControl?.touched"
               class="field__error"
             >
-              <i class="bi bi-calendar brand__icon"></i>
+              <mat-icon>warning</mat-icon>
 
               <span>{{ getEmailErrorMessage() }}</span>
             </div>
@@ -86,7 +88,7 @@
               *ngIf="passwordControl?.invalid && passwordControl?.touched"
               class="field__error"
             >
-              <i class="bi bi-calendar brand__icon"></i>
+              <mat-icon>warning</mat-icon>
 
               <span>{{ getPasswordErrorMessage() }}</span>
             </div>

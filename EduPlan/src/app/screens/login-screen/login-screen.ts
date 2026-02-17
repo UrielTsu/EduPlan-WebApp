@@ -3,17 +3,17 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-
+import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-login',
+  selector: 'LoginScreen',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatIconModule],
+  imports: [CommonModule, ReactiveFormsModule, MatIconModule, RouterModule],
   templateUrl: './login-screen.html',
   styleUrls: ['./login-screen.scss']
 })
 export class LoginScreen {
-  loginForm: FormGroup;
+  loginForm: FormGroup; 
   showPassword = false;
   isLoading = false;
 
