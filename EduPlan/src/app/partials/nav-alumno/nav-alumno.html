@@ -22,9 +22,9 @@
            [class.active-student]="isActive('/horario-a')">
           <mat-icon>calendar_today</mat-icon> Horario
         </a>
-        <a routerLink="/cursos"
+        <a routerLink="/cursos-a"
            class="nav-link"
-           [class.active-student]="isActive('/cursos')">
+           [class.active-student]="isActive('/cursos-a')">
           <mat-icon>book</mat-icon> Cursos
         </a>
         <a routerLink="/tareas"
@@ -104,9 +104,9 @@
         <mat-icon>calendar_today</mat-icon>
         <span>Horario</span>
       </a>
-      <a routerLink="/cursos" class="mobile-link"
-         [class.active-mobile-student]="isActive('/cursos')"
-         [class.text-gray]="!isActive('/cursos')">
+      <a routerLink="/cursos-a" class="mobile-link"
+         [class.active-mobile-student]="isActive('/cursos-a')"
+         [class.text-gray]="!isActive('/cursos-a')">
         <mat-icon>book</mat-icon>
         <span>Cursos</span>
       </a>
