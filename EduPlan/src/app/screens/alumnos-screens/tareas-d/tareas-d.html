@@ -1,0 +1,119 @@
+<div class="container py-4 task-detail-container" *ngIf="task() as data">
+  <a routerLink="/tareas" class="back-link d-inline-flex align-items-center mb-4">
+    <mat-icon>arrow_back</mat-icon>
+    <span>Volver a Tareas</span>
+  </a>
+
+  <mat-card class="header-card border-0 shadow-sm mb-4" [ngClass]="'border-left-' + data.color">
+    <mat-card-content class="p-4 p-md-5">
+      <div class="row g-4 align-items-start">
+        <div class="col-lg-8">
+          <h1 class="display-6 fw-bold text-dark mb-4">{{ data.title }}</h1>
+
+          <div class="course-info-row d-flex align-items-center gap-2 mb-4">
+            <mat-icon [ngClass]="'text-' + data.color">book</mat-icon>
+            <a [routerLink]="['/cursos-d', data.courseId]" class="course-link">{{ data.course }}</a>
+            <span class="badge-code" [ngClass]="data.color">{{ data.courseCode }}</span>
+          </div>
+
+          <div class="row g-3 meta-info">
+            <div class="col-sm-6 d-flex align-items-center gap-3">
+              <mat-icon [ngClass]="{'text-danger': isOverdue(), 'text-warning': isDueSoon(), 'text-muted': !isOverdue() && !isDueSoon()}">
+                calendar_today
+              </mat-icon>
+              <div>
+                <div class="label">Fecha de entrega</div>
+                <div class="value" [ngClass]="{'text-danger': isOverdue()}">
+                  {{ data.dueDate | date:'dd MMMM, yyyy' }} • {{ data.dueTime }}
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 d-flex align-items-center gap-3">
+              <mat-icon class="text-muted">timer</mat-icon>
+              <div>
+                <div class="label">Tiempo restante</div>
+                <div class="value" [ngClass]="{'text-danger': isOverdue()}">
+                  {{ isOverdue() ? 'Vencida' : daysUntil() + ' día(s)' }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 text-center text-lg-end">
+          <div class="status-box shadow-sm" [ngClass]="data.status">
+            <mat-icon>{{ data.status === 'completed' ? 'check_circle' : 'pending_actions' }}</mat-icon>
+            <span>{{ data.status === 'completed' ? 'Completada' : data.status === 'in-progress' ? 'En progreso' : 'Pendiente' }}</span>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <mat-card class="border-0 shadow-sm mb-4">
+        <mat-card-content class="p-4">
+          <h2 class="section-title mb-3">Descripción</h2>
+          <p class="text-secondary mb-5">{{ data.description }}</p>
+
+          <h2 class="section-title mb-3">Instrucciones</h2>
+          <ul class="instructions-list">
+            @for (inst of data.instructions; track inst) {
+              <li>{{ inst }}</li>
+            }
+          </ul>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="border-0 shadow-sm">
+        <mat-card-content class="p-4">
+          <h2 class="section-title mb-3">Archivos adjuntos</h2>
+          <div class="attachments-grid">
+            @for (file of data.attachments; track file.name) {
+              <a [href]="file.url" class="attachment-item">
+                <div class="file-icon"><mat-icon>insert_drive_file</mat-icon></div>
+                <div class="file-info">
+                  <div class="name">{{ file.name }}</div>
+                  <div class="size text-muted">{{ file.size }}</div>
+                </div>
+                <mat-icon class="download-icon">download</mat-icon>
+              </a>
+            }
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="col-lg-4">
+      <mat-card class="border-0 shadow-sm sticky-top-custom">
+        <mat-card-content class="p-4">
+          <h2 class="section-title mb-4 flex-between">
+            Entrega
+            <mat-icon class="text-muted">upload_file</mat-icon>
+          </h2>
+
+          @if (data.status !== 'completed') {
+            <div class="dropzone mb-4">
+              <mat-icon>cloud_upload</mat-icon>
+              <div class="fw-bold">Arrastra archivos aquí</div>
+              <div class="text-muted small">o haz clic para seleccionar</div>
+            </div>
+
+            <button mat-flat-button [ngClass]="'bg-' + data.color" class="w-100 py-4 text-white rounded-3">
+              <mat-icon class="me-2">send</mat-icon>
+              Enviar tarea
+            </button>
+          } @else {
+            <div class="success-submission p-4 text-center rounded-4">
+              <mat-icon class="text-success large-icon mb-2">verified</mat-icon>
+              <div class="fw-bold text-success mb-1">Tarea entregada</div>
+              <div class="text-muted small mb-3">13 Feb 2026, 15:30</div>
+              <button mat-button color="primary" class="w-100">Ver mi entrega</button>
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,99 @@
+<div class="container py-4 tasks-wrapper">
+  <div class="row mb-4 align-items-center">
+    <div class="col">
+      <h1 class="h2 fw-bold text-dark mb-1">Mis Tareas</h1>
+      <p class="text-muted">Organiza y da seguimiento a todas tus tareas y entregas</p>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-12 col-sm-6">
+      <mat-card class="stats-card pending border-0 shadow-sm">
+        <mat-card-content class="d-flex align-items-center justify-content-between p-4">
+          <div>
+            <div class="label text-muted small fw-bold">Pendientes</div>
+            <div class="value h2 fw-bold text-danger mb-0">{{ pendingCount() }}</div>
+          </div>
+          <div class="icon-box bg-danger-light">
+            <mat-icon color="warn">error_outline</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div class="col-12 col-sm-6">
+      <mat-card class="stats-card completed border-0 shadow-sm">
+        <mat-card-content class="d-flex align-items-center justify-content-between p-4">
+          <div>
+            <div class="label text-muted small fw-bold">Completadas</div>
+            <div class="value h2 fw-bold text-success mb-0">{{ completedCount() }}</div>
+          </div>
+          <div class="icon-box bg-success-light">
+            <mat-icon>check_circle_outline</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <mat-card class="mb-4 border-0 shadow-sm">
+    <mat-card-content class="p-2">
+      <mat-form-field appearance="outline" class="w-100 hide-subscript">
+        <mat-icon matPrefix class="text-muted me-2">filter_list</mat-icon>
+        <mat-select [value]="filterStatus()" (selectionChange)="filterStatus.set($event.value)">
+          <mat-option value="all">Todas las tareas</mat-option>
+          <mat-option value="pending">Pendientes</mat-option>
+          <mat-option value="completed">Completadas</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="row g-3">
+    @for (task of filteredTasks(); track task.id) {
+      <div class="col-12">
+        <mat-card
+          class="task-item-card border-0 shadow-sm"
+          [ngClass]="['border-left-' + task.color, task.status]"
+          [routerLink]="['/tareas-d', task.id]"
+        >
+          <mat-card-content class="p-3 p-md-4">
+            <div class="row align-items-center">
+              <div class="col">
+                <h3 class="task-title h6 fw-bold mb-2">{{ task.title }}</h3>
+                <p class="task-desc text-muted small mb-3">{{ task.description }}</p>
+
+                <div class="d-flex flex-wrap gap-3 align-items-center">
+                  <div class="course-badge d-flex align-items-center gap-1" [ngClass]="'text-' + task.color">
+                    <mat-icon class="icon-xs">book</mat-icon>
+                    <span class="small fw-medium">{{ task.course }}</span>
+                    <span class="code-tag ms-1" [ngClass]="'bg-' + task.color + '-light'">{{ task.courseCode }}</span>
+                  </div>
+
+                  <span class="status-pill" [ngClass]="task.status">
+                    {{ getStatusLabel(task.status) }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="col-auto text-end d-none d-sm-block">
+                <div class="due-info">
+                  <mat-icon class="text-muted icon-xs">calendar_today</mat-icon>
+                  <div class="small fw-bold">{{ task.dueDate | date:'dd MMM' }}</div>
+                  <div class="extra-small text-muted">{{ task.dueTime }}</div>
+                </div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    } @empty {
+      <div class="col-12 text-center py-5">
+        <div class="empty-state">
+          <mat-icon class="large-icon text-muted mb-3">search_off</mat-icon>
+          <h4 class="text-dark">No hay tareas disponibles</h4>
+          <p class="text-muted">No tienes tareas en esta categoría</p>
+        </div>
+      </div>
+    }
+  </div>
+</div>

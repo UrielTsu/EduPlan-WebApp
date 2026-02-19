@@ -1,0 +1,71 @@
+$colors: (
+  "blue": #3b82f6,
+  "purple": #a855f7,
+  "green": #22c55e,
+  "orange": #f97316,
+  "red": #ef4444
+);
+
+.tasks-wrapper {
+  .stats-card {
+    border-radius: 12px;
+    .icon-box {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    &.pending .bg-danger-light { background: #fee2e2; }
+    &.completed .bg-success-light { background: #dcfce7; color: #16a34a; }
+  }
+
+  .hide-subscript ::v-deep .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+
+  .task-item-card {
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border-left: 5px solid transparent !important;
+
+    &:hover {
+      transform: translateX(4px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+    }
+
+    &.completed {
+      opacity: 0.7;
+      .task-title { text-decoration: line-through; color: #94a3b8; }
+    }
+
+    .code-tag {
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+
+    .status-pill {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-weight: 600;
+      &.completed { background: #dcfce7; color: #16a34a; }
+      &.pending, &.in-progress { background: #f1f5f9; color: #64748b; }
+    }
+  }
+
+  // Generación dinámica de clases de color
+  @each $name, $val in $colors {
+    .border-left-#{$name} { border-left-color: $val !important; }
+    .text-#{$name} { color: $val; }
+    .bg-#{$name}-light { background: rgba($val, 0.1); color: $val; }
+  }
+
+  .icon-xs { font-size: 16px; width: 16px; height: 16px; }
+  .extra-small { font-size: 0.7rem; }
+  .large-icon { font-size: 48px; width: 48px; height: 48px; }
+}

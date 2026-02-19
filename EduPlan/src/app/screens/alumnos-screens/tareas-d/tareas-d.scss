@@ -1,0 +1,75 @@
+$colors: ("blue": #3b82f6, "purple": #a855f7, "green": #22c55e, "orange": #f97316, "red": #ef4444);
+
+.task-detail-container {
+  .back-link {
+    color: #64748b; text-decoration: none; gap: 8px; font-weight: 500;
+    &:hover { color: #1e293b; }
+    mat-icon { font-size: 20px; width: 20px; height: 20px; }
+  }
+
+  .header-card {
+    border-radius: 20px;
+    @each $name, $color in $colors {
+      &.border-left-#{$name} { border-left: 6px solid $color !important; }
+    }
+  }
+
+  .course-link {
+    font-weight: 600; color: #475569; text-decoration: none;
+    &:hover { color: #0f172a; text-decoration: underline; }
+  }
+
+  .badge-code {
+    padding: 2px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700;
+    @each $name, $color in $colors {
+      &.#{$name} { background: rgba($color, 0.1); color: $color; }
+    }
+  }
+
+  .meta-info {
+    .label { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
+    .value { font-weight: 700; color: #1e293b; }
+  }
+
+  .status-box {
+    display: inline-flex; align-items: center; gap: 8px; padding: 8px 20px; border-radius: 12px;
+    font-weight: 700;
+    &.completed { background: #dcfce7; color: #16a34a; }
+    &.in-progress { background: #dbeafe; color: #2563eb; }
+    &.pending { background: #f1f5f9; color: #64748b; }
+  }
+
+  .section-title { font-size: 1.1rem; font-weight: 700; color: #1e293b; }
+
+  .instructions-list {
+    padding-left: 20px; color: #475569;
+    li { margin-bottom: 12px; position: relative; list-style: none;
+      &::before { content: "•"; color: #cbd5e1; font-weight: bold; display: inline-block; width: 1em; margin-left: -1em; }
+    }
+  }
+
+  .attachment-item {
+    display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid #e2e8f0;
+    border-radius: 12px; text-decoration: none; color: inherit; transition: all 0.2s;
+    &:hover { border-color: #3b82f6; background: #f0f9ff; .download-icon { color: #3b82f6; } }
+    .file-icon { background: #f1f5f9; padding: 8px; border-radius: 8px; mat-icon { color: #64748b; } }
+    .name { font-weight: 600; font-size: 0.85rem; }
+    .size { font-size: 0.75rem; }
+  }
+
+  .dropzone {
+    border: 2px dashed #e2e8f0; border-radius: 16px; padding: 40px 20px; text-align: center;
+    cursor: pointer; transition: all 0.2s;
+    &:hover { border-color: #3b82f6; background: #f8fafc; mat-icon { color: #3b82f6; } }
+    mat-icon { font-size: 40px; width: 40px; height: 40px; color: #cbd5e1; margin-bottom: 10px; }
+  }
+
+  .success-submission { background: #f0fdf4; border: 1px solid #bbf7d0;
+    .large-icon { font-size: 48px; width: 48px; height: 48px; }
+  }
+
+  @each $name, $color in $colors {
+    .bg-#{$name} { background-color: $color !important; }
+    .text-#{$name} { color: $color !important; }
+  }
+}
