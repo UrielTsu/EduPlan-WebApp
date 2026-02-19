@@ -76,7 +76,7 @@ export class LoginScreen {
       }
       localStorage.setItem('userRole', role);
       this.isLoading = false;
-      this.router.navigate(['/']);
+      this.router.navigate(['dashboard-alumno']);
     }, 1500);
   }
 }

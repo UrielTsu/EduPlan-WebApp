@@ -1,1 +1,93 @@
-<p>dashboard-alumno works!</p>
+<div class="dashboard-container">
+  <div class="main-layout">
+
+    <div class="content-primary">
+
+      <section class="current-class-card">
+        <div class="status-badge">
+          <mat-icon>schedule</mat-icon>
+          <span>Clase en curso</span>
+        </div>
+
+        <h2 class="subject-title">{{ currentClass.subject }}</h2>
+
+        <div class="class-details">
+          <div class="detail-item">
+            <mat-icon>place</mat-icon>
+            <span>{{ currentClass.room }}</span>
+          </div>
+          <div class="detail-item">
+            <mat-icon>person</mat-icon>
+            <span>{{ currentClass.teacher }}</span>
+          </div>
+          <div class="detail-item">
+            <mat-icon>access_time</mat-icon>
+            <span>{{ currentClass.time }}</span>
+          </div>
+        </div>
+      </section>
+
+      <mat-card class="calendar-widget">
+        <h3 class="widget-title">Calendario Semanal</h3>
+
+        <div class="day-selector">
+          <button
+            *ngFor="let day of weekDays"
+            type="button"
+            (click)="selectDay(day.id)"
+            class="day-btn"
+            [class.active]="selectedDay === day.id"
+          >
+            <span class="day-name">{{ day.name }}</span>
+            <span class="day-date">{{ day.date }}</span>
+          </button>
+        </div>
+
+        <div class="schedule-list">
+          <ng-container *ngIf="currentDaySchedule.length > 0; else noSchedule">
+            <div *ngFor="let item of currentDaySchedule" class="schedule-item">
+              <div class="item-time">{{ item.time }}</div>
+              <div class="item-info">
+                <div class="item-subject">{{ item.subject }}</div>
+                <div class="item-location">
+                  <mat-icon>place</mat-icon>
+                  {{ item.room }}
+                </div>
+              </div>
+            </div>
+          </ng-container>
+
+          <ng-template #noSchedule>
+            <div class="empty-state">No hay clases programadas</div>
+          </ng-template>
+        </div>
+      </mat-card>
+    </div>
+
+    <aside class="content-sidebar">
+      <mat-card class="sidebar-card">
+        <h3 class="widget-title">Próximas Materias</h3>
+        <div class="upcoming-list">
+          <div *ngFor="let subject of upcomingSubjects" class="upcoming-item">
+            <h4 class="upcoming-name">{{ subject.name }}</h4>
+            <div class="upcoming-details">
+              <div class="detail-row highlight">
+                <mat-icon>schedule</mat-icon>
+                <span>{{ subject.time }}</span>
+              </div>
+              <div class="detail-row">
+                <mat-icon>place</mat-icon>
+                <span>{{ subject.room }}</span>
+              </div>
+              <div class="detail-row">
+                <mat-icon>person</mat-icon>
+                <span>{{ subject.teacher }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-card>
+    </aside>
+
+  </div>
+</div>

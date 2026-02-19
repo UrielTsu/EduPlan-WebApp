@@ -1,0 +1,214 @@
+// Variables de diseño para coherencia visual
+$primary-blue: #2563eb;
+$primary-purple: #9333ea;
+$bg-light: #f9fafb;
+$white: #ffffff;
+$border-color: #e5e7eb;
+$text-dark: #111827;
+$text-muted: #4b5563;
+$transition: all 0.2s ease-in-out;
+
+// Contenedor principal
+.layout-wrapper {
+  min-height: 100vh;
+  background-color: $bg-light;
+}
+
+// --- Header Desktop ---
+.main-header {
+  background-color: $white;
+  border-bottom: 1px solid $border-color;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  .header-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    height: 4rem; // h-16
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.brand-section {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  .mobile-menu-trigger {
+    display: none; // Oculto en desktop
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+
+    &:hover { background-color: #f3f4f6; }
+
+    @media (max-width: 1024px) {
+      display: block;
+    }
+  }
+
+  .logo-title {
+    text-decoration: none;
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: $text-dark;
+      margin: 0;
+    }
+  }
+}
+
+// Navegación Desktop
+.desktop-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+
+  @media (max-width: 1024px) {
+    display: none; // Desaparece en móviles
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 500;
+    color: $text-muted;
+    transition: $transition;
+
+    &:hover { background-color: #f3f4f6; }
+
+    // Estados activos para Estudiantes
+    &.active-student {
+      background-color: #eff6ff;
+      color: $primary-blue;
+    }
+
+    // Estados activos para Admin
+    &.active-admin {
+      background-color: #faf5ff;
+      color: $primary-purple;
+    }
+  }
+}
+
+// Menú de Usuario (Mat Menu Trigger)
+.user-actions {
+  display: flex;
+  align-items: center;
+
+  .profile-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 0.5rem !important;
+    padding: 0 0.5rem !important;
+
+    .user-icon {
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+      color: $text-muted;
+    }
+
+    .user-name {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: $text-muted;
+
+      @media (max-width: 640px) {
+        display: none;
+      }
+    }
+  }
+}
+
+// --- Área de Contenido Principal ---
+.main-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+  padding-bottom: 6rem; // Espacio para la barra móvil
+
+  @media (min-width: 1024px) {
+    padding-bottom: 1.5rem;
+  }
+}
+
+// --- Barra de Navegación Móvil (Bottom Nav) ---
+.mobile-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: $white;
+  border-top: 1px solid $border-color;
+  z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom); // Soporte para iPhones modernos
+
+  @media (min-width: 1024px) {
+    display: none;
+  }
+
+  .bottom-nav-grid {
+    display: grid;
+    // Se ajusta según el número de items
+    &.student-grid { grid-template-columns: repeat(5, 1fr); }
+    &.admin-grid { grid-template-columns: repeat(4, 1fr); }
+
+    padding: 0.5rem;
+  }
+
+  .mobile-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem 0;
+    text-decoration: none;
+    transition: $transition;
+    border-radius: 0.5rem;
+
+    mat-icon { font-size: 24px; }
+    span { font-size: 10px; font-weight: 500; }
+
+    &.text-gray { color: $text-muted; }
+
+    // Estilos activos
+    &.active-mobile-student {
+      color: $primary-blue;
+      background-color: #eff6ff;
+    }
+
+    &.active-mobile-admin {
+      color: $primary-purple;
+      background-color: #faf5ff;
+    }
+  }
+}
+
+// --- Ajustes Mat-Menu ---
+::ng-deep .mat-mdc-menu-panel {
+  margin-top: 0.5rem !important;
+}
+
+.admin-label {
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.logout-item {
+  color: #dc2626 !important;
+  mat-icon { color: #dc2626 !important; }
+}

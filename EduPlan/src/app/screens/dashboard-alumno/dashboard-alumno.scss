@@ -1,0 +1,183 @@
+// Variables locales
+$primary-color: #0d6efd; // Puedes usar var(--primary) si lo tienes en styles.scss
+$bg-light: #f8f9fa;
+$border-color: #dee2e6;
+$text-dark: #212529;
+$text-secondary: #6c757d;
+$transition: all 0.3s ease;
+
+.dashboard-container {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.main-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+
+  @media (min-width: 992px) {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+// Clase Actual
+.current-class-card {
+  background-color: $primary-color;
+  color: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+
+  .status-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    opacity: 0.9;
+
+    mat-icon { font-size: 1.2rem; width: 1.2rem; height: 1.2rem; }
+    span { font-size: 0.875rem; font-weight: 500; }
+  }
+
+  .subject-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+
+  .class-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+
+    .detail-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+
+      mat-icon { font-size: 1.1rem; width: 1.1rem; height: 1.1rem; }
+    }
+  }
+}
+
+// Calendario Semanal
+.calendar-widget {
+  padding: 1.5rem;
+  border-radius: 1rem !important;
+
+  .day-selector {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+
+    .day-btn {
+      border: none;
+      background: $bg-light;
+      padding: 1rem 0.5rem;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      transition: $transition;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .day-name { font-size: 0.75rem; color: $text-secondary; margin-bottom: 0.25rem; }
+      .day-date { font-size: 1.25rem; font-weight: 700; color: $text-dark; }
+
+      &:hover { background: darken($bg-light, 5%); }
+
+      &.active {
+        background: $primary-color;
+        color: white;
+        box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+        .day-name, .day-date { color: white; }
+      }
+    }
+  }
+}
+
+// Lista de Horarios
+.schedule-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  .schedule-item {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1.25rem;
+    background: $bg-light;
+    border-radius: 0.75rem;
+    border: 1px solid transparent;
+    transition: $transition;
+
+    &:hover {
+      border-color: $primary-color;
+      background: white;
+      transform: translateX(5px);
+    }
+
+    .item-time {
+      font-weight: 700;
+      color: $primary-color;
+      min-width: 70px;
+    }
+
+    .item-subject { font-weight: 700; margin-bottom: 0.25rem; }
+
+    .item-location {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.85rem;
+      color: $text-secondary;
+      mat-icon { font-size: 1rem; width: 1rem; height: 1rem; }
+    }
+  }
+}
+
+// Sidebar
+.sidebar-card {
+  padding: 1.5rem;
+  border-radius: 1rem !important;
+
+  .upcoming-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .upcoming-item {
+    padding: 1.25rem;
+    border: 1px solid $border-color;
+    border-radius: 0.75rem;
+
+    .upcoming-name { margin-bottom: 1rem; font-size: 1rem; }
+
+    .upcoming-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      .detail-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.85rem;
+        color: $text-secondary;
+
+        mat-icon { font-size: 1rem; width: 1rem; height: 1rem; }
+        &.highlight { color: $primary-color; font-weight: 500; }
+      }
+    }
+  }
+}
+
+// Utilidades comunes
+.widget-title { font-weight: 700; margin-bottom: 1.5rem; }
+.empty-state { text-align: center; padding: 3rem 0; color: $text-secondary; }

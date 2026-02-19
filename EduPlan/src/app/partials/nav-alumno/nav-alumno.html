@@ -1,0 +1,156 @@
+<div class="layout-wrapper">
+  <header class="main-header">
+    <div class="header-container">
+
+      <div class="brand-section">
+        <button class="mobile-menu-trigger">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <a [routerLink]="userRole === 'admin' ? '/admin' : '/dashboard-alumno'" class="logo-title">
+          <h1>EduPlan</h1>
+        </a>
+      </div>
+
+      <nav *ngIf="userRole !== 'admin'" class="desktop-nav">
+        <a routerLink="/dashboard-alumno"
+           class="nav-link"
+           [class.active-student]="isActive('/dashboard-alumno')">
+          <mat-icon>home</mat-icon> Inicio
+        </a>
+        <a routerLink="/horario"
+           class="nav-link"
+           [class.active-student]="isActive('/horario')">
+          <mat-icon>calendar_today</mat-icon> Horario
+        </a>
+        <a routerLink="/cursos"
+           class="nav-link"
+           [class.active-student]="isActive('/cursos')">
+          <mat-icon>book</mat-icon> Cursos
+        </a>
+        <a routerLink="/tareas"
+           class="nav-link"
+           [class.active-student]="isActive('/tareas')">
+          <mat-icon>check_box</mat-icon> Tareas
+        </a>
+        <a routerLink="/perfil"
+           class="nav-link"
+           [class.active-student]="isActive('/perfil')">
+          <mat-icon>person</mat-icon> Perfil
+        </a>
+      </nav>
+
+      <nav *ngIf="userRole === 'admin'" class="desktop-nav">
+        <a routerLink="/admin"
+           class="nav-link"
+           [class.active-admin]="isActive('/admin')">
+          <mat-icon>home</mat-icon> Inicio
+        </a>
+        <a routerLink="/admin/aulas"
+           class="nav-link"
+           [class.active-admin]="isActive('/admin/aulas')">
+          <mat-icon>business</mat-icon> Aulas
+        </a>
+        <a routerLink="/admin/solicitudes-cambio"
+           class="nav-link"
+           [class.active-admin]="isActive('/admin/solicitudes-cambio')">
+          <mat-icon>description</mat-icon> Solicitudes
+        </a>
+        <a routerLink="/admin/gestion"
+           class="nav-link"
+           [class.active-admin]="isActive('/admin/gestion')">
+          <mat-icon>settings</mat-icon> Gestión
+        </a>
+      </nav>
+
+      <div class="user-actions">
+        <button mat-button [matMenuTriggerFor]="userMenu" class="profile-button">
+          <mat-icon class="user-icon">account_circle</mat-icon>
+          <span class="user-name">{{ firstName }}</span>
+        </button>
+
+        <mat-menu #userMenu="matMenu" xPosition="before">
+          <div *ngIf="userRole === 'admin'" class="admin-label">
+            Administrador
+          </div>
+          <button mat-menu-item *ngIf="userRole !== 'admin'" routerLink="/perfil">
+            <mat-icon>person</mat-icon>
+            <span>Mi Perfil</span>
+          </button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="handleLogout()" class="logout-item">
+            <mat-icon>logout</mat-icon>
+            <span>Cerrar sesión</span>
+          </button>
+        </mat-menu>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <nav *ngIf="userRole !== 'admin'" class="mobile-bottom-nav">
+    <div class="bottom-nav-grid student-grid">
+      <a routerLink="/dashboard-alumno" class="mobile-link"
+         [class.active-mobile-student]="isActive('/dashboard-alumno')"
+         [class.text-gray]="!isActive('/dashboard-alumno')">
+        <mat-icon>home</mat-icon>
+        <span>Inicio</span>
+      </a>
+      <a routerLink="/horario" class="mobile-link"
+         [class.active-mobile-student]="isActive('/horario')"
+         [class.text-gray]="!isActive('/horario')">
+        <mat-icon>calendar_today</mat-icon>
+        <span>Horario</span>
+      </a>
+      <a routerLink="/cursos" class="mobile-link"
+         [class.active-mobile-student]="isActive('/cursos')"
+         [class.text-gray]="!isActive('/cursos')">
+        <mat-icon>book</mat-icon>
+        <span>Cursos</span>
+      </a>
+      <a routerLink="/tareas" class="mobile-link"
+         [class.active-mobile-student]="isActive('/tareas')"
+         [class.text-gray]="!isActive('/tareas')">
+        <mat-icon>check_box</mat-icon>
+        <span>Tareas</span>
+      </a>
+      <a routerLink="/perfil" class="mobile-link"
+         [class.active-mobile-student]="isActive('/perfil')"
+         [class.text-gray]="!isActive('/perfil')">
+        <mat-icon>person</mat-icon>
+        <span>Perfil</span>
+      </a>
+    </div>
+  </nav>
+
+  <nav *ngIf="userRole === 'admin'" class="mobile-bottom-nav">
+    <div class="bottom-nav-grid admin-grid">
+      <a routerLink="/admin" class="mobile-link"
+         [class.active-mobile-admin]="isActive('/admin')"
+         [class.text-gray]="!isActive('/admin')">
+        <mat-icon>home</mat-icon>
+        <span>Inicio</span>
+      </a>
+      <a routerLink="/admin/aulas" class="mobile-link"
+         [class.active-mobile-admin]="isActive('/admin/aulas')"
+         [class.text-gray]="!isActive('/admin/aulas')">
+        <mat-icon>business</mat-icon>
+        <span>Aulas</span>
+      </a>
+      <a routerLink="/admin/solicitudes-cambio" class="mobile-link"
+         [class.active-mobile-admin]="isActive('/admin/solicitudes-cambio')"
+         [class.text-gray]="!isActive('/admin/solicitudes-cambio')">
+        <mat-icon>description</mat-icon>
+        <span>Solicitudes</span>
+      </a>
+      <a routerLink="/admin/gestion" class="mobile-link"
+         [class.active-mobile-admin]="isActive('/admin/gestion')"
+         [class.text-gray]="!isActive('/admin/gestion')">
+        <mat-icon>settings</mat-icon>
+        <span>Gestión</span>
+      </a>
+    </div>
+  </nav>
+</div> 
