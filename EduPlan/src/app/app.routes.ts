@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
 import { HomeScreen } from './screens/home-screen/home-screen';
 import { LoginScreen } from './screens/login-screen/login-screen';
-import { DashboardAlumno} from './screens/dashboard-alumno/dashboard-alumno';
+import { DashboardAlumno} from './screens/alumnos-screens/dashboard-alumno/dashboard-alumno';
 import { NavAlumno } from './partials/nav-alumno/nav-alumno';
-import { HorarioA } from './screens/horario-a-screen/horario-a-screen';
+import { HorarioA } from './screens/alumnos-screens/horario-a-screen/horario-a-screen';
 
 export const routes: Routes = [
   { path: '', component: HomeScreen, pathMatch: 'full' },
