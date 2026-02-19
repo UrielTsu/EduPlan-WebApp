@@ -9,6 +9,7 @@ import { AdminDashboard } from './screens/admin-screens/dashboard-admin/dashboar
 import { CursosD } from './screens/alumnos-screens/cursos-d/cursos-d';
 import { TareasA } from './screens/alumnos-screens/tareas-a/tareas-a';
 import { TareasD } from './screens/alumnos-screens/tareas-d/tareas-d';
+import { PerfilA } from './screens/alumnos-screens/perfil-a/perfil-a';
 
 export const routes: Routes = [
   { path: '', component: HomeScreen, pathMatch: 'full' },
@@ -46,6 +47,10 @@ export const routes: Routes = [
         path : 'tareas-d/:id',
         component : TareasD
       },
+      {
+        path : 'perfil',
+        component : PerfilA
+      }
 
     ]
   }

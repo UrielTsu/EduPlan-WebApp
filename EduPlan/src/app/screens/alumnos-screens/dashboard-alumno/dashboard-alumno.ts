@@ -74,12 +74,31 @@ export class DashboardAlumno {
     }
   ];
 
-  scheduleByDay: Record<number, ScheduleItem[]> = {
+ scheduleByDay: Record<number, ScheduleItem[]> = {
+    0: [ // Lunes
+      { time: '08:00 - 10:00', subject: 'Álgebra Lineal', room: 'Aula 405' },
+      { time: '10:30 - 12:30', subject: 'Programación Web', room: 'Aula 102' },
+      { time: '14:00 - 16:00', subject: 'Química Orgánica', room: 'Lab 301' }
+    ],
+    1: [ // Martes
+      { time: '08:00 - 10:00', subject: 'Física II', room: 'Lab 205' },
+      { time: '14:00 - 16:00', subject: 'Cálculo Diferencial', room: 'Aula 301' },
+      { time: '16:30 - 18:30', subject: 'Álgebra Lineal', room: 'Aula 405' }
+    ],
     2: [ // Miércoles
-      { time: '08:00', subject: 'Laboratorio de Química', room: 'Lab 301' },
-      { time: '10:00', subject: 'Cálculo Diferencial', room: 'Aula 301' },
-      { time: '14:00', subject: 'Física II', room: 'Lab 205' },
-      { time: '16:30', subject: 'Programación Web', room: 'Aula 102' },
+      { time: '08:00 - 10:00', subject: 'Laboratorio de Química', room: 'Lab 301' },
+      { time: '10:00 - 12:00', subject: 'Cálculo Diferencial', room: 'Aula 301' },
+      { time: '14:00 - 16:00', subject: 'Física II', room: 'Lab 205' },
+      { time: '16:30 - 18:30', subject: 'Programación Web', room: 'Aula 102' }
+    ],
+    3: [ // Jueves
+      { time: '10:00 - 12:00', subject: 'Física II', room: 'Lab 205' },
+      { time: '14:00 - 16:00', subject: 'Álgebra Lineal', room: 'Aula 405' },
+      { time: '16:30 - 18:30', subject: 'Química Orgánica', room: 'Lab 301'}
+    ],
+    4: [ // Viernes
+      { time: '08:00 - 10:00', subject: 'Programación Web', room: 'Aula 102'},
+      { time: '10:00 - 12:00', subject: 'Cálculo Diferencial', room: 'Aula 301' }
     ]
   };
 

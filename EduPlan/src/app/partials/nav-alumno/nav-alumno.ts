@@ -44,7 +44,7 @@ export class NavAlumno implements OnInit {
     localStorage.removeItem('userEmail');
     localStorage.removeItem('userName');
     localStorage.removeItem('userRole');
-    this.router.navigate(['/landing']);
+    this.router.navigate(['/']);
   }
 
   get firstName(): string {
