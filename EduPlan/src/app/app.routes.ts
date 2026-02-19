@@ -5,10 +5,12 @@ import { DashboardAlumno} from './screens/alumnos-screens/dashboard-alumno/dashb
 import { NavAlumno } from './partials/nav-alumno/nav-alumno';
 import { HorarioA } from './screens/alumnos-screens/horario-a-screen/horario-a-screen';
 import { CursosA } from './screens/alumnos-screens/cursos-a/cursos-a';
+import { AdminDashboard } from './screens/admin-screens/dashboard-admin/dashboard-admin';
 
 export const routes: Routes = [
   { path: '', component: HomeScreen, pathMatch: 'full' },
   { path: 'login', component: LoginScreen, pathMatch: 'full' },
+
   {
     path: '',
     component: NavAlumno, // Este componente actúa como "cascarón"
@@ -24,6 +26,10 @@ export const routes: Routes = [
       {
         path: 'cursos-a',
         component: CursosA
+      },
+      {
+        path: 'admin',
+        component: AdminDashboard
       }
     ]
   }
