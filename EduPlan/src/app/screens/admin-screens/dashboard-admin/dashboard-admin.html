@@ -1,1 +1,119 @@
-<p>dashboard-admin works!</p>
+<div class="container py-4 admin-dashboard">
+  <div class="mb-5">
+    <h1 class="h2 fw-bold text-dark mb-1">Panel de Administración</h1>
+    <p class="text-secondary">Gestión académica y administrativa del sistema</p>
+  </div>
+
+  <div class="row g-4 mb-5">
+    <div class="col-12 col-md-4">
+      <mat-card class="stat-card border-0 shadow-sm">
+        <mat-card-content class="d-flex align-items-center justify-content-between p-4">
+          <div>
+            <p class="label mb-1">Solicitudes Pendientes</p>
+            <p class="value mb-0">{{ pendingRequests() }}</p>
+            <span class="sub-label text-warning">Requieren atención</span>
+          </div>
+          <div class="icon-box bg-warning-light">
+            <mat-icon class="text-warning">report_problem</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="col-12 col-md-4">
+      <mat-card class="stat-card border-0 shadow-sm">
+        <mat-card-content class="d-flex align-items-center justify-content-between p-4">
+          <div>
+            <p class="label mb-1">Docentes Activos</p>
+            <p class="value mb-0">{{ activeTeachers() }}</p>
+            <span class="sub-label text-success">En este periodo</span>
+          </div>
+          <div class="icon-box bg-primary-light">
+            <mat-icon color="primary">groups</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="col-12 col-md-4">
+      <mat-card class="stat-card border-0 shadow-sm">
+        <mat-card-content class="d-flex align-items-center justify-content-between p-4">
+          <div>
+            <p class="label mb-1">Solicitudes de Cambio</p>
+            <p class="value mb-0">{{ totalChangeRequests() }}</p>
+            <span class="sub-label text-muted">Esta semana</span>
+          </div>
+          <div class="icon-box bg-purple-light">
+            <mat-icon class="text-purple">description</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <div class="mb-5">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <h2 class="h5 fw-bold mb-0">Solicitudes de Cambio Recientes</h2>
+      <button mat-button color="primary" routerLink="/admin/solicitudes-cambio">
+        Ver todas <mat-icon>arrow_forward</mat-icon>
+      </button>
+    </div>
+
+    <mat-card class="border-0 shadow-sm overflow-hidden">
+      <mat-list class="p-0">
+        @for (request of recentRequests(); track request.id) {
+          <mat-list-item class="request-item py-3">
+            <div class="d-flex align-items-center w-100 px-3">
+              <div class="icon-circle-small bg-purple-light me-3">
+                <mat-icon class="text-purple">schedule</mat-icon>
+              </div>
+              <div class="flex-grow-1">
+                <h4 class="mb-0 text-dark fw-semibold small">{{ request.teacherName }}</h4>
+                <p class="mb-0 text-muted extra-small">{{ request.type }}</p>
+              </div>
+              <div class="text-end d-none d-sm-block">
+                <span class="text-muted extra-small me-3">{{ request.date }}</span>
+                <span class="badge-status pending">Pendiente</span>
+              </div>
+            </div>
+          </mat-list-item>
+        }
+      </mat-list>
+    </mat-card>
+  </div>
+
+  <div>
+    <h2 class="h5 fw-bold mb-4">Acceso Rápido</h2>
+    <div class="row g-4">
+      <div class="col-12 col-md-4">
+        <div class="quick-access-card text-center p-4 shadow-sm" routerLink="/admin/aulas">
+          <div class="icon-box-large bg-success-light mb-3 mx-auto">
+            <mat-icon class="text-success">domain</mat-icon>
+          </div>
+          <h3 class="h6 fw-bold">Gestión de Aulas</h3>
+          <p class="text-muted small">Administrar espacios físicos</p>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-4">
+        <div class="quick-access-card text-center p-4 shadow-sm" routerLink="/admin/solicitudes-cambio">
+          <div class="icon-box-large bg-purple-light mb-3 mx-auto">
+            <mat-icon class="text-purple">assignment_turned_in</mat-icon>
+          </div>
+          <h3 class="h6 fw-bold">Solicitudes de Cambio</h3>
+          <p class="text-muted small">Aprobar o rechazar solicitudes</p>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-4">
+        <div class="quick-access-card text-center p-4 shadow-sm" routerLink="/admin/gestion">
+          <div class="icon-box-large bg-primary-light mb-3 mx-auto">
+            <mat-icon color="primary">settings</mat-icon>
+          </div>
+          <h3 class="h6 fw-bold">Gestión General</h3>
+          <p class="text-muted small">CRUDs del sistema académico</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
