@@ -3,6 +3,8 @@ import { HomeScreen } from './screens/home-screen/home-screen';
 import { LoginScreen } from './screens/login-screen/login-screen';
 import { DashboardAlumno} from './screens/dashboard-alumno/dashboard-alumno';
 import { NavAlumno } from './partials/nav-alumno/nav-alumno';
+import { HorarioA } from './screens/horario-a-screen/horario-a-screen';
+
 export const routes: Routes = [
   { path: '', component: HomeScreen, pathMatch: 'full' },
   { path: 'login', component: LoginScreen, pathMatch: 'full' },
@@ -14,5 +16,10 @@ export const routes: Routes = [
         path: 'dashboard-alumno',
         component: DashboardAlumno
       },
-]}
+      {
+        path: 'horario-a',
+        component: HorarioA
+      }
+    ]
+  }
 ];

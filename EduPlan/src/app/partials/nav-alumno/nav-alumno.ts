@@ -32,6 +32,7 @@ export class NavAlumno implements OnInit {
   ngOnInit(): void {
     this.userName = localStorage.getItem('userName') || 'Usuario';
     this.userRole = localStorage.getItem('userRole') || 'estudiante';
+    console.log('UserRole:', this.userRole); // Para depurar
   }
 
   isActive(path: string): boolean {

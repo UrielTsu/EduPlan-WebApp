@@ -17,9 +17,9 @@
            [class.active-student]="isActive('/dashboard-alumno')">
           <mat-icon>home</mat-icon> Inicio
         </a>
-        <a routerLink="/horario"
+        <a routerLink="/horario-a"
            class="nav-link"
-           [class.active-student]="isActive('/horario')">
+           [class.active-student]="isActive('/horario-a')">
           <mat-icon>calendar_today</mat-icon> Horario
         </a>
         <a routerLink="/cursos"
@@ -98,9 +98,9 @@
         <mat-icon>home</mat-icon>
         <span>Inicio</span>
       </a>
-      <a routerLink="/horario" class="mobile-link"
-         [class.active-mobile-student]="isActive('/horario')"
-         [class.text-gray]="!isActive('/horario')">
+      <a routerLink="/horario-a" class="mobile-link"
+         [class.active-mobile-student]="isActive('/horario-a')"
+         [class.text-gray]="!isActive('/horario-a')">
         <mat-icon>calendar_today</mat-icon>
         <span>Horario</span>
       </a>
@@ -153,4 +153,4 @@
       </a>
     </div>
   </nav>
-</div> 
+</div>
