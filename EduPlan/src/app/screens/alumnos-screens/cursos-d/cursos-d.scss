@@ -1,0 +1,105 @@
+$colors: (
+  "blue": #3b82f6,
+  "purple": #a855f7,
+  "green": #22c55e,
+  "orange": #f97316,
+  "red": #ef4444
+);
+
+.course-detail-wrapper {
+  .back-link {
+    color: #64748b;
+    transition: color 0.2s;
+    &:hover { color: #1e293b; }
+    mat-icon { font-size: 20px; width: 20px; height: 20px; }
+  }
+
+  .header-card {
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+
+    .color-top-bar { height: 6px; position: absolute; top: 0; left: 0; right: 0; }
+
+    @media (min-width: 992px) {
+      .border-start-lg { border-left: 1px solid #e2e8f0; }
+    }
+  }
+
+  .icon-circle {
+    width: 40px; height: 40px; border-radius: 50%; background: #f1f5f9;
+    display: flex; align-items: center; justify-content: center;
+    mat-icon { font-size: 20px; color: #64748b; }
+  }
+
+  .grade-display {
+    .grade-label { color: #64748b; font-size: 0.875rem; font-weight: 500; }
+    .grade-number { font-size: 3rem; font-weight: 800; line-height: 1; margin: 10px 0; }
+  }
+
+  .section-title {
+    font-size: 1.125rem; font-weight: 700; color: #1e293b;
+    display: flex; align-items: center;
+  }
+
+  // Temario Estilo Timeline
+  .topic-timeline {
+    .topic-item {
+      display: flex; gap: 15px; padding-bottom: 20px; position: relative;
+      &:not(:last-child)::before {
+        content: ""; position: absolute; left: 17px; top: 35px; bottom: 0;
+        width: 2px; background: #e2e8f0;
+      }
+
+      .week-tag {
+        width: 35px; height: 35px; border-radius: 8px; background: #f1f5f9;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.75rem; font-weight: 700; color: #64748b; z-index: 1;
+      }
+
+      &.completed .week-tag { background: #dcfce7; color: #16a34a; }
+      &.current .week-tag { background: #dbeafe; color: #2563eb; outline: 2px solid #2563eb; }
+
+      .topic-content {
+        flex: 1; padding: 10px 15px; border-radius: 10px; background: #f8fafc;
+        display: flex; justify-content: space-between; align-items: center;
+      }
+    }
+  }
+
+  // Materiales
+  .material-btn {
+    display: flex; align-items: center; gap: 12px; padding: 12px;
+    border-radius: 10px; border: 1px solid #e2e8f0; color: inherit;
+    transition: all 0.2s;
+    &:hover { border-color: #3b82f6; background: #f0f9ff; }
+
+    .file-icon {
+      width: 36px; height: 36px; border-radius: 8px; background: #f1f5f9;
+      display: flex; align-items: center; justify-content: center;
+      mat-icon { color: #64748b; font-size: 20px; }
+    }
+    .file-name { font-weight: 600; font-size: 0.875rem; }
+    .file-meta { font-size: 0.75rem; color: #94a3b8; }
+  }
+
+  // Clases dinámicas
+  @each $name, $color in $colors {
+    .bg-#{$name} { background-color: $color !important; }
+    .text-#{$name} { color: $color !important; }
+    .border-left-#{$name} { border-left: 6px solid $color !important; }
+    .badge-custom.#{$name} {
+      background: rgba($color, 0.1); color: $color; padding: 4px 12px; border-radius: 6px; font-weight: 600;
+    }
+  }
+
+  .status-badge {
+    font-size: 0.7rem; padding: 2px 8px; border-radius: 999px; text-transform: uppercase;
+    &.completed { background: #dcfce7; color: #16a34a; }
+    &.current { background: #dbeafe; color: #2563eb; }
+    &.upcoming { background: #f1f5f9; color: #94a3b8; }
+  }
+
+  .small-icon { font-size: 18px; width: 18px; height: 18px; }
+  .extra-small { font-size: 0.75rem; }
+}

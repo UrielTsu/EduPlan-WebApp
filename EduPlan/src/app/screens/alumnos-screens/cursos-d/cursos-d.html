@@ -1,0 +1,157 @@
+<div class="container py-4 course-detail-wrapper" *ngIf="course() as data">
+  <a routerLink="/cursos" class="back-link d-inline-flex align-items-center mb-4 text-decoration-none">
+    <mat-icon class="me-2">arrow_back</mat-icon>
+    <span class="fw-medium">Volver a Cursos</span>
+  </a>
+
+  <mat-card class="header-card border-0 shadow-sm mb-4" [ngClass]="'border-left-' + data.color">
+    <div class="color-top-bar" [ngClass]="'bg-' + data.color"></div>
+    <mat-card-content class="p-4 p-lg-5">
+      <div class="row align-items-center">
+        <div class="col-lg-8">
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <span class="badge-custom" [ngClass]="data.color">{{ data.code }}</span>
+            <span class="text-muted small">{{ data.semester }}</span>
+            <span class="text-muted small">• {{ data.credits }} créditos</span>
+          </div>
+          <h1 class="display-6 fw-bold mb-4">{{ data.name }}</h1>
+
+          <div class="row g-3">
+            <div class="col-md-6 d-flex align-items-center gap-3">
+              <div class="icon-circle">
+                <mat-icon>school</mat-icon>
+              </div>
+              <div>
+                <div class="fw-bold small text-dark">{{ data.professor }}</div>
+                <div class="text-muted extra-small">{{ data.professorEmail }}</div>
+              </div>
+            </div>
+            <div class="col-md-6 d-flex align-items-center gap-3">
+              <div class="icon-circle">
+                <mat-icon>meeting_room</mat-icon>
+              </div>
+              <div>
+                <div class="fw-bold small text-dark">{{ data.schedule }}</div>
+                <div class="text-muted extra-small">{{ data.classroom }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 text-center mt-4 mt-lg-0 border-start-lg">
+          <div class="grade-display">
+            <div class="grade-label">Promedio Actual</div>
+            <div class="grade-number" [ngClass]="'text-' + data.color">{{ currentGrade() | number:'1.1-1' }}</div>
+            <mat-progress-bar mode="determinate" [value]="currentGrade()" [color]="data.color"></mat-progress-bar>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <mat-card class="mb-4 border-0 shadow-sm">
+        <mat-card-content class="p-4">
+          <h2 class="section-title mb-3">
+            <mat-icon class="me-2 text-primary">description</mat-icon>
+            Descripción del Curso
+          </h2>
+          <p class="text-secondary leading-relaxed mb-0">{{ data.description }}</p>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="mb-4 border-0 shadow-sm">
+        <mat-card-content class="p-4">
+          <h2 class="section-title mb-3">
+            <mat-icon class="me-2 text-primary">task_alt</mat-icon>
+            Objetivos
+          </h2>
+          <ul class="list-unstyled mb-0">
+            @for (obj of data.objectives; track obj) {
+              <li class="d-flex align-items-center gap-3 mb-2 text-secondary">
+                <mat-icon class="text-success small-icon">check_circle</mat-icon>
+                {{ obj }}
+              </li>
+            }
+          </ul>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="border-0 shadow-sm">
+        <mat-card-content class="p-4">
+          <h2 class="section-title mb-4">
+            <mat-icon class="me-2 text-primary">list_alt</mat-icon>
+            Contenido Académico
+          </h2>
+          <div class="topic-timeline">
+            @for (topic of data.topics; track topic.title) {
+              <div class="topic-item" [ngClass]="topic.status">
+                <div class="week-tag">S{{ topic.week }}</div>
+                <div class="topic-content">
+                  <span class="topic-title">{{ topic.title }}</span>
+                  <span class="status-badge" [ngClass]="topic.status">{{ topic.status }}</span>
+                </div>
+              </div>
+            }
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="col-lg-4">
+      <mat-card class="mb-4 border-0 shadow-sm">
+        <mat-card-content class="p-4">
+          <h2 class="section-title mb-4">
+            <mat-icon class="me-2 text-primary">folder_open</mat-icon>
+            Materiales
+          </h2>
+          <div class="d-grid gap-2">
+            @for (mat of data.materials; track mat.name) {
+              <a [href]="mat.url" class="material-btn text-decoration-none">
+                <div class="file-icon">
+                  <mat-icon>description</mat-icon>
+                </div>
+                <div class="flex-grow-1 min-w-0">
+                  <div class="file-name truncate">{{ mat.name }}</div>
+                  <div class="file-meta">{{ mat.type }} • {{ mat.size }}</div>
+                </div>
+                <mat-icon class="ms-auto text-muted small-icon">open_in_new</mat-icon>
+              </a>
+            }
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="border-0 shadow-sm">
+        <mat-card-content class="p-4">
+          <h2 class="section-title mb-4">
+            <mat-icon class="me-2 text-primary">event</mat-icon>
+            Tareas Próximas
+          </h2>
+          <div class="d-grid gap-3">
+            @for (task of data.upcomingTasks; track task.id) {
+              <div class="task-mini-card">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <span class="task-title-mini">{{ task.title }}</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="text-muted small">
+                    <mat-icon class="small-icon">calendar_today</mat-icon>
+                    {{ task.dueDate | date:'d MMM' }}
+                  </span>
+                  <span class="priority-badge" [ngClass]="getPriorityClass(task.priority)">
+                    {{ task.priority }}
+                  </span>
+                </div>
+              </div>
+            }
+          </div>
+          <button mat-flat-button color="primary" class="w-100 mt-4 rounded-3" routerLink="/tareas">
+            Ver todas las tareas
+          </button>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

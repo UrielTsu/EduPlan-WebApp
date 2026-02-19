@@ -5,6 +5,7 @@ import { DashboardAlumno} from './screens/alumnos-screens/dashboard-alumno/dashb
 import { NavAlumno } from './partials/nav-alumno/nav-alumno';
 import { HorarioA } from './screens/alumnos-screens/horario-a-screen/horario-a-screen';
 import { CursosA } from './screens/alumnos-screens/cursos-a/cursos-a';
+import { CursosD } from './screens/alumnos-screens/cursos-d/cursos-d';
 
 export const routes: Routes = [
   { path: '', component: HomeScreen, pathMatch: 'full' },
@@ -24,6 +25,10 @@ export const routes: Routes = [
       {
         path: 'cursos-a',
         component: CursosA
+      }
+      ,{
+        path: 'cursos-d',
+        component: CursosD
       }
     ]
   }
