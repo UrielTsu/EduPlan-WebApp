@@ -1,0 +1,11 @@
+.avatar-icon {
+  width: 45px; height: 45px; background: #f3f4f6;
+  display: flex; align-items: center; justify-content: center; border-radius: 8px;
+  mat-icon { color: #8b5cf6; }
+}
+.mat-mdc-chip {
+  &.pending { background: #fef3c7; color: #92400e; }
+  &.approved { background: #d1fae5; color: #065f46; }
+  &.rejected { background: #fee2e2; color: #991b1b; }
+}
+.btn-outline-secondary.active { background: #3b82f6; color: white; border-color: #3b82f6; }

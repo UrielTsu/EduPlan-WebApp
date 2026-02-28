@@ -6,6 +6,8 @@ import { NavAlumno } from './partials/nav-alumno/nav-alumno';
 import { HorarioA } from './screens/alumnos-screens/horario-a-screen/horario-a-screen';
 import { CursosA } from './screens/alumnos-screens/cursos-a/cursos-a';
 import { AdminDashboard } from './screens/admin-screens/dashboard-admin/dashboard-admin';
+import { AulaComponent } from './screens/admin-screens/aula-admin/aula-admin';
+import { ChangeRequestsComponent } from './screens/admin-screens/solicitudes-admin/solicitudes-admin';
 
 export const routes: Routes = [
   { path: '', component: HomeScreen, pathMatch: 'full' },
@@ -30,6 +32,14 @@ export const routes: Routes = [
       {
         path: 'admin',
         component: AdminDashboard
+      },
+      {
+        path: 'admin/aulas',
+        component: AulaComponent
+      },
+      {
+        path: 'admin/solicitudes',
+        component: ChangeRequestsComponent
       }
     ]
   }

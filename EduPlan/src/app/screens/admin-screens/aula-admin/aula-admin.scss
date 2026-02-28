@@ -1,0 +1,25 @@
+.container { max-width: 1200px; }
+
+.icon-box {
+  width: 48px; height: 48px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  &.bg-primary-light { background: #e0f2fe; }
+  &.bg-success-light { background: #dcfce7; }
+  &.bg-purple-light { background: #f3e8ff; }
+  mat-icon { font-size: 24px; }
+}
+
+.search-input-wrapper {
+  position: relative;
+  input { padding-left: 40px; border-radius: 8px; border: 1px solid #ced4da; }
+  mat-icon { position: absolute; left: 10px; top: 10px; color: #6c757d; }
+}
+
+.table {
+  thead th { color: #6c757d; font-size: 0.75rem; text-transform: uppercase; border-bottom: 2px solid #f8f9fa; }
+  tbody td { padding: 1rem 1.5rem; }
+}
+
+.small-icon { font-size: 16px; width: 16px; height: 16px; vertical-align: middle; }
+.text-purple { color: #8e44ad; }
+.badge { font-size: 0.75rem; padding: 6px 12px; border-radius: 20px; }
