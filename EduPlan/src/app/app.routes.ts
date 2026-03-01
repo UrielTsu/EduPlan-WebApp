@@ -7,7 +7,8 @@ import { HorarioA } from './screens/alumnos-screens/horario-a-screen/horario-a-s
 import { CursosA } from './screens/alumnos-screens/cursos-a/cursos-a';
 import { AdminDashboard } from './screens/admin-screens/dashboard-admin/dashboard-admin';
 import { AulaComponent } from './screens/admin-screens/aula-admin/aula-admin';
-import { ChangeRequestsComponent } from './screens/admin-screens/solicitudes-admin/solicitudes-admin';
+import { SolicitudesAdminComponent } from './screens/admin-screens/solicitudes-admin/solicitudes-admin';
+import { GestionAdminComponent } from './screens/admin-screens/gestion-admin/gestion-admin';
 
 export const routes: Routes = [
   { path: '', component: HomeScreen, pathMatch: 'full' },
@@ -39,7 +40,11 @@ export const routes: Routes = [
       },
       {
         path: 'admin/solicitudes',
-        component: ChangeRequestsComponent
+        component: SolicitudesAdminComponent
+      },
+      {
+        path: 'admin/gestion',
+        component: GestionAdminComponent
       }
     ]
   }

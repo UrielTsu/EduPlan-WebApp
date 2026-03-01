@@ -1,1 +1,89 @@
-<p>solicitudes-admin works!</p>
+<div class="container py-4">
+  <div class="mb-4">
+    <h1 class="h3 fw-bold">Solicitudes de Cambio</h1>
+    <p class="text-secondary">Gestiona las solicitudes de los docentes</p>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <mat-card class="p-3 border-0 shadow-sm text-center">
+        <div class="h6 text-warning"><mat-icon>schedule</mat-icon> Pendientes</div>
+        <div class="h3 fw-bold">{{ pendingCount() }}</div>
+      </mat-card>
+    </div>
+    <div class="col-md-4">
+      <mat-card class="p-3 border-0 shadow-sm text-center">
+        <div class="h6 text-success"><mat-icon>check_circle</mat-icon> Aprobadas</div>
+        <div class="h3 fw-bold">{{ approvedCount() }}</div>
+      </mat-card>
+    </div>
+    <div class="col-md-4">
+      <mat-card class="p-3 border-0 shadow-sm text-center">
+        <div class="h6 text-danger"><mat-icon>cancel</mat-icon> Rechazadas</div>
+        <div class="h3 fw-bold">{{ rejectedCount() }}</div>
+      </mat-card>
+    </div>
+  </div>
+
+  <mat-card class="p-3 mb-4 border-0 shadow-sm">
+    <div class="row g-2 align-items-center">
+      <div class="col-md">
+        <input [(ngModel)]="searchTerm"
+               class="form-control"
+               placeholder="Buscar docente o tipo...">
+      </div>
+      <div class="col-md-auto">
+        <div class="btn-group">
+          @for (s of statusFilters; track s) {
+            <button class="btn btn-outline-secondary"
+                    [class.active]="filterStatus() === s"
+                    (click)="setFilter(s)">
+              {{ s | titlecase }}
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  </mat-card>
+
+  <div class="row g-3">
+    @for (req of filteredRequests(); track req.id) {
+      <div class="col-12">
+        <mat-card class="p-3 border-0 shadow-sm">
+          <div class="row align-items-center">
+            <div class="col-md-auto">
+              <div class="avatar-icon">
+                <mat-icon>description</mat-icon>
+              </div>
+            </div>
+            <div class="col-md">
+              <div class="fw-bold">{{ req.teacherName }}</div>
+              <small class="text-muted">ID: {{ req.teacherId }} | {{ req.type }}</small>
+              <p class="mb-0 mt-1 small text-secondary">{{ req.reason }}</p>
+            </div>
+            <div class="col-md-auto text-end">
+              <mat-chip-set class="mb-2">
+                <mat-chip [ngClass]="req.status">{{ req.status | titlecase }}</mat-chip>
+              </mat-chip-set>
+
+              @if (req.status === 'pending') {
+                <div class="d-flex gap-2 justify-content-end">
+                  <button mat-mini-fab color="primary" (click)="handleStatus(req.id, 'approved')">
+                    <mat-icon>check</mat-icon>
+                  </button>
+                  <button mat-mini-fab color="warn" (click)="handleStatus(req.id, 'rejected')">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+        </mat-card>
+      </div>
+    } @empty {
+      <div class="col-12 text-center py-5">
+        <p class="text-muted">No se encontraron solicitudes con los filtros aplicados.</p>
+      </div>
+    }
+  </div>
+</div>

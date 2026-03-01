@@ -16,6 +16,9 @@ interface ChangeRequest {
   status: 'pending' | 'approved' | 'rejected';
 }
 
+// Tipo definido para evitar errores de asignación
+type StatusFilter = 'all' | 'pending' | 'approved' | 'rejected';
+
 @Component({
   selector: 'app-change-requests',
   standalone: true,
@@ -23,9 +26,11 @@ interface ChangeRequest {
   templateUrl: 'solicitudes-admin.html',
   styleUrls: ['solicitudes-admin.scss']
 })
-export class ChangeRequestsComponent {
+export class SolicitudesAdminComponent {
+  readonly statusFilters: StatusFilter[] = ['all', 'pending', 'approved', 'rejected'];
+
   searchTerm = signal('');
-  filterStatus = signal<'all' | 'pending' | 'approved' | 'rejected'>('all');
+  filterStatus = signal<StatusFilter>('all');
 
   requests = signal<ChangeRequest[]>([
     { id: '1', teacherName: 'Prof. Carlos Ruiz', teacherId: 'DOC001', type: 'Cambio de Horario', reason: 'Conflicto de horario', date: '2025-02-15', status: 'pending' },
@@ -34,6 +39,12 @@ export class ChangeRequestsComponent {
     { id: '6', teacherName: 'Dr. José Hernández', teacherId: 'DOC006', type: 'Cambio de Horario', reason: 'Tutorías', date: '2025-02-13', status: 'rejected' },
   ]);
 
+  // Contadores calculados reactivamente
+  pendingCount = computed(() => this.requests().filter(r => r.status === 'pending').length);
+  approvedCount = computed(() => this.requests().filter(r => r.status === 'approved').length);
+  rejectedCount = computed(() => this.requests().filter(r => r.status === 'rejected').length);
+
+  // Lista filtrada
   filteredRequests = computed(() => {
     return this.requests().filter(r => {
       const matchesSearch = r.teacherName.toLowerCase().includes(this.searchTerm().toLowerCase()) ||
@@ -47,5 +58,10 @@ export class ChangeRequestsComponent {
     this.requests.update(reqs => reqs.map(r =>
       r.id === id ? { ...r, status: newStatus } : r
     ));
+  }
+
+  // Método de ayuda para los botones
+  setFilter(status: string) {
+    this.filterStatus.set(status as StatusFilter);
   }
 }

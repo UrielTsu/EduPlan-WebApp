@@ -1,1 +1,43 @@
-<p>gestion-admin works!</p>
+<div class="container py-4">
+  <h1 class="h3 fw-bold mb-4">Gestión General</h1>
+
+  <mat-tab-group mat-stretch-tabs="false" animationDuration="0ms">
+
+    <mat-tab label="Periodos">
+      <div class="p-3">
+        <div class="d-flex justify-content-end mb-3">
+          <button mat-flat-button color="primary"><mat-icon>add</mat-icon> Nuevo Periodo</button>
+        </div>
+        <table class="table align-middle shadow-sm bg-white rounded-3">
+          <thead class="table-light">
+            <tr>
+              <th>Nombre</th><th>Fechas</th><th>Estado</th><th class="text-end">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (p of periods(); track p.id) {
+              <tr>
+                <td>{{ p.name }}</td>
+                <td>{{ p.dates }}</td>
+                <td><span class="badge" [class.bg-success]="p.status === 'Activo'">{{ p.status }}</span></td>
+                <td class="text-end">
+                  <button mat-icon-button><mat-icon>edit</mat-icon></button>
+                  <button mat-icon-button color="warn" (click)="deleteItem(p.id, 'period')"><mat-icon>delete</mat-icon></button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Materias">
+      <div class="p-3">
+        <div class="d-flex justify-content-end mb-3">
+          <button mat-flat-button color="primary"><mat-icon>add</mat-icon> Nueva Materia</button>
+        </div>
+        </div>
+    </mat-tab>
+
+    </mat-tab-group>
+</div>
