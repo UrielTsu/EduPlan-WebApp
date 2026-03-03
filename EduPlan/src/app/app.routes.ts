@@ -36,7 +36,7 @@ export const routes: Routes = [
         component: AdminDashboard
       }
       ,{
-        path: 'cursos-d',
+        path: 'cursos-d/:id',
         component: CursosD
       },
         {
