@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, effect, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -135,6 +135,15 @@ interface StudentFormModel {
   styleUrls: ['./gestion-admin.scss']
 })
 export class GestionAdminComponent {
+  private readonly storageKeys = {
+    periods: 'edplan.gestion.periodos',
+    subjects: 'edplan.gestion.materias',
+    groups: 'edplan.gestion.grupos',
+    classrooms: 'edplan.gestion.aulas',
+    teachers: 'edplan.gestion.docentes',
+    students: 'edplan.gestion.estudiantes'
+  };
+
   readonly tabs: Array<{ key: GestionTabKey; label: string; icon: string }> = [
     { key: 'periodos', label: 'Periodos', icon: 'calendar_today' },
     { key: 'materias', label: 'Materias', icon: 'menu_book' },
@@ -339,6 +348,11 @@ export class GestionAdminComponent {
     emergencyContactPhone: '',
     isActive: true
   };
+
+  constructor() {
+    this.loadAllFromStorage();
+    this.registerPersistenceEffects();
+  }
 
   setActiveTab(tab: GestionTabKey): void {
     this.activeTab.set(tab);
@@ -1012,5 +1026,54 @@ export class GestionAdminComponent {
     };
 
     return mapping[subject] ?? 'Docente por asignar';
+  }
+
+  private loadAllFromStorage(): void {
+    this.periods.set(this.readFromStorage<PeriodItem>(this.storageKeys.periods, this.periods()));
+    this.subjects.set(this.readFromStorage<SubjectItem>(this.storageKeys.subjects, this.subjects()));
+    this.groups.set(this.readFromStorage<GroupItem>(this.storageKeys.groups, this.groups()));
+    this.classrooms.set(this.readFromStorage<ClassroomItem>(this.storageKeys.classrooms, this.classrooms()));
+    this.teachers.set(this.readFromStorage<TeacherItem>(this.storageKeys.teachers, this.teachers()));
+    this.students.set(this.readFromStorage<StudentItem>(this.storageKeys.students, this.students()));
+  }
+
+  private registerPersistenceEffects(): void {
+    effect(() => this.writeToStorage(this.storageKeys.periods, this.periods()));
+    effect(() => this.writeToStorage(this.storageKeys.subjects, this.subjects()));
+    effect(() => this.writeToStorage(this.storageKeys.groups, this.groups()));
+    effect(() => this.writeToStorage(this.storageKeys.classrooms, this.classrooms()));
+    effect(() => this.writeToStorage(this.storageKeys.teachers, this.teachers()));
+    effect(() => this.writeToStorage(this.storageKeys.students, this.students()));
+  }
+
+  private readFromStorage<T>(key: string, fallback: T[]): T[] {
+    if (!this.canUseLocalStorage()) {
+      return fallback;
+    }
+
+    try {
+      const rawValue = localStorage.getItem(key);
+
+      if (!rawValue) {
+        return fallback;
+      }
+
+      const parsedValue = JSON.parse(rawValue);
+      return Array.isArray(parsedValue) ? parsedValue as T[] : fallback;
+    } catch {
+      return fallback;
+    }
+  }
+
+  private writeToStorage<T>(key: string, value: T[]): void {
+    if (!this.canUseLocalStorage()) {
+      return;
+    }
+
+    localStorage.setItem(key, JSON.stringify(value));
+  }
+
+  private canUseLocalStorage(): boolean {
+    return typeof window !== 'undefined' && !!window.localStorage;
   }
 }
