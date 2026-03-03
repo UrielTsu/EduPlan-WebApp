@@ -6,12 +6,12 @@
         <button class="mobile-menu-trigger">
           <mat-icon>menu</mat-icon>
         </button>
-        <a [routerLink]="userRole === 'admin' ? '/admin' : '/dashboard-alumno'" class="logo-title">
+        <a [routerLink]="userRole === 'admin' ? '/admin' : (userRole === 'maestro' ? '/dashboard-maestros' : '/dashboard-alumno')" class="logo-title">
           <h1>EduPlan</h1>
         </a>
       </div>
 
-      <nav *ngIf="userRole !== 'admin'" class="desktop-nav">
+      <nav *ngIf="userRole === 'estudiante'" class="desktop-nav">
         <a routerLink="/dashboard-alumno"
            class="nav-link"
            [class.active-student]="isActive('/dashboard-alumno')">
@@ -31,6 +31,34 @@
            class="nav-link"
            [class.active-student]="isActive('/tareas')">
           <mat-icon>check_box</mat-icon> Tareas
+        </a>
+        <a routerLink="/perfil"
+           class="nav-link"
+           [class.active-student]="isActive('/perfil')">
+          <mat-icon>person</mat-icon> Perfil
+        </a>
+      </nav>
+
+      <nav *ngIf="userRole === 'maestro'" class="desktop-nav">
+        <a routerLink="/dashboard-maestros"
+           class="nav-link"
+           [class.active-student]="isActive('/dashboard-maestros')">
+          <mat-icon>home</mat-icon> Inicio
+        </a>
+        <a routerLink="/horario-a"
+           class="nav-link"
+           [class.active-student]="isActive('/horario-a')">
+          <mat-icon>calendar_today</mat-icon> Horario
+        </a>
+        <a routerLink="/profesor/solicitudes"
+           class="nav-link"
+           [class.active-student]="isActive('/profesor/solicitudes')">
+          <mat-icon>description</mat-icon> Solicitudes
+        </a>
+        <a routerLink="/cursos-a"
+           class="nav-link"
+           [class.active-student]="isActive('/cursos-a')">
+          <mat-icon>book</mat-icon> Cursos
         </a>
         <a routerLink="/perfil"
            class="nav-link"
@@ -90,7 +118,7 @@
     <router-outlet></router-outlet>
   </main>
 
-  <nav *ngIf="userRole !== 'admin'" class="mobile-bottom-nav">
+  <nav *ngIf="userRole === 'estudiante'" class="mobile-bottom-nav">
     <div class="bottom-nav-grid student-grid">
       <a routerLink="/dashboard-alumno" class="mobile-link"
          [class.active-mobile-student]="isActive('/dashboard-alumno')"
@@ -150,6 +178,41 @@
          [class.text-gray]="!isActive('/admin/gestion')">
         <mat-icon>settings</mat-icon>
         <span>Gestión</span>
+      </a>
+    </div>
+  </nav>
+
+  <nav *ngIf="userRole === 'maestro'" class="mobile-bottom-nav">
+    <div class="bottom-nav-grid teacher-grid">
+      <a routerLink="/dashboard-maestros" class="mobile-link"
+         [class.active-mobile-student]="isActive('/dashboard-maestros')"
+         [class.text-gray]="!isActive('/dashboard-maestros')">
+        <mat-icon>home</mat-icon>
+        <span>Inicio</span>
+      </a>
+      <a routerLink="/horario-a" class="mobile-link"
+         [class.active-mobile-student]="isActive('/horario-a')"
+         [class.text-gray]="!isActive('/horario-a')">
+        <mat-icon>calendar_today</mat-icon>
+        <span>Horario</span>
+      </a>
+      <a routerLink="/profesor/solicitudes" class="mobile-link"
+         [class.active-mobile-student]="isActive('/profesor/solicitudes')"
+         [class.text-gray]="!isActive('/profesor/solicitudes')">
+        <mat-icon>description</mat-icon>
+        <span>Solicitudes</span>
+      </a>
+      <a routerLink="/cursos-a" class="mobile-link"
+         [class.active-mobile-student]="isActive('/cursos-a')"
+         [class.text-gray]="!isActive('/cursos-a')">
+        <mat-icon>book</mat-icon>
+        <span>Cursos</span>
+      </a>
+      <a routerLink="/perfil" class="mobile-link"
+         [class.active-mobile-student]="isActive('/perfil')"
+         [class.text-gray]="!isActive('/perfil')">
+        <mat-icon>person</mat-icon>
+        <span>Perfil</span>
       </a>
     </div>
   </nav>

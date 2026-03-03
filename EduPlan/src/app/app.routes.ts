@@ -10,6 +10,7 @@ import { CursosD } from './screens/alumnos-screens/cursos-d/cursos-d';
 import { TareasA } from './screens/alumnos-screens/tareas-a/tareas-a';
 import { TareasD } from './screens/alumnos-screens/tareas-d/tareas-d';
 import { PerfilA } from './screens/alumnos-screens/perfil-a/perfil-a';
+import { MaestroHome } from './screens/maestros-screens/dashboard-maestros/dashboard-maestros';
 
 export const routes: Routes = [
   { path: '', component: HomeScreen, pathMatch: 'full' },
@@ -50,6 +51,10 @@ export const routes: Routes = [
       {
         path : 'perfil',
         component : PerfilA
+      },
+      {
+        path : 'dashboard-maestros',
+        component : MaestroHome
       }
 
     ]
