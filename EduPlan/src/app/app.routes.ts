@@ -10,6 +10,9 @@ import { CursosD } from './screens/alumnos-screens/cursos-d/cursos-d';
 import { TareasA } from './screens/alumnos-screens/tareas-a/tareas-a';
 import { TareasD } from './screens/alumnos-screens/tareas-d/tareas-d';
 import { PerfilA } from './screens/alumnos-screens/perfil-a/perfil-a';
+import { AulaComponent } from './screens/admin-screens/aula-admin/aula-admin';
+import { SolicitudesAdminComponent } from './screens/admin-screens/solicitudes-admin/solicitudes-admin';
+import { GestionAdminComponent } from './screens/admin-screens/gestion-admin/gestion-admin';
 import { MaestroHome } from './screens/maestros-screens/dashboard-maestros/dashboard-maestros';
 
 export const routes: Routes = [
@@ -35,6 +38,18 @@ export const routes: Routes = [
       {
         path: 'admin',
         component: AdminDashboard
+      },
+      {
+        path: 'admin/aulas',
+        component: AulaComponent
+      },
+      {
+        path: 'admin/solicitudes',
+        component: SolicitudesAdminComponent
+      },
+      {
+        path: 'admin/gestion',
+        component: GestionAdminComponent
       }
       ,{
         path: 'cursos-d/:id',
@@ -53,7 +68,7 @@ export const routes: Routes = [
         component : PerfilA
       },
       {
-        path : 'dashboard-maestros',
+        path : 'maestrohome',
         component : MaestroHome
       }
 
