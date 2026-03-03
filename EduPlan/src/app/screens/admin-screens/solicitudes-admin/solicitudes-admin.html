@@ -1,0 +1,139 @@
+<div class="container py-4 solicitudes-admin-page">
+  <a class="back-link" routerLink="/admin">
+    <mat-icon>arrow_back</mat-icon>
+    <span>Volver al panel</span>
+  </a>
+
+  <div class="header-block">
+    <h1>Solicitudes de Cambio</h1>
+    <p>Gestiona las solicitudes de los docentes</p>
+  </div>
+
+  <div class="row g-4 mb-4">
+    <div class="col-12 col-md-4">
+      <mat-card class="stat-card pending">
+        <mat-card-content>
+          <div class="stat-icon">
+            <mat-icon>schedule</mat-icon>
+          </div>
+          <div class="stat-info">
+            <p class="label">Pendientes</p>
+            <p class="value">{{ pendingCount() }}</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="col-12 col-md-4">
+      <mat-card class="stat-card approved">
+        <mat-card-content>
+          <div class="stat-icon">
+            <mat-icon>check_circle</mat-icon>
+          </div>
+          <div class="stat-info">
+            <p class="label">Aprobadas</p>
+            <p class="value">{{ approvedCount() }}</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="col-12 col-md-4">
+      <mat-card class="stat-card rejected">
+        <mat-card-content>
+          <div class="stat-icon">
+            <mat-icon>cancel</mat-icon>
+          </div>
+          <div class="stat-info">
+            <p class="label">Rechazadas</p>
+            <p class="value">{{ rejectedCount() }}</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <mat-card class="toolbar-card mb-4">
+    <div class="toolbar-content">
+      <div class="search-wrapper">
+        <mat-icon>search</mat-icon>
+        <input [ngModel]="searchTerm()"
+               (ngModelChange)="searchTerm.set($event)"
+               placeholder="Buscar por docente o tipo...">
+      </div>
+
+      <div class="status-filters">
+        @for (s of statusFilters; track s) {
+          <button type="button"
+                  class="filter-btn"
+                  [class.active]="filterStatus() === s"
+                  (click)="setFilter(s)">
+            {{ statusLabel(s) }}
+          </button>
+        }
+      </div>
+    </div>
+  </mat-card>
+
+  <div class="request-list">
+    @for (req of filteredRequests(); track req.id) {
+      <mat-card class="request-card">
+        <mat-card-content>
+          <div class="request-layout">
+            <div class="request-main">
+              <div class="teacher-block">
+                <div class="avatar-icon">
+                  <mat-icon>description</mat-icon>
+                </div>
+                <div class="teacher-headline">
+                  <h3>{{ req.teacherName }}</h3>
+                  <p class="teacher-id">ID: {{ req.teacherId }}</p>
+                </div>
+              </div>
+
+              <div class="request-meta">
+                <div>
+                  <p class="meta-label">Tipo de Solicitud</p>
+                  <p class="meta-value">{{ req.type }}</p>
+                </div>
+
+                <div>
+                  <p class="meta-label">Fecha</p>
+                  <p class="meta-value">{{ formatDate(req.date) }}</p>
+                </div>
+              </div>
+
+              <div class="request-reason">
+                <p class="meta-label">Motivo</p>
+                <p class="meta-value">{{ req.reason }}</p>
+              </div>
+            </div>
+
+            <div class="request-side">
+              <span class="status-pill" [ngClass]="req.status">{{ statusLabel(req.status) }}</span>
+
+              @if (req.status === 'pending') {
+                <div class="request-actions">
+                  <button type="button" class="action-btn approve" (click)="handleStatus(req.id, 'approved')">
+                    <mat-icon>check_circle</mat-icon>
+                    Aprobar
+                  </button>
+                  <button type="button" class="action-btn reject" (click)="handleStatus(req.id, 'rejected')">
+                    <mat-icon>cancel</mat-icon>
+                    Rechazar
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    } @empty {
+      <mat-card class="request-card empty-state">
+        <mat-card-content>
+          <p>No se encontraron solicitudes con los filtros aplicados.</p>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+</div>

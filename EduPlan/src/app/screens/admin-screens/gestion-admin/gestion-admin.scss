@@ -1,0 +1,305 @@
+.gestion-page {
+  color: #0f172a;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+  text-decoration: none;
+  color: #334155;
+  font-size: 1rem;
+  font-weight: 500;
+
+  mat-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+  }
+}
+
+.header-block {
+  margin-bottom: 22px;
+
+  h1 {
+    margin: 0;
+    color: #0b2347;
+    font-size: 2.3rem;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 6px 0 0;
+    color: #334155;
+    font-size: 1rem;
+  }
+}
+
+.tabs-shell {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  border: 1px solid #d9dde5;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #ffffff;
+  margin-bottom: 24px;
+}
+
+.tab-item {
+  border: none;
+  background: transparent;
+  min-height: 58px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #334155;
+  font-size: 1rem;
+  font-weight: 600;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  &.active.periodos { background: #dbeafe; color: #2563eb; box-shadow: inset 0 -3px 0 #2563eb; }
+  &.active.materias { background: #ede9fe; color: #7c3aed; box-shadow: inset 0 -3px 0 #7c3aed; }
+  &.active.grupos { background: #dcfce7; color: #16a34a; box-shadow: inset 0 -3px 0 #16a34a; }
+  &.active.aulas { background: #ffedd5; color: #f97316; box-shadow: inset 0 -3px 0 #f97316; }
+  &.active.docentes { background: #fee2e2; color: #ef4444; box-shadow: inset 0 -3px 0 #ef4444; }
+  &.active.estudiantes { background: #e0e7ff; color: #4f46e5; box-shadow: inset 0 -3px 0 #4f46e5; }
+}
+
+.content-block {
+  margin-top: 8px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+
+  h2 {
+    margin: 0;
+    color: #0b2347;
+    font-size: 1.9rem;
+    font-weight: 700;
+  }
+}
+
+.add-btn {
+  border: none;
+  border-radius: 12px;
+  min-height: 46px;
+  padding: 0 18px;
+  background: #2563eb;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.gestion-page.theme-periodos .add-btn { background: #2563eb; }
+.gestion-page.theme-materias .add-btn { background: #7c3aed; }
+.gestion-page.theme-grupos .add-btn { background: #16a34a; }
+.gestion-page.theme-aulas .add-btn { background: #f97316; }
+.gestion-page.theme-docentes .add-btn { background: #ef4444; }
+.gestion-page.theme-estudiantes .add-btn { background: #4f46e5; }
+
+.table-shell {
+  border: 1px solid #d9dde5;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+}
+
+.management-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  thead {
+    background: #f8fafc;
+  }
+
+  th,
+  td {
+    padding: 16px 24px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 1rem;
+  }
+
+  th {
+    color: #64748b;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    font-size: 0.9rem;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .name-col {
+    color: #0b2347;
+    font-weight: 700;
+  }
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  border-radius: 999px;
+  padding: 0 14px;
+  font-size: 0.85rem;
+  font-weight: 700;
+
+  &.active {
+    background: #d1fae5;
+    color: #15803d;
+  }
+
+  &.finished {
+    background: #e5e7eb;
+    color: #334155;
+  }
+
+  &.available {
+    background: #d1fae5;
+    color: #15803d;
+  }
+
+  &.in-use {
+    background: #fef3c7;
+    color: #b45309;
+  }
+}
+
+.actions-col {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon-btn {
+  border: none;
+  background: transparent;
+  padding: 0;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  mat-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+  }
+
+  &.edit {
+    color: #2563eb;
+  }
+
+  &.delete {
+    color: #ef4444;
+  }
+}
+
+.placeholder {
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 22px;
+
+  p {
+    margin: 0;
+    color: #64748b;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .header-block {
+    h1 {
+      font-size: 2rem;
+    }
+
+    p {
+      font-size: 0.95rem;
+    }
+  }
+
+  .tabs-shell {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .section-header h2 {
+    font-size: 1.6rem;
+  }
+
+  .management-table {
+    th,
+    td {
+      padding: 12px 14px;
+      font-size: 0.92rem;
+    }
+  }
+
+  .tab-item {
+    font-size: 0.92rem;
+  }
+
+  .add-btn {
+    font-size: 0.92rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .back-link {
+    font-size: 1rem;
+  }
+
+  .header-block {
+    h1 {
+      font-size: 1.7rem;
+    }
+
+    p {
+      font-size: 0.9rem;
+    }
+  }
+
+  .tabs-shell {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .tab-item {
+    min-height: 52px;
+    font-size: 0.95rem;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .add-btn {
+    justify-content: center;
+  }
+}

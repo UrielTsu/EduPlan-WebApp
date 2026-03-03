@@ -6,10 +6,6 @@ import { NavAlumno } from './partials/nav-alumno/nav-alumno';
 import { HorarioA } from './screens/alumnos-screens/horario-a-screen/horario-a-screen';
 import { CursosA } from './screens/alumnos-screens/cursos-a/cursos-a';
 import { AdminDashboard } from './screens/admin-screens/dashboard-admin/dashboard-admin';
-import { CursosD } from './screens/alumnos-screens/cursos-d/cursos-d';
-import { TareasA } from './screens/alumnos-screens/tareas-a/tareas-a';
-import { TareasD } from './screens/alumnos-screens/tareas-d/tareas-d';
-import { PerfilA } from './screens/alumnos-screens/perfil-a/perfil-a';
 
 export const routes: Routes = [
   { path: '', component: HomeScreen, pathMatch: 'full' },
@@ -34,6 +30,18 @@ export const routes: Routes = [
       {
         path: 'admin',
         component: AdminDashboard
+      },
+      {
+        path: 'admin/aulas',
+        component: AulaComponent
+      },
+      {
+        path: 'admin/solicitudes',
+        component: SolicitudesAdminComponent
+      },
+      {
+        path: 'admin/gestion',
+        component: GestionAdminComponent
       }
       ,{
         path: 'cursos-d/:id',

@@ -1,0 +1,439 @@
+.solicitudes-admin-page {
+  color: #0f172a;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+  text-decoration: none;
+  color: #334155;
+  font-size: 1.1rem;
+  font-weight: 500;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.header-block {
+  margin-bottom: 26px;
+
+  h1 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #0b2347;
+  }
+
+  p {
+    margin: 8px 0 0;
+    color: #334155;
+    font-size: 1.1rem;
+  }
+}
+
+.stat-card {
+  border: 1px solid #d9dde5;
+  border-radius: 18px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+
+  mat-card-content {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 24px;
+  }
+
+  .stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    mat-icon {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  .stat-info {
+    .label {
+      margin: 0;
+      font-size: 0.95rem;
+      color: #334155;
+    }
+
+    .value {
+      margin: 2px 0 0;
+      font-size: 1.6rem;
+      line-height: 1;
+      font-weight: 700;
+      color: #0b2347;
+    }
+  }
+
+  &.pending .stat-icon {
+    background: #fdf1bf;
+
+    mat-icon {
+      color: #d97706;
+    }
+  }
+
+  &.approved .stat-icon {
+    background: #ccead8;
+
+    mat-icon {
+      color: #16a34a;
+    }
+  }
+
+  &.rejected .stat-icon {
+    background: #f3d1d6;
+
+    mat-icon {
+      color: #ef4444;
+    }
+  }
+}
+
+.toolbar-card {
+  border: 1px solid #d9dde5;
+  border-radius: 18px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+
+  .toolbar-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px;
+
+    @media (max-width: 992px) {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+}
+
+.search-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 0 14px;
+  min-height: 56px;
+
+  mat-icon {
+    color: #94a3b8;
+  }
+
+  input {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 0.92rem;
+    color: #334155;
+    background: transparent;
+  }
+}
+
+.status-filters {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  border: none;
+  border-radius: 12px;
+  min-height: 48px;
+  padding: 0 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: #e5e7eb;
+  color: #1e293b;
+
+  &.active {
+    background: #2563eb;
+    color: #ffffff;
+  }
+}
+
+.request-list {
+  display: grid;
+  gap: 12px;
+}
+
+.request-card {
+  border: 1px solid #d9dde5;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+
+  mat-card-content {
+    display: block;
+    padding: 14px 18px;
+  }
+}
+
+
+.request-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 200px;
+  gap: 14px;
+  align-items: start;
+
+  @media (max-width: 992px) {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}
+
+.request-main {
+  display: grid;
+  gap: 8px;
+}
+
+.request-side {
+  display: grid;
+  gap: 10px;
+  justify-items: end;
+
+  @media (max-width: 768px) {
+    justify-items: start;
+  }
+}
+
+.teacher-block {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  .teacher-headline {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+
+    h3 {
+      margin: 0;
+      font-size: 1.35rem;
+      color: #0f172a;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .teacher-id {
+      margin: 0;
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+  }
+}
+
+.avatar-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #ece4ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  mat-icon {
+    color: #7c3aed;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  min-height: 36px;
+  min-width: 128px;
+  padding: 0 14px;
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  &.pending {
+    background: #f8ecb2;
+    color: #b45309;
+  }
+
+  &.approved {
+    background: #dcfce7;
+    color: #15803d;
+  }
+
+  &.rejected {
+    background: #fee2e2;
+    color: #b91c1c;
+  }
+}
+
+.request-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.meta-label {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #64748b;
+}
+
+.meta-value {
+  margin: 2px 0 0;
+  font-size: 1rem;
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.request-reason .meta-value {
+  font-weight: 500;
+}
+
+.request-actions {
+  display: grid;
+  gap: 8px;
+  max-width: 180px;
+  width: 100%;
+
+  @media (max-width: 992px) {
+    max-width: 260px;
+  }
+}
+
+.action-btn {
+  border: none;
+  border-radius: 10px;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 700;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  &.approve {
+    background: #0ea83b;
+  }
+
+  &.reject {
+    background: #f40012;
+  }
+}
+
+.empty-state {
+  mat-card-content {
+    text-align: center;
+    padding: 32px;
+    color: #64748b;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 992px) {
+  .back-link {
+    font-size: 1rem;
+  }
+
+  .header-block {
+    h1 {
+      font-size: 1.8rem;
+    }
+
+    p {
+      font-size: 1rem;
+    }
+  }
+
+  .teacher-block .teacher-headline {
+    h3 {
+      font-size: 1.25rem;
+    }
+
+    .teacher-id {
+      font-size: 0.88rem;
+    }
+  }
+
+  .meta-value {
+    font-size: 0.95rem;
+  }
+
+  .action-btn {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .header-block {
+    h1 {
+      font-size: 1.55rem;
+    }
+
+    p {
+      font-size: 0.92rem;
+    }
+  }
+
+  .stat-card .stat-info {
+    .label {
+      font-size: 0.9rem;
+    }
+
+    .value {
+      font-size: 1.5rem;
+    }
+  }
+
+  .teacher-block {
+    .teacher-headline {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+
+      h3 {
+        font-size: 1.08rem;
+      }
+
+      .teacher-id {
+        font-size: 0.86rem;
+      }
+    }
+  }
+
+  .meta-value {
+    font-size: 0.92rem;
+  }
+
+  .action-btn {
+    font-size: 0.82rem;
+  }
+}
