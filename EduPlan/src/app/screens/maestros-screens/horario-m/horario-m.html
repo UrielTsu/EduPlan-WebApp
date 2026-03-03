@@ -1,0 +1,89 @@
+<div class="container-fluid py-4 schedule-wrapper">
+  <mat-card class="mb-4 shadow-sm border-0 header-card">
+    <mat-card-content class="p-3">
+      <h2 class="h4 mb-0 fw-bold">Mi Horario de Clases</h2>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="d-none d-lg-block">
+    <mat-card class="shadow-sm border-0 overflow-hidden">
+      <div class="table-responsive">
+        <div class="schedule-grid">
+          <div class="row g-0 border-bottom bg-light">
+            <div class="col-time header-cell border-end d-flex align-items-center justify-content-center">
+              <span class="fw-bold text-muted small">Hora</span>
+            </div>
+            @for (day of weekSchedule; track day.day) {
+              <div class="col header-cell border-end p-2 text-center">
+                <div class="day-name fw-bold">{{ day.day | uppercase }}</div>
+                <div class="day-date text-muted small">{{ day.date }}</div>
+              </div>
+            }
+          </div>
+
+          <div class="d-flex position-relative">
+            <div class="col-time border-end">
+              @for (time of timeSlots; track time) {
+                <div class="time-label border-bottom text-center small text-muted">
+                  {{ time }}
+                </div>
+              }
+            </div>
+
+            @for (day of weekSchedule; track day.day) {
+              <div class="col position-relative border-end day-column">
+                @for (time of timeSlots; track time) {
+                  <div class="grid-line border-bottom"></div>
+                }
+
+                @for (classItem of day.classes; track classItem.id) {
+                  <div class="class-positioner" [ngStyle]="getClassPosition(classItem.startTime, classItem.endTime)">
+                    <div class="class-card shadow-sm" [ngClass]="classItem.color">
+                      <div class="class-title">{{ classItem.subject }}</div>
+                      <div class="class-meta">
+                        <div class="meta-item">
+                          <mat-icon>groups</mat-icon>
+                          <span>{{ classItem.group }}</span>
+                        </div>
+                        <div class="meta-item">
+                          <mat-icon>place</mat-icon>
+                          <span>{{ classItem.room }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+
+  <div class="d-lg-none">
+    @for (day of weekSchedule; track day.day) {
+      <div class="mb-4">
+        <h3 class="h6 text-muted text-uppercase mb-2 fw-bold">{{ day.day }} · {{ day.date }}</h3>
+        @for (classItem of day.classes; track classItem.id) {
+          <mat-card class="mb-2 border-0 shadow-sm mobile-card" [ngClass]="'border-left-' + classItem.color">
+            <mat-card-content class="p-3">
+              <div class="row align-items-center">
+                <div class="col-8">
+                  <h4 class="h6 mb-1 fw-bold">{{ classItem.subject }}</h4>
+                  <div class="small text-muted d-flex align-items-center gap-1">
+                    <mat-icon class="icon-sm">groups</mat-icon> Grupo: {{ classItem.group }}
+                  </div>
+                </div>
+                <div class="col-4 text-end">
+                  <div class="time-badge">{{ classItem.startTime }}</div>
+                  <div class="small text-muted mt-1">{{ classItem.room }}</div>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        }
+      </div>
+    }
+  </div>
+</div>
