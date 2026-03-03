@@ -17,6 +17,7 @@ import { MaestroHome } from './screens/maestros-screens/dashboard-maestros/dashb
 import { TeacherScheduleComponent } from './screens/maestros-screens/horario-m/horario-m';
 import { SolicitudesM } from './screens/maestros-screens/solicitudes-m/solicitudes-m';
 import { CursosM } from './screens/maestros-screens/cursos-m/cursos-m';
+import { PerfilM } from './screens/maestros-screens/perfil-m/perfil-m';
 
 export const routes: Routes = [
   { path: '', component: HomeScreen, pathMatch: 'full' },
@@ -85,6 +86,10 @@ export const routes: Routes = [
       {
         path : 'cursos-m',
         component : CursosM
+      },
+      {
+        path : 'perfil-m',
+        component : PerfilM
       }
 
     ]
