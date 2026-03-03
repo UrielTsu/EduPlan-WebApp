@@ -164,6 +164,7 @@ $transition: all 0.2s ease-in-out;
     // Se ajusta según el número de items
     &.student-grid { grid-template-columns: repeat(5, 1fr); }
     &.admin-grid { grid-template-columns: repeat(4, 1fr); }
+    &.teacher-grid { grid-template-columns: repeat(5, 1fr); }
 
     padding: 0.5rem;
   }
