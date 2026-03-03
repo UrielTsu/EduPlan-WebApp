@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
+import { RouterLink } from '@angular/router';
 
 interface ChangeRequest {
   id: string;
@@ -22,7 +23,7 @@ type StatusFilter = 'all' | 'pending' | 'approved' | 'rejected';
 @Component({
   selector: 'app-change-requests',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, MatCardModule, MatButtonModule, MatChipsModule],
+  imports: [CommonModule, FormsModule, MatIconModule, MatCardModule, MatButtonModule, MatChipsModule, RouterLink],
   templateUrl: 'solicitudes-admin.html',
   styleUrls: ['solicitudes-admin.scss']
 })
@@ -63,5 +64,26 @@ export class SolicitudesAdminComponent {
   // Método de ayuda para los botones
   setFilter(status: string) {
     this.filterStatus.set(status as StatusFilter);
+  }
+
+  statusLabel(status: StatusFilter | ChangeRequest['status']): string {
+    const labels: Record<StatusFilter, string> = {
+      all: 'Todas',
+      pending: 'Pendientes',
+      approved: 'Aprobadas',
+      rejected: 'Rechazadas'
+    };
+
+    return labels[status];
+  }
+
+  formatDate(isoDate: string): string {
+    const date = new Date(`${isoDate}T00:00:00`);
+
+    return new Intl.DateTimeFormat('es-MX', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    }).format(date);
   }
 }

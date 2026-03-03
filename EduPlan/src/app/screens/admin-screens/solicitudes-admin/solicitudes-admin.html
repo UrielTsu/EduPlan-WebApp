@@ -1,89 +1,139 @@
-<div class="container py-4">
-  <div class="mb-4">
-    <h1 class="h3 fw-bold">Solicitudes de Cambio</h1>
-    <p class="text-secondary">Gestiona las solicitudes de los docentes</p>
+<div class="container py-4 solicitudes-admin-page">
+  <a class="back-link" routerLink="/admin">
+    <mat-icon>arrow_back</mat-icon>
+    <span>Volver al panel</span>
+  </a>
+
+  <div class="header-block">
+    <h1>Solicitudes de Cambio</h1>
+    <p>Gestiona las solicitudes de los docentes</p>
   </div>
 
-  <div class="row g-3 mb-4">
-    <div class="col-md-4">
-      <mat-card class="p-3 border-0 shadow-sm text-center">
-        <div class="h6 text-warning"><mat-icon>schedule</mat-icon> Pendientes</div>
-        <div class="h3 fw-bold">{{ pendingCount() }}</div>
+  <div class="row g-4 mb-4">
+    <div class="col-12 col-md-4">
+      <mat-card class="stat-card pending">
+        <mat-card-content>
+          <div class="stat-icon">
+            <mat-icon>schedule</mat-icon>
+          </div>
+          <div class="stat-info">
+            <p class="label">Pendientes</p>
+            <p class="value">{{ pendingCount() }}</p>
+          </div>
+        </mat-card-content>
       </mat-card>
     </div>
-    <div class="col-md-4">
-      <mat-card class="p-3 border-0 shadow-sm text-center">
-        <div class="h6 text-success"><mat-icon>check_circle</mat-icon> Aprobadas</div>
-        <div class="h3 fw-bold">{{ approvedCount() }}</div>
+
+    <div class="col-12 col-md-4">
+      <mat-card class="stat-card approved">
+        <mat-card-content>
+          <div class="stat-icon">
+            <mat-icon>check_circle</mat-icon>
+          </div>
+          <div class="stat-info">
+            <p class="label">Aprobadas</p>
+            <p class="value">{{ approvedCount() }}</p>
+          </div>
+        </mat-card-content>
       </mat-card>
     </div>
-    <div class="col-md-4">
-      <mat-card class="p-3 border-0 shadow-sm text-center">
-        <div class="h6 text-danger"><mat-icon>cancel</mat-icon> Rechazadas</div>
-        <div class="h3 fw-bold">{{ rejectedCount() }}</div>
+
+    <div class="col-12 col-md-4">
+      <mat-card class="stat-card rejected">
+        <mat-card-content>
+          <div class="stat-icon">
+            <mat-icon>cancel</mat-icon>
+          </div>
+          <div class="stat-info">
+            <p class="label">Rechazadas</p>
+            <p class="value">{{ rejectedCount() }}</p>
+          </div>
+        </mat-card-content>
       </mat-card>
     </div>
   </div>
 
-  <mat-card class="p-3 mb-4 border-0 shadow-sm">
-    <div class="row g-2 align-items-center">
-      <div class="col-md">
-        <input [(ngModel)]="searchTerm"
-               class="form-control"
-               placeholder="Buscar docente o tipo...">
+  <mat-card class="toolbar-card mb-4">
+    <div class="toolbar-content">
+      <div class="search-wrapper">
+        <mat-icon>search</mat-icon>
+        <input [ngModel]="searchTerm()"
+               (ngModelChange)="searchTerm.set($event)"
+               placeholder="Buscar por docente o tipo...">
       </div>
-      <div class="col-md-auto">
-        <div class="btn-group">
-          @for (s of statusFilters; track s) {
-            <button class="btn btn-outline-secondary"
-                    [class.active]="filterStatus() === s"
-                    (click)="setFilter(s)">
-              {{ s | titlecase }}
-            </button>
-          }
-        </div>
+
+      <div class="status-filters">
+        @for (s of statusFilters; track s) {
+          <button type="button"
+                  class="filter-btn"
+                  [class.active]="filterStatus() === s"
+                  (click)="setFilter(s)">
+            {{ statusLabel(s) }}
+          </button>
+        }
       </div>
     </div>
   </mat-card>
 
-  <div class="row g-3">
+  <div class="request-list">
     @for (req of filteredRequests(); track req.id) {
-      <div class="col-12">
-        <mat-card class="p-3 border-0 shadow-sm">
-          <div class="row align-items-center">
-            <div class="col-md-auto">
-              <div class="avatar-icon">
-                <mat-icon>description</mat-icon>
+      <mat-card class="request-card">
+        <mat-card-content>
+          <div class="request-layout">
+            <div class="request-main">
+              <div class="teacher-block">
+                <div class="avatar-icon">
+                  <mat-icon>description</mat-icon>
+                </div>
+                <div class="teacher-headline">
+                  <h3>{{ req.teacherName }}</h3>
+                  <p class="teacher-id">ID: {{ req.teacherId }}</p>
+                </div>
+              </div>
+
+              <div class="request-meta">
+                <div>
+                  <p class="meta-label">Tipo de Solicitud</p>
+                  <p class="meta-value">{{ req.type }}</p>
+                </div>
+
+                <div>
+                  <p class="meta-label">Fecha</p>
+                  <p class="meta-value">{{ formatDate(req.date) }}</p>
+                </div>
+              </div>
+
+              <div class="request-reason">
+                <p class="meta-label">Motivo</p>
+                <p class="meta-value">{{ req.reason }}</p>
               </div>
             </div>
-            <div class="col-md">
-              <div class="fw-bold">{{ req.teacherName }}</div>
-              <small class="text-muted">ID: {{ req.teacherId }} | {{ req.type }}</small>
-              <p class="mb-0 mt-1 small text-secondary">{{ req.reason }}</p>
-            </div>
-            <div class="col-md-auto text-end">
-              <mat-chip-set class="mb-2">
-                <mat-chip [ngClass]="req.status">{{ req.status | titlecase }}</mat-chip>
-              </mat-chip-set>
+
+            <div class="request-side">
+              <span class="status-pill" [ngClass]="req.status">{{ statusLabel(req.status) }}</span>
 
               @if (req.status === 'pending') {
-                <div class="d-flex gap-2 justify-content-end">
-                  <button mat-mini-fab color="primary" (click)="handleStatus(req.id, 'approved')">
-                    <mat-icon>check</mat-icon>
+                <div class="request-actions">
+                  <button type="button" class="action-btn approve" (click)="handleStatus(req.id, 'approved')">
+                    <mat-icon>check_circle</mat-icon>
+                    Aprobar
                   </button>
-                  <button mat-mini-fab color="warn" (click)="handleStatus(req.id, 'rejected')">
-                    <mat-icon>close</mat-icon>
+                  <button type="button" class="action-btn reject" (click)="handleStatus(req.id, 'rejected')">
+                    <mat-icon>cancel</mat-icon>
+                    Rechazar
                   </button>
                 </div>
               }
             </div>
           </div>
-        </mat-card>
-      </div>
+        </mat-card-content>
+      </mat-card>
     } @empty {
-      <div class="col-12 text-center py-5">
-        <p class="text-muted">No se encontraron solicitudes con los filtros aplicados.</p>
-      </div>
+      <mat-card class="request-card empty-state">
+        <mat-card-content>
+          <p>No se encontraron solicitudes con los filtros aplicados.</p>
+        </mat-card-content>
+      </mat-card>
     }
   </div>
 </div>
