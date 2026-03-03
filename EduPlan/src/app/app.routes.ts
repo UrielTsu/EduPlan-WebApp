@@ -13,6 +13,12 @@ import { PerfilA } from './screens/alumnos-screens/perfil-a/perfil-a';
 import { AulaComponent } from './screens/admin-screens/aula-admin/aula-admin';
 import { SolicitudesAdminComponent } from './screens/admin-screens/solicitudes-admin/solicitudes-admin';
 import { GestionAdminComponent } from './screens/admin-screens/gestion-admin/gestion-admin';
+import { MaestroHome } from './screens/maestros-screens/dashboard-maestros/dashboard-maestros';
+import { TeacherScheduleComponent } from './screens/maestros-screens/horario-m/horario-m';
+import { SolicitudesM } from './screens/maestros-screens/solicitudes-m/solicitudes-m';
+import { CursosM } from './screens/maestros-screens/cursos-m/cursos-m';
+import { PerfilM } from './screens/maestros-screens/perfil-m/perfil-m';
+
 
 export const routes: Routes = [
   { path: '', component: HomeScreen, pathMatch: 'full' },
@@ -65,6 +71,26 @@ export const routes: Routes = [
       {
         path : 'perfil',
         component : PerfilA
+      },
+      {
+        path : 'dashboard-maestros',
+        component : MaestroHome
+      },
+      {
+        path : 'horario-m',
+        component : TeacherScheduleComponent
+      },
+      {
+        path : 'profesor/solicitudes',
+        component : SolicitudesM
+      },
+      {
+        path : 'cursos-m',
+        component : CursosM
+      },
+      {
+        path : 'perfil-m',
+        component : PerfilM
       }
 
     ]

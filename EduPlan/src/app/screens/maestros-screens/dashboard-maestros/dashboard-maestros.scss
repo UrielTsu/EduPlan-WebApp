@@ -1,0 +1,64 @@
+// Variables locales EduPlan
+$green-primary: #16a34a;
+$green-dark: #15803d;
+$warning-bg: #fffbeb;
+$warning-text: #92400e;
+
+.teacher-dashboard {
+  .current-class-card {
+    background: linear-gradient(135deg, $green-primary, $green-dark);
+    border-radius: 1rem;
+  }
+
+  .schedule-item {
+    background-color: #f9fafb;
+    border-color: #e5e7eb;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: $green-primary;
+      background-color: white;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .time-badge {
+      min-width: 65px;
+    }
+  }
+
+  .request-card {
+    background: white;
+
+    &.border-start-custom {
+      border-left-width: 4px !important;
+
+      &.warning {
+        border-left-color: #f59e0b !important;
+      }
+    }
+
+    .status-pill {
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      text-transform: uppercase;
+
+      &.warning {
+        background-color: $warning-bg;
+        color: $warning-text;
+        border: 1px solid #fde68a;
+      }
+    }
+  }
+
+  // Utilidades
+  .icon-sm { font-size: 1.2rem; width: 1.2rem; height: 1.2rem; }
+  .icon-xs { font-size: 0.9rem; width: 0.9rem; height: 0.9rem; }
+  .extra-small { font-size: 0.75rem; }
+  .italic { font-style: italic; }
+  .tracking-wider { letter-spacing: 0.05em; }
+}

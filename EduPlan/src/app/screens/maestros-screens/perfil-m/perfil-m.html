@@ -1,0 +1,110 @@
+<div class="container py-4 profile-m-wrapper">
+  <div class="mb-4">
+    <h1 class="h2 fw-bold text-dark mb-1">Mi Perfil</h1>
+    <p class="text-muted">Información personal y profesional dentro de EduPlan</p>
+  </div>
+
+  <div class="row g-3 mb-4">
+    @for (stat of stats; track stat.label) {
+      <div class="col-6 col-lg-3">
+        <mat-card class="stat-mini-card border-0 shadow-sm">
+          <div class="p-3 d-flex align-items-center justify-content-between">
+            <div>
+              <div class="stat-label">{{ stat.label }}</div>
+              <div class="stat-value">{{ stat.value }}</div>
+            </div>
+            <div class="stat-icon" [ngClass]="stat.color">
+              <mat-icon>{{ stat.icon }}</mat-icon>
+            </div>
+          </div>
+        </mat-card>
+      </div>
+    }
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <mat-card class="profile-main-card border-0 shadow-sm overflow-hidden">
+        <div class="profile-banner p-4 p-md-5 text-white">
+          <div class="d-flex flex-wrap align-items-center gap-4">
+            <div class="avatar-circle shadow-lg">
+              <mat-icon>person</mat-icon>
+            </div>
+            <div class="flex-grow-1">
+              <h2 class="h3 fw-bold mb-1">{{ profileData().name }}</h2>
+              <div class="opacity-75 small">
+                {{ profileData().department }} • ID: {{ profileData().employeeId }}
+              </div>
+            </div>
+            <div class="actions">
+              <!-- Botón de edición removido -->
+            </div>
+          </div>
+        </div>
+
+        <div class="p-4 p-md-5">
+          <h3 class="h6 fw-bold text-uppercase text-muted mb-4 tracking-wider">Información Detallada</h3>
+
+          <div class="row g-4">
+            <div class="col-md-6">
+              <div class="info-group">
+                <label><mat-icon>mail</mat-icon> Correo Electrónico</label>
+                <div class="display-value">{{ profileData().email }}</div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="info-group">
+                <label><mat-icon>phone</mat-icon> Teléfono</label>
+                <div class="display-value">{{ profileData().phone }}</div>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="info-group">
+                <label><mat-icon>psychology</mat-icon> Especialidad</label>
+                <div class="display-value">{{ profileData().specialty }}</div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="info-group">
+                <label><mat-icon>event_available</mat-icon> Horario de Atención</label>
+                <div class="display-value">{{ profileData().officeHours }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+
+    <div class="col-lg-4">
+      <mat-card class="border-0 shadow-sm mb-4 p-4">
+        <h3 class="h6 fw-bold mb-4">Cursos que imparte</h3>
+        <div class="course-list">
+          @for (course of courses; track course.code) {
+            <div class="course-mini-item p-3 rounded-3 border mb-2">
+              <div class="fw-bold small mb-1">{{ course.name }}</div>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="badge-tag">{{ course.code }}</span>
+                <span class="text-muted extra-small">{{ course.students }} alumnos</span>
+              </div>
+            </div>
+          }
+        </div>
+      </mat-card>
+
+      <div class="quick-info-box p-4 rounded-4 shadow-sm text-white">
+        <h3 class="h6 fw-bold mb-3">Información Rápida</h3>
+        <div class="d-flex justify-content-between mb-2 small">
+          <span class="opacity-75">Antigüedad:</span>
+          <span class="fw-bold">{{ profileData().yearsOfService }}</span>
+        </div>
+        <div class="d-flex justify-content-between small">
+          <span class="opacity-75">Departamento:</span>
+          <span class="fw-bold text-end">{{ profileData().department }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

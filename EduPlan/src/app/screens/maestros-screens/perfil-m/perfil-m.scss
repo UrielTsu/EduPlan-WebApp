@@ -1,0 +1,63 @@
+$green-buap: #16a34a;
+$green-dark: #15803d;
+
+.profile-m-wrapper {
+  .stat-mini-card {
+    border-radius: 12px;
+    .stat-label { font-size: 0.75rem; font-weight: 600; color: #64748b; }
+    .stat-value { font-size: 1.25rem; font-weight: 800; }
+    .stat-icon {
+      width: 40px; height: 40px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      mat-icon { font-size: 20px; }
+      &.blue { background: #eff6ff; color: #2563eb; }
+      &.green { background: #f0fdf4; color: #16a34a; }
+      &.purple { background: #f5f3ff; color: #7c3aed; }
+      &.orange { background: #fff7ed; color: #ea580c; }
+    }
+  }
+
+  .profile-main-card {
+    border-radius: 16px;
+
+    .profile-banner {
+      background: linear-gradient(135deg, $green-buap, $green-dark);
+
+      .avatar-circle {
+        width: 80px; height: 80px; background: rgba(255,255,255,0.2);
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        mat-icon { font-size: 40px; width: 40px; height: 40px; }
+      }
+    }
+  }
+
+  .info-group {
+    label {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.75rem; font-weight: 700; color: #94a3b8;
+      text-transform: uppercase; margin-bottom: 8px;
+      mat-icon { font-size: 16px; width: 16px; height: 16px; }
+    }
+    .display-value {
+      background: #f8fafc; padding: 12px 16px; border-radius: 8px;
+      font-weight: 500; color: #1e293b; border: 1px solid #f1f5f9;
+    }
+  }
+
+  .course-mini-item {
+    background: #f8fafc; transition: border-color 0.2s;
+    &:hover { border-color: $green-buap !important; }
+    .badge-tag {
+      background: #dcfce7; color: #16a34a; padding: 2px 8px;
+      border-radius: 4px; font-size: 0.7rem; font-weight: 700;
+    }
+  }
+
+  .quick-info-box {
+    background: #1e293b;
+  }
+
+  .bg-white-20 { background: rgba(255,255,255,0.2) !important; color: white !important; }
+  .extra-small { font-size: 0.7rem; }
+  .tracking-wider { letter-spacing: 0.05em; }
+}

@@ -72,7 +72,7 @@ export class LoginScreen {
       if (email === 'admin@eduplan.com') {
         role = 'admin';
       } else if (email.includes('@profesor.edu')) {
-        role = 'profesor';
+        role = 'maestro';
       }
       localStorage.setItem('userRole', role);
       this.isLoading = false;
@@ -80,6 +80,8 @@ export class LoginScreen {
       // Redireccionar según el rol del usuario
       if (role === 'admin') {
         this.router.navigate(['admin']);
+      } else if (role === 'maestro') {
+        this.router.navigate(['dashboard-maestros']);
       } else {
         this.router.navigate(['dashboard-alumno']);
       }

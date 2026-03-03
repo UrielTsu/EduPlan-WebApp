@@ -1,0 +1,72 @@
+$colors: (
+  "blue": #3b82f6,
+  "purple": #a855f7,
+  "green": #10b981,
+  "orange": #f59e0b
+);
+
+.courses-m-wrapper {
+  .stat-card {
+    border-radius: 1.25rem;
+    .label { font-size: 0.8rem; font-weight: 600; color: #64748b; }
+    .value { font-size: 1.75rem; font-weight: 800; color: #1e293b; }
+    .icon-box {
+      width: 48px; height: 48px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      &.green { background: #dcfce7; color: #16a34a; }
+      &.blue { background: #dbeafe; color: #2563eb; }
+      &.purple { background: #f3e8ff; color: #7e22ce; }
+    }
+  }
+
+  .course-selector-card {
+    border-radius: 1.25rem;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border-top: 5px solid transparent;
+
+    &:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1) !important; }
+    &.active { border-width: 2px; transform: scale(1.01); }
+
+    @each $name, $val in $colors {
+      &.border-top-#{$name} { border-top-color: $val; }
+      &.active.border-top-#{$name} { border-color: $val; }
+      .text-#{$name} { color: $val; }
+      .badge-code.#{$name} { background: rgba($val, 0.1); color: $val; padding: 2px 10px; border-radius: 6px; font-weight: 700; font-size: 0.75rem; }
+    }
+  }
+
+  .info-grid {
+    display: grid; gap: 8px;
+    .item {
+      display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #475569;
+      mat-icon { font-size: 18px; width: 18px; height: 18px; color: #94a3b8; }
+    }
+  }
+
+  .assignment-item-row {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+    transition: background 0.2s;
+    &:hover { background: #f1f5f9; }
+  }
+
+  // Animación suave para la aparición de tareas
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  // Estilo Modal Simple
+  .custom-modal-backdrop {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center; z-index: 1000;
+
+    .modal-card { width: 90%; max-width: 400px; border-radius: 1.5rem; }
+  }
+}
