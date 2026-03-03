@@ -6,6 +6,13 @@ import { NavAlumno } from './partials/nav-alumno/nav-alumno';
 import { HorarioA } from './screens/alumnos-screens/horario-a-screen/horario-a-screen';
 import { CursosA } from './screens/alumnos-screens/cursos-a/cursos-a';
 import { AdminDashboard } from './screens/admin-screens/dashboard-admin/dashboard-admin';
+import { CursosD } from './screens/alumnos-screens/cursos-d/cursos-d';
+import { TareasA } from './screens/alumnos-screens/tareas-a/tareas-a';
+import { TareasD } from './screens/alumnos-screens/tareas-d/tareas-d';
+import { PerfilA } from './screens/alumnos-screens/perfil-a/perfil-a';
+import { AulaComponent } from './screens/admin-screens/aula-admin/aula-admin';
+import { SolicitudesAdminComponent } from './screens/admin-screens/solicitudes-admin/solicitudes-admin';
+import { GestionAdminComponent } from './screens/admin-screens/gestion-admin/gestion-admin';
 
 export const routes: Routes = [
   { path: '', component: HomeScreen, pathMatch: 'full' },
