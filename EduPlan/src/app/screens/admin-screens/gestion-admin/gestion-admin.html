@@ -1,43 +1,301 @@
-<div class="container py-4">
-  <h1 class="h3 fw-bold mb-4">Gestión General</h1>
+<div class="container py-4 gestion-page" [ngClass]="'theme-' + activeTab()">
+  <a class="back-link" routerLink="/admin">
+    <mat-icon>arrow_back</mat-icon>
+    <span>Volver al panel</span>
+  </a>
 
-  <mat-tab-group mat-stretch-tabs="false" animationDuration="0ms">
+  <header class="header-block">
+    <h1>Gestión General</h1>
+    <p>CRUDs completos del sistema académico</p>
+  </header>
 
-    <mat-tab label="Periodos">
-      <div class="p-3">
-        <div class="d-flex justify-content-end mb-3">
-          <button mat-flat-button color="primary"><mat-icon>add</mat-icon> Nuevo Periodo</button>
-        </div>
-        <table class="table align-middle shadow-sm bg-white rounded-3">
-          <thead class="table-light">
+  <div class="tabs-shell">
+    @for (tab of tabs; track tab.key) {
+      <button
+        type="button"
+        [ngClass]="['tab-item', tab.key, activeTab() === tab.key ? 'active' : '']"
+        (click)="setActiveTab(tab.key)">
+        <mat-icon>{{ tab.icon }}</mat-icon>
+        <span>{{ tab.label }}</span>
+      </button>
+    }
+  </div>
+
+  @if (activeTab() === 'periodos') {
+    <section class="content-block">
+      <div class="section-header">
+        <h2>Gestión de Periodos</h2>
+        <button type="button" class="add-btn" (click)="onCreate('periodos')">
+          <mat-icon>add</mat-icon>
+          <span>Nuevo Periodo</span>
+        </button>
+      </div>
+
+      <div class="table-shell">
+        <table class="management-table">
+          <thead>
             <tr>
-              <th>Nombre</th><th>Fechas</th><th>Estado</th><th class="text-end">Acciones</th>
+              <th>NOMBRE</th>
+              <th>FECHA INICIO</th>
+              <th>FECHA FIN</th>
+              <th>ESTADO</th>
+              <th class="text-end">ACCIONES</th>
             </tr>
           </thead>
           <tbody>
-            @for (p of periods(); track p.id) {
+            @for (period of periods(); track period.id) {
               <tr>
-                <td>{{ p.name }}</td>
-                <td>{{ p.dates }}</td>
-                <td><span class="badge" [class.bg-success]="p.status === 'Activo'">{{ p.status }}</span></td>
-                <td class="text-end">
-                  <button mat-icon-button><mat-icon>edit</mat-icon></button>
-                  <button mat-icon-button color="warn" (click)="deleteItem(p.id, 'period')"><mat-icon>delete</mat-icon></button>
+                <td class="name-col">{{ period.name }}</td>
+                <td>{{ period.startDate }}</td>
+                <td>{{ period.endDate }}</td>
+                <td>
+                  <span class="status-pill" [class.active]="period.status === 'Activo'" [class.finished]="period.status === 'Finalizado'">
+                    {{ period.status }}
+                  </span>
+                </td>
+                <td class="actions-col">
+                  <button type="button" class="icon-btn edit" (click)="editItem(period.id, 'periodos')">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button type="button" class="icon-btn delete" (click)="deleteItem(period.id, 'periodos')">
+                    <mat-icon>delete</mat-icon>
+                  </button>
                 </td>
               </tr>
             }
           </tbody>
         </table>
       </div>
-    </mat-tab>
+    </section>
+  }
 
-    <mat-tab label="Materias">
-      <div class="p-3">
-        <div class="d-flex justify-content-end mb-3">
-          <button mat-flat-button color="primary"><mat-icon>add</mat-icon> Nueva Materia</button>
-        </div>
-        </div>
-    </mat-tab>
+  @if (activeTab() === 'materias') {
+    <section class="content-block">
+      <div class="section-header">
+        <h2>Gestión de Materias</h2>
+        <button type="button" class="add-btn" (click)="onCreate('materias')">
+          <mat-icon>add</mat-icon>
+          <span>Nueva Materia</span>
+        </button>
+      </div>
 
-    </mat-tab-group>
+      <div class="table-shell">
+        <table class="management-table">
+          <thead>
+            <tr>
+              <th>CÓDIGO</th>
+              <th>NOMBRE</th>
+              <th>CRÉDITOS</th>
+              <th>DEPARTAMENTO</th>
+              <th class="text-end">ACCIONES</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (subject of subjects(); track subject.id) {
+              <tr>
+                <td class="name-col">{{ subject.code }}</td>
+                <td>{{ subject.name }}</td>
+                <td>{{ subject.credits }}</td>
+                <td>{{ subject.department }}</td>
+                <td class="actions-col">
+                  <button type="button" class="icon-btn edit" (click)="editItem(subject.id, 'materias')">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button type="button" class="icon-btn delete" (click)="deleteItem(subject.id, 'materias')">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+
+  @if (activeTab() === 'grupos') {
+    <section class="content-block">
+      <div class="section-header">
+        <h2>Gestión de Grupos</h2>
+        <button type="button" class="add-btn" (click)="onCreate('grupos')">
+          <mat-icon>add</mat-icon>
+          <span>Nuevo Grupo</span>
+        </button>
+      </div>
+
+      <div class="table-shell">
+        <table class="management-table">
+          <thead>
+            <tr>
+              <th>CÓDIGO</th>
+              <th>MATERIA</th>
+              <th>PROFESOR</th>
+              <th>ALUMNOS</th>
+              <th class="text-end">ACCIONES</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (group of groups(); track group.id) {
+              <tr>
+                <td class="name-col">{{ group.code }}</td>
+                <td>{{ group.subject }}</td>
+                <td>{{ group.teacher }}</td>
+                <td>{{ group.students }}</td>
+                <td class="actions-col">
+                  <button type="button" class="icon-btn edit" (click)="editItem(group.id, 'grupos')">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button type="button" class="icon-btn delete" (click)="deleteItem(group.id, 'grupos')">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+
+  @if (activeTab() === 'aulas') {
+    <section class="content-block">
+      <div class="section-header">
+        <h2>Gestión de Aulas</h2>
+        <button type="button" class="add-btn" (click)="onCreate('aulas')">
+          <mat-icon>add</mat-icon>
+          <span>Nueva Aula</span>
+        </button>
+      </div>
+
+      <div class="table-shell">
+        <table class="management-table">
+          <thead>
+            <tr>
+              <th>NOMBRE</th>
+              <th>EDIFICIO</th>
+              <th>CAPACIDAD</th>
+              <th>ESTADO</th>
+              <th class="text-end">ACCIONES</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (room of classrooms(); track room.id) {
+              <tr>
+                <td class="name-col">{{ room.name }}</td>
+                <td>{{ room.building }}</td>
+                <td>{{ room.capacity }}</td>
+                <td>
+                  <span class="status-pill" [class.available]="room.status === 'Disponible'" [class.in-use]="room.status === 'En uso'">
+                    {{ room.status }}
+                  </span>
+                </td>
+                <td class="actions-col">
+                  <button type="button" class="icon-btn edit" (click)="editItem(room.id, 'aulas')">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button type="button" class="icon-btn delete" (click)="deleteItem(room.id, 'aulas')">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+
+  @if (activeTab() === 'docentes') {
+    <section class="content-block">
+      <div class="section-header">
+        <h2>Gestión de Docentes</h2>
+        <button type="button" class="add-btn" (click)="onCreate('docentes')">
+          <mat-icon>add</mat-icon>
+          <span>Nuevo Docente</span>
+        </button>
+      </div>
+
+      <div class="table-shell">
+        <table class="management-table">
+          <thead>
+            <tr>
+              <th>NOMBRE</th>
+              <th>DEPARTAMENTO</th>
+              <th>EMAIL</th>
+              <th>CURSOS</th>
+              <th class="text-end">ACCIONES</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (teacher of teachers(); track teacher.id) {
+              <tr>
+                <td class="name-col">{{ teacher.name }}</td>
+                <td>{{ teacher.department }}</td>
+                <td>{{ teacher.email }}</td>
+                <td>{{ teacher.courses }}</td>
+                <td class="actions-col">
+                  <button type="button" class="icon-btn edit" (click)="editItem(teacher.id, 'docentes')">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button type="button" class="icon-btn delete" (click)="deleteItem(teacher.id, 'docentes')">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+
+  @if (activeTab() === 'estudiantes') {
+    <section class="content-block">
+      <div class="section-header">
+        <h2>Gestión de Estudiantes</h2>
+        <button type="button" class="add-btn" (click)="onCreate('estudiantes')">
+          <mat-icon>add</mat-icon>
+          <span>Nuevo Estudiante</span>
+        </button>
+      </div>
+
+      <div class="table-shell">
+        <table class="management-table">
+          <thead>
+            <tr>
+              <th>NOMBRE</th>
+              <th>MATRÍCULA</th>
+              <th>PROGRAMA</th>
+              <th>SEMESTRE</th>
+              <th class="text-end">ACCIONES</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (student of students(); track student.id) {
+              <tr>
+                <td class="name-col">{{ student.name }}</td>
+                <td>{{ student.enrollment }}</td>
+                <td>{{ student.program }}</td>
+                <td>{{ student.semester }}</td>
+                <td class="actions-col">
+                  <button type="button" class="icon-btn edit" (click)="editItem(student.id, 'estudiantes')">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button type="button" class="icon-btn delete" (click)="deleteItem(student.id, 'estudiantes')">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+
+  @if (isCurrentTabEmpty()) {
+    <section class="content-block placeholder">
+      <p>No hay registros para esta sección.</p>
+    </section>
+  }
 </div>

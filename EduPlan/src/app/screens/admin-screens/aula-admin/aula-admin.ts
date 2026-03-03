@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
+import { RouterLink } from '@angular/router';
 
 interface Classroom {
   id: string;
@@ -17,7 +18,7 @@ interface Classroom {
 @Component({
   selector: 'app-classroom-management',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, MatCardModule, MatButtonModule, MatTableModule],
+  imports: [CommonModule, FormsModule, MatIconModule, MatCardModule, MatButtonModule, MatTableModule, RouterLink],
   templateUrl: 'aula-admin.html',
   styleUrls: ['aula-admin.scss']
 })
