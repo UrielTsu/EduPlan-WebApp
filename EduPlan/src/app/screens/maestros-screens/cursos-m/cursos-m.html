@@ -1,0 +1,137 @@
+<div class="container py-4 courses-m-wrapper">
+  <div class="row mb-4">
+    <div class="col-12">
+      <h1 class="display-6 fw-bold text-dark">Mis Cursos</h1>
+      <p class="text-secondary">Gestiona tus cursos y asigna tareas a tus estudiantes</p>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-5">
+    <div class="col-md-4">
+      <mat-card class="stat-card border-0 shadow-sm">
+        <div class="p-3 d-flex justify-content-between align-items-center">
+          <div>
+            <div class="label">Total Cursos</div>
+            <div class="value">{{ courses().length }}</div>
+          </div>
+          <mat-icon class="icon-box green">book</mat-icon>
+        </div>
+      </mat-card>
+    </div>
+    <div class="col-md-4">
+      <mat-card class="stat-card border-0 shadow-sm">
+        <div class="p-3 d-flex justify-content-between align-items-center">
+          <div>
+            <div class="label">Total Estudiantes</div>
+            <div class="value">{{ totalStudentsCount() }}</div>
+          </div>
+          <mat-icon class="icon-box blue">groups</mat-icon>
+        </div>
+      </mat-card>
+    </div>
+    <div class="col-md-4">
+      <mat-card class="stat-card border-0 shadow-sm">
+        <div class="p-3 d-flex justify-content-between align-items-center">
+          <div>
+            <div class="label">Tareas Activas</div>
+            <div class="value">{{ assignments().length }}</div>
+          </div>
+          <mat-icon class="icon-box purple">assignment</mat-icon>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-5">
+    @for (course of courses(); track course.id) {
+      <div class="col-12 col-lg-6">
+        <mat-card class="course-selector-card border-0 shadow-sm"
+                  [class.active]="selectedCourseId() === course.id"
+                  [ngClass]="'border-top-' + course.color"
+                  (click)="selectCourse(course.id)">
+          <mat-card-content class="p-4">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div>
+                <h3 class="h5 fw-bold mb-1">{{ course.name }}</h3>
+                <span class="badge-code" [ngClass]="course.color">{{ course.code }}</span>
+              </div>
+              <mat-icon [ngClass]="'text-' + course.color">school</mat-icon>
+            </div>
+
+            <div class="info-grid mb-4">
+              <div class="item"><mat-icon>schedule</mat-icon> {{ course.schedule }}</div>
+              <div class="item"><mat-icon>room</mat-icon> {{ course.room }}</div>
+              <div class="item"><mat-icon>people</mat-icon> {{ course.students }} estudiantes</div>
+            </div>
+
+            <div class="footer d-flex justify-content-between align-items-center border-top pt-3">
+              <span class="small text-muted">Tareas: {{ getAssignmentCount(course.id) }}</span>
+              <button mat-button [color]="course.color">
+                {{ selectedCourseId() === course.id ? 'Ocultar tareas' : 'Ver tareas' }}
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    }
+  </div>
+
+  @if (selectedCourseId() && selectedCourseData()) {
+    <mat-card class="assignments-section border-0 shadow-sm animate-fade-in">
+      <mat-card-content class="p-4 p-md-5">
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+          <div>
+            <h2 class="h4 fw-bold mb-0">Tareas - {{ selectedCourseData()?.name }}</h2>
+            <p class="text-muted small">Gestiona las entregas de este curso</p>
+          </div>
+          <button mat-flat-button color="success" class="rounded-pill px-4">
+            <mat-icon>add</mat-icon> Nueva Tarea
+          </button>
+        </div>
+
+        <div class="space-y-3">
+          @for (a of courseAssignments(); track a.id) {
+            <div class="assignment-item-row p-3 rounded-4 border">
+              <div class="row align-items-center g-3">
+                <div class="col-12 col-md-5">
+                  <div class="fw-bold text-dark">{{ a.title }}</div>
+                  <div class="small text-muted text-truncate">{{ a.description }}</div>
+                </div>
+                <div class="col-12 col-md-4">
+                  <div class="d-flex align-items-center gap-2 mb-1">
+                    <span class="small text-muted">{{ a.submissions }}/{{ a.totalStudents }} entregas</span>
+                    <span class="ms-auto small fw-bold">{{ getSubmissionRate(a) | number:'1.0-0' }}%</span>
+                  </div>
+                  <mat-progress-bar mode="determinate" [value]="getSubmissionRate(a)"></mat-progress-bar>
+                </div>
+                <div class="col-12 col-md-3 text-md-end">
+                  <button mat-icon-button color="primary" (click)="openEdit(a)"><mat-icon>edit</mat-icon></button>
+                  <button mat-icon-button color="warn" (click)="openDelete(a)"><mat-icon>delete</mat-icon></button>
+                </div>
+              </div>
+            </div>
+          } @empty {
+            <div class="text-center py-5 opacity-50">
+              <mat-icon class="display-4">folder_open</mat-icon>
+              <p>No hay tareas para este curso.</p>
+            </div>
+          }
+        </div>
+      </mat-card-content>
+    </mat-card>
+  }
+</div>
+
+<div class="custom-modal-backdrop" *ngIf="isDeleteModalOpen()">
+  <mat-card class="modal-card p-4 shadow-lg border-0">
+    <div class="text-center mb-4">
+      <mat-icon class="text-danger display-4">warning</mat-icon>
+      <h3 class="h5 fw-bold mt-3">¿Eliminar Tarea?</h3>
+      <p class="text-muted small">Esta acción no se puede deshacer.</p>
+    </div>
+    <div class="d-flex gap-2">
+      <button mat-button class="flex-grow-1" (click)="isDeleteModalOpen.set(false)">Cancelar</button>
+      <button mat-flat-button color="warn" class="flex-grow-1" (click)="confirmDelete()">Eliminar</button>
+    </div>
+  </mat-card>
+</div>
