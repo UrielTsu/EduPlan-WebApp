@@ -50,11 +50,16 @@
       <div class="col-12 col-md">
         <div class="search-input-wrapper">
           <mat-icon>search</mat-icon>
-          <input type="text" [(ngModel)]="searchTerm" placeholder="Buscar por aula o edificio..." class="form-control">
+          <input
+            type="text"
+            [ngModel]="searchTerm()"
+            (ngModelChange)="searchTerm.set($event)"
+            placeholder="Buscar por aula o edificio..."
+            class="form-control">
         </div>
       </div>
       <div class="col-12 col-md-auto">
-        <button mat-flat-button color="primary" class="w-100">
+        <button mat-flat-button color="primary" class="w-100" (click)="openCreateClassroomModal()">
           <mat-icon>add</mat-icon> Agregar Aula
         </button>
       </div>
@@ -80,13 +85,13 @@
               <td>{{ c.building }}</td>
               <td><mat-icon class="small-icon">groups</mat-icon> {{ c.capacity }} est.</td>
               <td>
-                <span class="badge" [ngClass]="c.status === 'active' ? 'bg-success-subtle text-success' : 'bg-secondary-subtle text-secondary'">
-                  {{ c.status | titlecase }}
+                <span class="badge" [ngClass]="c.status === 'Disponible' ? 'bg-success-subtle text-success' : 'bg-warning-subtle text-warning-emphasis'">
+                  {{ c.status }}
                 </span>
               </td>
               <td class="text-end pe-4">
-                <button mat-icon-button class="text-primary"><mat-icon>edit</mat-icon></button>
-                <button mat-icon-button class="text-danger"><mat-icon>delete</mat-icon></button>
+                <button mat-icon-button class="text-primary" (click)="openEditClassroomModal(c.id)"><mat-icon>edit</mat-icon></button>
+                <button mat-icon-button class="text-danger" (click)="deleteClassroom(c.id)"><mat-icon>delete</mat-icon></button>
               </td>
             </tr>
           }
@@ -94,4 +99,81 @@
       </table>
     </div>
   </mat-card>
+
+  @if (showClassroomModal()) {
+    <div class="period-modal-backdrop" (click)="closeClassroomModal()">
+      <div class="period-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <div>
+            <h3>{{ editingClassroomId() !== null ? 'Editar Aula' : 'Nueva Aula' }}</h3>
+            <p>Edificio Aulas</p>
+          </div>
+          <button type="button" class="close-btn" (click)="closeClassroomModal()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Edificio</label>
+            <select [(ngModel)]="classroomForm.building" [ngModelOptions]="{ standalone: true }">
+              <option value="" disabled>Seleccionar edificio</option>
+              @for (building of buildingOptions; track building) {
+                <option [value]="building">{{ building }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Nombre del Aula</label>
+            <input
+              type="text"
+              placeholder="Ej. Aula 402"
+              [(ngModel)]="classroomForm.name"
+              [ngModelOptions]="{ standalone: true }">
+          </div>
+
+          <div class="form-group">
+            <label>Capacidad</label>
+            <div class="capacity-row">
+              <input
+                type="number"
+                min="1"
+                [(ngModel)]="classroomForm.capacity"
+                [ngModelOptions]="{ standalone: true }">
+              <button type="button" class="capacity-btn" (click)="decrementCapacity()">-</button>
+              <button type="button" class="capacity-btn" (click)="incrementCapacity()">+</button>
+            </div>
+          </div>
+
+          <div class="resources-block">
+            <p class="resources-title">Recursos Disponibles</p>
+            <div class="resource-list">
+              @for (resource of resourceOptions; track resource.name) {
+                <button
+                  type="button"
+                  class="resource-item"
+                  [class.selected]="hasResource(resource.name)"
+                  (click)="toggleResource(resource.name)">
+                  <mat-icon>{{ resource.icon }}</mat-icon>
+                  <span>{{ resource.name }}</span>
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="cancel-btn" (click)="closeClassroomModal()">Cancelar</button>
+          <button
+            type="button"
+            class="save-btn"
+            [disabled]="!classroomForm.building || !classroomForm.name.trim() || !classroomForm.capacity"
+            (click)="saveClassroom()">
+            {{ editingClassroomId() !== null ? 'Actualizar' : 'Guardar' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
 </div>
