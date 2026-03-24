@@ -1,10 +1,11 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'perfil-a',
@@ -20,7 +21,7 @@ import { MatTabsModule } from '@angular/material/tabs';
   templateUrl: './perfil-a.html',
   styleUrls: ['./perfil-a.scss']
 })
-export class PerfilA {
+export class PerfilA implements OnInit {
   activeTab = signal<'info' | 'academic' | 'stats'>('info');
 
   // Datos del perfil inicializados con valores por defecto o localStorage
@@ -45,7 +46,23 @@ export class PerfilA {
     creditsCompleted: 120
   };
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
+
+  ngOnInit(): void {
+    this.authService.getCurrentUser().subscribe({
+      next: (user) => {
+        this.profileData.update((current) => ({
+          ...current,
+          name: user.fullName,
+          email: user.email
+        }));
+      },
+      error: () => {
+        this.authService.clearSession();
+        this.router.navigate(['/login']);
+      }
+    });
+  }
 
   goBack() {
     window.history.back();
