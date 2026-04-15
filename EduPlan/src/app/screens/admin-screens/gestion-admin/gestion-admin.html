@@ -579,7 +579,7 @@
           <button
             type="button"
             class="save-btn"
-            [disabled]="!classroomForm.building || !classroomForm.name.trim() || !classroomForm.capacity"
+            [disabled]="!isClassroomFormValid()"
             (click)="saveClassroom()">
             {{ editingClassroomId() !== null ? 'Actualizar' : 'Guardar' }}
           </button>
@@ -608,6 +608,7 @@
               type="text"
               placeholder="Ej. Dr. Carlos Ruiz Martínez"
               [(ngModel)]="teacherForm.name"
+              (input)="onTeacherNameInput($event)"
               [ngModelOptions]="{ standalone: true }">
           </div>
 
@@ -617,6 +618,7 @@
               type="text"
               placeholder="Ej. EMP-2024-001"
               [(ngModel)]="teacherForm.employeeId"
+              (input)="onTeacherEmployeeIdInput($event)"
               [ngModelOptions]="{ standalone: true }">
           </div>
 
@@ -633,8 +635,9 @@
             <label>Teléfono</label>
             <input
               type="text"
-              placeholder="Ej. (222) 123-4567"
+              placeholder="Ej. (222) 123 4567"
               [(ngModel)]="teacherForm.phone"
+              (input)="onTeacherPhoneInput($event)"
               [ngModelOptions]="{ standalone: true }">
           </div>
 
@@ -680,7 +683,7 @@
           <button
             type="button"
             class="save-btn"
-            [disabled]="!teacherForm.name.trim() || !teacherForm.employeeId.trim() || !teacherForm.email.trim() || !teacherForm.department || !teacherForm.contractType || !teacherForm.hireDate"
+            [disabled]="!isTeacherFormValid()"
             (click)="saveTeacher()">
             {{ editingTeacherId() !== null ? 'Actualizar' : 'Guardar' }}
           </button>
@@ -709,6 +712,7 @@
               type="text"
               placeholder="Ej. Juan Pérez García"
               [(ngModel)]="studentForm.name"
+              (input)="onStudentNameInput($event, 'name')"
               [ngModelOptions]="{ standalone: true }">
           </div>
 
@@ -718,6 +722,7 @@
               type="text"
               placeholder="Ej. A01234567"
               [(ngModel)]="studentForm.enrollment"
+              (input)="onStudentEnrollmentInput($event)"
               [ngModelOptions]="{ standalone: true }">
           </div>
 
@@ -734,8 +739,9 @@
             <label>Teléfono</label>
             <input
               type="text"
-              placeholder="Ej. (222) 123-4567"
+              placeholder="Ej. (222) 123 4567"
               [(ngModel)]="studentForm.phone"
+              (input)="onStudentPhoneInput($event, 'phone')"
               [ngModelOptions]="{ standalone: true }">
           </div>
 
@@ -782,6 +788,7 @@
                 type="text"
                 placeholder="Nombre"
                 [(ngModel)]="studentForm.emergencyContactName"
+                (input)="onStudentNameInput($event, 'emergencyContactName')"
                 [ngModelOptions]="{ standalone: true }">
             </div>
 
@@ -789,8 +796,9 @@
               <label>Teléfono</label>
               <input
                 type="text"
-                placeholder="(222) 123-4567"
+                placeholder="(222) 123 4567"
                 [(ngModel)]="studentForm.emergencyContactPhone"
+                (input)="onStudentPhoneInput($event, 'emergencyContactPhone')"
                 [ngModelOptions]="{ standalone: true }">
             </div>
           </div>
@@ -816,7 +824,7 @@
           <button
             type="button"
             class="save-btn"
-            [disabled]="!studentForm.name.trim() || !studentForm.enrollment.trim() || !studentForm.email.trim() || !studentForm.program || !studentForm.semester || !studentForm.enrollmentDate"
+            [disabled]="!isStudentFormValid()"
             (click)="saveStudent()">
             {{ editingStudentId() !== null ? 'Actualizar' : 'Guardar' }}
           </button>

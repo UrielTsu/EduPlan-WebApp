@@ -756,13 +756,25 @@ export class GestionAdminComponent {
     return this.classroomForm.resources.includes(resource);
   }
 
+  isClassroomFormValid(): boolean {
+    const f = this.classroomForm;
+    if (!f.building || !f.name.trim() || !f.capacity) {
+      return false;
+    }
+    const nameRegex = /^(Aula|Lab)\s\d{3}$/;
+    if (!nameRegex.test(f.name.trim())) {
+      return false;
+    }
+    return true;
+  }
+
   saveClassroom(): void {
     const building = this.classroomForm.building;
     const name = this.classroomForm.name.trim();
     const capacity = Number(this.classroomForm.capacity);
     const resources = [...this.classroomForm.resources];
 
-    if (!building || !name || !capacity) {
+    if (!this.isClassroomFormValid()) {
       return;
     }
 
@@ -837,6 +849,59 @@ export class GestionAdminComponent {
     this.showTeacherModal.set(false);
   }
 
+  onTeacherNameInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const cleaned = input.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\.\s]/g, '');
+    this.teacherForm.name = cleaned;
+    input.value = cleaned;
+  }
+
+  onTeacherEmployeeIdInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const cleaned = input.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+    let formatted = cleaned;
+    if (cleaned.length > 0 && cleaned.length <= 3) {
+      formatted = cleaned;
+    } else if (cleaned.length > 3 && cleaned.length <= 7) {
+      formatted = `${cleaned.substring(0, 3)}-${cleaned.substring(3)}`;
+    } else if (cleaned.length > 7) {
+      formatted = `${cleaned.substring(0, 3)}-${cleaned.substring(3, 7)}-${cleaned.substring(7, 10)}`;
+    }
+    this.teacherForm.employeeId = formatted;
+    input.value = formatted;
+  }
+
+  onTeacherPhoneInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const cleaned = ('' + input.value).replace(/\D/g, '');
+    let formatted = cleaned;
+    if (cleaned.length > 0 && cleaned.length <= 3) {
+      formatted = cleaned;
+    } else if (cleaned.length > 3 && cleaned.length <= 6) {
+      formatted = `(${cleaned.substring(0, 3)}) ${cleaned.substring(3)}`;
+    } else if (cleaned.length > 6) {
+      formatted = `(${cleaned.substring(0, 3)}) ${cleaned.substring(3, 6)} ${cleaned.substring(6, 10)}`;
+    }
+    
+    this.teacherForm.phone = formatted;
+    input.value = formatted;
+  }
+
+  isTeacherFormValid(): boolean {
+    const f = this.teacherForm;
+    if (!f.name.trim() || !f.employeeId.trim() || !f.email.trim() || !f.department || !f.contractType || !f.hireDate) {
+      return false;
+    }
+    if (f.employeeId.trim().length !== 12) {
+      return false;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(f.email.trim())) {
+      return false;
+    }
+    return true;
+  }
+
   saveTeacher(): void {
     const name = this.teacherForm.name.trim();
     const employeeId = this.teacherForm.employeeId.trim().toUpperCase();
@@ -847,7 +912,7 @@ export class GestionAdminComponent {
     const contractType = this.teacherForm.contractType;
     const hireDate = this.teacherForm.hireDate;
 
-    if (!name || !employeeId || !email || !department || !contractType || !hireDate) {
+    if (!this.isTeacherFormValid()) {
       return;
     }
 
@@ -942,6 +1007,51 @@ export class GestionAdminComponent {
     this.showStudentModal.set(false);
   }
 
+  onStudentNameInput(event: Event, field: 'name' | 'emergencyContactName'): void {
+    const input = event.target as HTMLInputElement;
+    const cleaned = input.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+    this.studentForm[field] = cleaned;
+    input.value = cleaned;
+  }
+
+  onStudentEnrollmentInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const cleaned = input.value.substring(0, 9);
+    this.studentForm.enrollment = cleaned;
+    input.value = cleaned;
+  }
+
+  onStudentPhoneInput(event: Event, field: 'phone' | 'emergencyContactPhone'): void {
+    const input = event.target as HTMLInputElement;
+    const cleaned = ('' + input.value).replace(/\D/g, '');
+    let formatted = cleaned;
+    if (cleaned.length > 0 && cleaned.length <= 3) {
+      formatted = cleaned;
+    } else if (cleaned.length > 3 && cleaned.length <= 6) {
+      formatted = `(${cleaned.substring(0, 3)}) ${cleaned.substring(3)}`;
+    } else if (cleaned.length > 6) {
+      formatted = `(${cleaned.substring(0, 3)}) ${cleaned.substring(3, 6)} ${cleaned.substring(6, 10)}`;
+    }
+    
+    this.studentForm[field] = formatted;
+    input.value = formatted;
+  }
+
+  isStudentFormValid(): boolean {
+    const f = this.studentForm;
+    if (!f.name.trim() || !f.enrollment.trim() || !f.email.trim() || !f.program || !f.semester || !f.enrollmentDate) {
+      return false;
+    }
+    if (f.enrollment.trim().length !== 9) {
+      return false;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(f.email.trim())) {
+      return false;
+    }
+    return true;
+  }
+
   saveStudent(): void {
     const name = this.studentForm.name.trim();
     const enrollment = this.studentForm.enrollment.trim().toUpperCase();
@@ -955,7 +1065,7 @@ export class GestionAdminComponent {
     const emergencyContactPhone = this.studentForm.emergencyContactPhone.trim();
     const status: 'Activo' | 'Inactivo' = this.studentForm.isActive ? 'Activo' : 'Inactivo';
 
-    if (!name || !enrollment || !email || !program || !semester || !enrollmentDate) {
+    if (!this.isStudentFormValid()) {
       return;
     }
 
