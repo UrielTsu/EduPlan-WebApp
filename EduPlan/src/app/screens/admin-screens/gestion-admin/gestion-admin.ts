@@ -500,12 +500,32 @@ export class GestionAdminComponent {
     this.showPeriodModal.set(false);
   }
 
+  onPeriodNameInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const cleaned = input.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s]/g, '');
+    const capitalized = cleaned.replace(/(?:^|\s)\S/g, c => c.toUpperCase());
+    this.periodForm.name = capitalized;
+    input.value = capitalized;
+  }
+
+  isPeriodFormValid(): boolean {
+    const f = this.periodForm;
+    if (!f.name.trim() || !f.startDate || !f.endDate) {
+      return false;
+    }
+    const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+\s\d{4}$/;
+    if (!nameRegex.test(f.name.trim())) {
+      return false;
+    }
+    return true;
+  }
+
   savePeriod(): void {
     const name = this.periodForm.name.trim();
     const startDate = this.periodForm.startDate;
     const endDate = this.periodForm.endDate;
 
-    if (!name || !startDate || !endDate) {
+    if (!this.isPeriodFormValid()) {
       return;
     }
 
@@ -566,13 +586,36 @@ export class GestionAdminComponent {
     this.showSubjectModal.set(false);
   }
 
+  onSubjectNameInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const cleaned = input.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+    const capitalized = cleaned.replace(/(?:^|\s)\S/g, c => c.toUpperCase());
+    this.subjectForm.name = capitalized;
+    input.value = capitalized;
+  }
+
+  onSubjectCodeInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const cleaned = input.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().substring(0, 6);
+    this.subjectForm.code = cleaned;
+    input.value = cleaned;
+  }
+
+  isSubjectFormValid(): boolean {
+    const f = this.subjectForm;
+    if (!f.name.trim() || !f.code.trim() || !f.credits || !f.department) {
+      return false;
+    }
+    return true;
+  }
+
   saveSubject(): void {
     const name = this.subjectForm.name.trim();
     const code = this.subjectForm.code.trim().toUpperCase();
     const credits = Number(this.subjectForm.credits);
     const department = this.subjectForm.department;
 
-    if (!name || !code || !credits || !department) {
+    if (!this.isSubjectFormValid()) {
       return;
     }
 
@@ -648,13 +691,36 @@ export class GestionAdminComponent {
     });
   }
 
+  onGroupNameInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const cleaned = input.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+    let formatted = cleaned;
+    if (cleaned.length > 5) {
+      formatted = `${cleaned.substring(0, 5)}-${cleaned.substring(5, 6).replace(/[^a-zA-Z]/g, '')}`;
+    }
+    this.groupForm.name = formatted;
+    input.value = formatted;
+  }
+
+  isGroupFormValid(): boolean {
+    const f = this.groupForm;
+    if (!f.name.trim() || !f.subject || !f.semester.trim() || !f.maxCapacity || this.isGroupNameTaken()) {
+      return false;
+    }
+    const nameRegex = /^[A-Z0-9]{5}-[A-Z]$/;
+    if (!nameRegex.test(f.name.trim())) {
+      return false;
+    }
+    return true;
+  }
+
   saveGroup(): void {
     const name = this.groupForm.name.trim();
     const subject = this.groupForm.subject;
     const semester = this.groupForm.semester.trim();
     const maxCapacity = Number(this.groupForm.maxCapacity);
 
-    if (!name || !subject || !semester || !maxCapacity || this.isGroupNameTaken()) {
+    if (!this.isGroupFormValid()) {
       return;
     }
 
@@ -882,7 +948,7 @@ export class GestionAdminComponent {
     } else if (cleaned.length > 6) {
       formatted = `(${cleaned.substring(0, 3)}) ${cleaned.substring(3, 6)} ${cleaned.substring(6, 10)}`;
     }
-    
+
     this.teacherForm.phone = formatted;
     input.value = formatted;
   }
@@ -1032,7 +1098,7 @@ export class GestionAdminComponent {
     } else if (cleaned.length > 6) {
       formatted = `(${cleaned.substring(0, 3)}) ${cleaned.substring(3, 6)} ${cleaned.substring(6, 10)}`;
     }
-    
+
     this.studentForm[field] = formatted;
     input.value = formatted;
   }

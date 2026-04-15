@@ -319,6 +319,7 @@
               type="text"
               placeholder="Ej. Primavera 2027"
               [(ngModel)]="periodForm.name"
+              (input)="onPeriodNameInput($event)"
               [ngModelOptions]="{ standalone: true }">
           </div>
 
@@ -359,7 +360,7 @@
           <button
             type="button"
             class="save-btn"
-            [disabled]="!periodForm.name.trim() || !periodForm.startDate || !periodForm.endDate"
+            [disabled]="!isPeriodFormValid()"
             (click)="savePeriod()">
             {{ editingPeriodId() !== null ? 'Actualizar' : 'Guardar' }}
           </button>
@@ -388,6 +389,7 @@
               type="text"
               placeholder="Ej. Matemáticas V"
               [(ngModel)]="subjectForm.name"
+              (input)="onSubjectNameInput($event)"
               [ngModelOptions]="{ standalone: true }">
           </div>
 
@@ -395,8 +397,9 @@
             <label>Código de Materia</label>
             <input
               type="text"
-              placeholder="Ej. MAT-501"
+              placeholder="Ej. MAT501"
               [(ngModel)]="subjectForm.code"
+              (input)="onSubjectCodeInput($event)"
               [ngModelOptions]="{ standalone: true }">
           </div>
 
@@ -425,7 +428,7 @@
           <button
             type="button"
             class="save-btn"
-            [disabled]="!subjectForm.name.trim() || !subjectForm.code.trim() || !subjectForm.department"
+            [disabled]="!isSubjectFormValid()"
             (click)="saveSubject()">
             {{ editingSubjectId() !== null ? 'Actualizar' : 'Guardar' }}
           </button>
@@ -452,8 +455,9 @@
             <label>Nombre del Grupo</label>
             <input
               type="text"
-              placeholder="Ej. G-5A"
+              placeholder="Ej. CS301-A"
               [(ngModel)]="groupForm.name"
+              (input)="onGroupNameInput($event)"
               [ngModelOptions]="{ standalone: true }">
           </div>
 
@@ -500,7 +504,7 @@
           <button
             type="button"
             class="save-btn"
-            [disabled]="!groupForm.name.trim() || !groupForm.subject || !groupForm.semester.trim() || !groupForm.maxCapacity || isGroupNameTaken()"
+            [disabled]="!isGroupFormValid()"
             (click)="saveGroup()">
             {{ editingGroupId() !== null ? 'Actualizar' : 'Guardar' }}
           </button>
