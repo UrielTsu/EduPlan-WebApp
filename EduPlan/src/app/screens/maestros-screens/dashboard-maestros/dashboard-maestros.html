@@ -1,0 +1,119 @@
+<div class="container-fluid py-4 teacher-dashboard">
+  <div class="row g-4">
+
+    <div class="col-12 col-lg-8">
+
+      <mat-card class="current-class-card border-0 mb-4 overflow-hidden">
+        <mat-card-content class="p-4 text-white">
+          <div class="d-flex align-items-center gap-2 mb-3 opacity-75">
+            <mat-icon class="icon-sm">schedule</mat-icon>
+            <span class="small fw-bold text-uppercase tracking-wider">Clase en curso</span>
+          </div>
+          <h2 class="display-6 fw-bold mb-4">{{ currentClass.subject }}</h2>
+
+          <div class="row g-3">
+            <div class="col-sm-4 d-flex align-items-center gap-2">
+              <mat-icon>meeting_room</mat-icon>
+              <span>{{ currentClass.room }}</span>
+            </div>
+            <div class="col-sm-4 d-flex align-items-center gap-2">
+              <mat-icon>timer</mat-icon>
+              <span>{{ currentClass.time }}</span>
+            </div>
+            <div class="col-sm-4 d-flex align-items-center gap-2">
+              <mat-icon>groups</mat-icon>
+              <span>{{ currentClass.students }} estudiantes</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="border-0 shadow-sm rounded-4">
+        <mat-card-content class="p-4">
+          <h3 class="h5 fw-bold text-dark mb-4">Horario de Hoy</h3>
+
+          <div class="schedule-list">
+            @for (item of todaySchedule; track $index) {
+              <div class="schedule-item d-flex align-items-start gap-3 p-3 mb-2 rounded-3 border transition-hover">
+                <div class="time-badge fw-bold text-success">{{ item.time }}</div>
+                <div class="flex-grow-1">
+                  <div class="fw-bold text-dark">{{ item.subject }}</div>
+                  <div class="d-flex gap-3 mt-1 text-muted small">
+                    <span class="d-flex align-items-center gap-1">
+                      <mat-icon class="icon-xs">place</mat-icon> {{ item.room }}
+                    </span>
+                    <span class="d-flex align-items-center gap-1">
+                      <mat-icon class="icon-xs">group</mat-icon> {{ item.students }} est.
+                    </span>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="col-12 col-lg-4">
+
+      <mat-card class="border-0 shadow-sm rounded-4 mb-4">
+        <mat-card-content class="p-4">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="h6 fw-bold mb-0">Solicitudes Pendientes</h3>
+            <a routerLink="/profesor/solicitudes" class="btn-link text-success text-decoration-none small fw-bold">Ver todas</a>
+          </div>
+
+          @if (pendingRequests().length > 0) {
+            <div class="requests-stack">
+              @for (req of pendingRequests(); track req.id) {
+                <div class="request-card p-3 mb-3 border rounded-3 border-start-custom warning">
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="fw-bold small">{{ req.type }}</span>
+                    <span class="status-pill warning">
+                      <mat-icon class="icon-xs">history</mat-icon> {{ req.status }}
+                    </span>
+                  </div>
+                  <div class="extra-small text-muted mb-2">
+                    <div class="d-flex align-items-center gap-1 mb-1">
+                      <mat-icon class="icon-xs">swap_horiz</mat-icon> {{ req.classroom }}
+                    </div>
+                    <div class="d-flex align-items-center gap-1">
+                      <mat-icon class="icon-xs">event</mat-icon> {{ req.date }}
+                    </div>
+                  </div>
+                  <p class="mb-0 extra-small italic text-secondary border-top pt-2">{{ req.reason }}</p>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="text-center py-5 text-muted opacity-50">
+              <mat-icon class="display-4 mb-2">inbox</mat-icon>
+              <p class="small">No hay solicitudes pendientes</p>
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="border-0 shadow-sm rounded-4 stats-sidebar">
+        <mat-card-content class="p-4">
+          <h3 class="h6 fw-bold mb-4">Resumen</h3>
+          <div class="stats-list">
+            <div class="stat-row d-flex justify-content-between py-2 border-bottom">
+              <span class="small text-muted">Clases de hoy</span>
+              <span class="fw-bold">{{ todaySchedule.length }}</span>
+            </div>
+            <div class="stat-row d-flex justify-content-between py-2 border-bottom">
+              <span class="small text-muted">Solicitudes activas</span>
+              <span class="fw-bold text-warning">{{ pendingRequests().length }}</span>
+            </div>
+            <div class="stat-row d-flex justify-content-between py-2">
+              <span class="small text-muted">Total estudiantes</span>
+              <span class="fw-bold text-success">{{ totalStudents() }}</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+    </div>
+  </div>
+</div>

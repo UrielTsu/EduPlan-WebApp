@@ -1,0 +1,172 @@
+$grid-height: 64px;
+$radius-lg: 12px;
+
+// Paleta de la imagen 2
+$colors: (
+  "purple": #a855f7,
+  "blue": #3b82f6,
+  "orange": #f97316,
+  "green": #22c55e,
+  "red": #ef4444
+);
+
+.day-column {
+  min-height: calc(12 * #{$grid-height});
+}
+
+.class-positioner {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: 4px 8px; // Este padding separa la tarjeta de las líneas laterales y de arriba/abajo
+  z-index: 10;
+  transition: all 0.2s ease;
+
+  &:hover {
+    z-index: 20;
+    transform: scale(1.02);
+  }
+}
+
+.class-card {
+  height: 100%;
+  width: 100%;
+  border-radius: $radius-lg;
+  padding: 10px 12px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  border: none;
+
+  .class-title {
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+    line-height: 1.2;
+  }
+
+  .class-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    .detail-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.7rem;
+      opacity: 0.9;
+
+      mat-icon {
+        font-size: 14px;
+        width: 14px;
+        height: 14px;
+      }
+    }
+  }
+}
+
+// Generador de colores
+@each $name, $value in $colors {
+  .#{$name} {
+    background-color: $value;
+  }
+}
+
+// Ajuste para las líneas de la grilla (más sutiles como en la imagen 2)
+.grid-line, .time-label {
+  height: $grid-height;
+  border-color: #f1f5f9 !important;
+}
+
+.time-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+$grid-height: 64px;
+$header-height: 80px; // Altura fija para que coincidan perfectamente
+
+.col-time {
+  width: 80px;
+  flex: 0 0 80px;
+}
+
+.header-cell {
+  height: $header-height;
+  background-color: #ffffff;
+
+  .day-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 2px;
+  }
+}
+
+.time-slot-label {
+  height: $grid-height;
+  display: flex;
+  align-items: flex-start; // Alinea el texto de la hora al inicio de la celda
+  justify-content: center;
+  padding-top: 8px;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  border-color: #f1f5f9 !important;
+}
+
+.grid-row-line {
+  height: $grid-height;
+  border-color: #f1f5f9 !important;
+}
+
+.class-positioner {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: 4px 8px; // El "aire" que querías alrededor de las tarjetas
+  z-index: 10;
+
+  // Aseguramos que el cálculo de top: 0px coincida con el inicio de la primera grid-row-line
+}
+
+.class-card {
+  height: 100%;
+  border-radius: 12px;
+  padding: 12px;
+  color: white;
+  border: none;
+
+  .class-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .class-meta {
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.75rem;
+      opacity: 0.9;
+      margin-bottom: 2px;
+
+      mat-icon {
+        font-size: 14px;
+        width: 14px;
+        height: 14px;
+      }
+    }
+  }
+}
+
+// Colores modernos (Imagen 4)
+.purple { background-color: #a855f7; }
+.blue   { background-color: #3b82f6; }
+.orange { background-color: #f97316; }
+.green  { background-color: #22c55e; }
+.red    { background-color: #ef4444; }

@@ -1,0 +1,60 @@
+.admin-dashboard {
+  .stat-card {
+    border-radius: 12px;
+    .label { color: #64748b; font-size: 0.85rem; font-weight: 500; }
+    .value { font-size: 2rem; font-weight: 800; color: #0f172a; }
+    .sub-label { font-size: 0.75rem; font-weight: 500; }
+  }
+
+  .icon-box {
+    width: 48px; height: 48px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    mat-icon { font-size: 24px; width: 24px; height: 24px; }
+  }
+
+  // Colores Temáticos
+  .bg-warning-light { background-color: #fef3c7; }
+  .bg-primary-light { background-color: #dbeafe; }
+  .bg-purple-light  { background-color: #f3e8ff; }
+  .bg-success-light { background-color: #dcfce7; }
+  .text-purple { color: #9333ea; }
+  .text-warning { color: #d97706; }
+  .text-success { color: #16a34a; }
+
+  .request-item {
+    border-bottom: 1px solid #f1f5f9;
+    transition: background 0.2s;
+    &:hover { background-color: #f8fafc; }
+    &:last-child { border-bottom: none; }
+  }
+
+  .icon-circle-small {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    mat-icon { font-size: 18px; width: 18px; height: 18px; }
+  }
+
+  .badge-status {
+    padding: 4px 12px; border-radius: 999px; font-size: 0.7rem; font-weight: 600;
+    &.pending { background: #fef3c7; color: #92400e; }
+  }
+
+  .quick-access-card {
+    background: white; border-radius: 16px; border: 1px solid #e2e8f0;
+    cursor: pointer; transition: all 0.2s ease;
+
+    &:hover {
+      transform: translateY(-5px);
+      border-color: #cbd5e1;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    }
+
+    .icon-box-large {
+      width: 56px; height: 56px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      mat-icon { font-size: 28px; width: 28px; height: 28px; }
+    }
+  }
+
+  .extra-small { font-size: 0.75rem; }
+}

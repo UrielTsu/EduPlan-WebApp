@@ -1,0 +1,827 @@
+<div class="container py-4 gestion-page" [ngClass]="'theme-' + activeTab()">
+  <a class="back-link" routerLink="/admin">
+    <mat-icon>arrow_back</mat-icon>
+    <span>Volver al panel</span>
+  </a>
+
+  <header class="header-block">
+    <h1>Gestión General</h1>
+    <p>CRUDs completos del sistema académico</p>
+  </header>
+
+  <div class="tabs-shell">
+    @for (tab of tabs; track tab.key) {
+      <button
+        type="button"
+        [ngClass]="['tab-item', tab.key, activeTab() === tab.key ? 'active' : '']"
+        (click)="setActiveTab(tab.key)">
+        <mat-icon>{{ tab.icon }}</mat-icon>
+        <span>{{ tab.label }}</span>
+      </button>
+    }
+  </div>
+
+  @if (activeTab() === 'periodos') {
+    <section class="content-block">
+      <div class="section-header">
+        <h2>Gestión de Periodos</h2>
+        <button type="button" class="add-btn" (click)="onCreate('periodos')">
+          <mat-icon>add</mat-icon>
+          <span>Nuevo Periodo</span>
+        </button>
+      </div>
+
+      <div class="table-shell">
+        <table class="management-table">
+          <thead>
+            <tr>
+              <th>NOMBRE</th>
+              <th>FECHA INICIO</th>
+              <th>FECHA FIN</th>
+              <th>ESTADO</th>
+              <th class="text-end">ACCIONES</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (period of periods(); track period.id) {
+              <tr>
+                <td class="name-col">{{ period.name }}</td>
+                <td>{{ period.startDate }}</td>
+                <td>{{ period.endDate }}</td>
+                <td>
+                  <span class="status-pill" [class.active]="period.status === 'Activo'" [class.finished]="period.status === 'Finalizado'">
+                    {{ period.status }}
+                  </span>
+                </td>
+                <td class="actions-col">
+                  <button type="button" class="icon-btn edit" (click)="editItem(period.id, 'periodos')">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button type="button" class="icon-btn delete" (click)="deleteItem(period.id, 'periodos')">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+
+  @if (activeTab() === 'materias') {
+    <section class="content-block">
+      <div class="section-header">
+        <h2>Gestión de Materias</h2>
+        <button type="button" class="add-btn" (click)="onCreate('materias')">
+          <mat-icon>add</mat-icon>
+          <span>Nueva Materia</span>
+        </button>
+      </div>
+
+      <div class="table-shell">
+        <table class="management-table">
+          <thead>
+            <tr>
+              <th>CÓDIGO</th>
+              <th>NOMBRE</th>
+              <th>CRÉDITOS</th>
+              <th>DEPARTAMENTO</th>
+              <th class="text-end">ACCIONES</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (subject of subjects(); track subject.id) {
+              <tr>
+                <td class="name-col">{{ subject.code }}</td>
+                <td>{{ subject.name }}</td>
+                <td>{{ subject.credits }}</td>
+                <td>{{ subject.department }}</td>
+                <td class="actions-col">
+                  <button type="button" class="icon-btn edit" (click)="editItem(subject.id, 'materias')">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button type="button" class="icon-btn delete" (click)="deleteItem(subject.id, 'materias')">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+
+  @if (activeTab() === 'grupos') {
+    <section class="content-block">
+      <div class="section-header">
+        <h2>Gestión de Grupos</h2>
+        <button type="button" class="add-btn" (click)="onCreate('grupos')">
+          <mat-icon>add</mat-icon>
+          <span>Nuevo Grupo</span>
+        </button>
+      </div>
+
+      <div class="table-shell">
+        <table class="management-table">
+          <thead>
+            <tr>
+              <th>CÓDIGO</th>
+              <th>MATERIA</th>
+              <th>PROFESOR</th>
+              <th>ALUMNOS</th>
+              <th class="text-end">ACCIONES</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (group of groups(); track group.id) {
+              <tr>
+                <td class="name-col">{{ group.code }}</td>
+                <td>{{ group.subject }}</td>
+                <td>{{ group.teacher }}</td>
+                <td>{{ group.students }}</td>
+                <td class="actions-col">
+                  <button type="button" class="icon-btn edit" (click)="editItem(group.id, 'grupos')">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button type="button" class="icon-btn delete" (click)="deleteItem(group.id, 'grupos')">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+
+  @if (activeTab() === 'aulas') {
+    <section class="content-block">
+      <div class="section-header">
+        <h2>Gestión de Aulas</h2>
+        <button type="button" class="add-btn" (click)="onCreate('aulas')">
+          <mat-icon>add</mat-icon>
+          <span>Nueva Aula</span>
+        </button>
+      </div>
+
+      <div class="table-shell">
+        <table class="management-table">
+          <thead>
+            <tr>
+              <th>NOMBRE</th>
+              <th>EDIFICIO</th>
+              <th>CAPACIDAD</th>
+              <th>ESTADO</th>
+              <th class="text-end">ACCIONES</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (room of classrooms(); track room.id) {
+              <tr>
+                <td class="name-col">{{ room.name }}</td>
+                <td>{{ room.building }}</td>
+                <td>{{ room.capacity }} estudiantes</td>
+                <td>
+                  <span class="status-pill" [class.available]="room.status === 'Disponible'" [class.in-use]="room.status === 'En uso'">
+                    {{ room.status }}
+                  </span>
+                </td>
+                <td class="actions-col">
+                  <button type="button" class="icon-btn edit" (click)="editItem(room.id, 'aulas')">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button type="button" class="icon-btn delete" (click)="deleteItem(room.id, 'aulas')">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+
+  @if (activeTab() === 'docentes') {
+    <section class="content-block">
+      <div class="section-header">
+        <h2>Gestión de Docentes</h2>
+        <button type="button" class="add-btn" (click)="onCreate('docentes')">
+          <mat-icon>add</mat-icon>
+          <span>Nuevo Docente</span>
+        </button>
+      </div>
+
+      <div class="table-shell">
+        <table class="management-table">
+          <thead>
+            <tr>
+              <th>NOMBRE</th>
+              <th>DEPARTAMENTO</th>
+              <th>EMAIL</th>
+              <th>CURSOS</th>
+              <th class="text-end">ACCIONES</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (teacher of teachers(); track teacher.id) {
+              <tr>
+                <td class="name-col">{{ teacher.name }}</td>
+                <td>{{ teacher.department }}</td>
+                <td>{{ teacher.email }}</td>
+                <td>{{ teacher.courses }}</td>
+                <td class="actions-col">
+                  <button type="button" class="icon-btn edit" (click)="editItem(teacher.id, 'docentes')">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button type="button" class="icon-btn delete" (click)="deleteItem(teacher.id, 'docentes')">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+
+  @if (activeTab() === 'estudiantes') {
+    <section class="content-block">
+      <div class="section-header">
+        <h2>Gestión de Estudiantes</h2>
+        <button type="button" class="add-btn" (click)="onCreate('estudiantes')">
+          <mat-icon>add</mat-icon>
+          <span>Nuevo Estudiante</span>
+        </button>
+      </div>
+
+      <div class="table-shell">
+        <table class="management-table">
+          <thead>
+            <tr>
+              <th>NOMBRE</th>
+              <th>MATRÍCULA</th>
+              <th>PROGRAMA</th>
+              <th>SEMESTRE</th>
+              <th class="text-end">ACCIONES</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (student of students(); track student.id) {
+              <tr>
+                <td class="name-col">{{ student.name }}</td>
+                <td>{{ student.enrollment }}</td>
+                <td>{{ student.program }}</td>
+                <td>{{ student.semester }}</td>
+                <td class="actions-col">
+                  <button type="button" class="icon-btn edit" (click)="editItem(student.id, 'estudiantes')">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button type="button" class="icon-btn delete" (click)="deleteItem(student.id, 'estudiantes')">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+
+  @if (isCurrentTabEmpty()) {
+    <section class="content-block placeholder">
+      <p>No hay registros para esta sección.</p>
+    </section>
+  }
+
+  @if (showPeriodModal()) {
+    <div class="period-modal-backdrop" (click)="closePeriodModal()">
+      <div class="period-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <div>
+            <h3>{{ editingPeriodId() !== null ? 'Editar Periodo' : 'Nuevo Periodo' }}</h3>
+            <p>Ingrese los detalles para el nuevo ciclo académico</p>
+          </div>
+          <button type="button" class="close-btn" (click)="closePeriodModal()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Nombre del Periodo</label>
+            <input
+              type="text"
+              placeholder="Ej. Primavera 2027"
+              [(ngModel)]="periodForm.name"
+              [ngModelOptions]="{ standalone: true }">
+          </div>
+
+          <div class="form-group">
+            <label>Fecha de Inicio</label>
+            <input
+              type="date"
+              [(ngModel)]="periodForm.startDate"
+              [ngModelOptions]="{ standalone: true }">
+          </div>
+
+          <div class="form-group">
+            <label>Fecha de Fin</label>
+            <input
+              type="date"
+              [(ngModel)]="periodForm.endDate"
+              [ngModelOptions]="{ standalone: true }">
+          </div>
+
+          <div class="status-row">
+            <div>
+              <p class="status-label">Estado del Periodo</p>
+              <p class="status-value">Activo</p>
+            </div>
+
+            <label class="switch">
+              <input
+                type="checkbox"
+                [(ngModel)]="periodForm.isActive"
+                [ngModelOptions]="{ standalone: true }">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="cancel-btn" (click)="closePeriodModal()">Cancelar</button>
+          <button
+            type="button"
+            class="save-btn"
+            [disabled]="!periodForm.name.trim() || !periodForm.startDate || !periodForm.endDate"
+            (click)="savePeriod()">
+            {{ editingPeriodId() !== null ? 'Actualizar' : 'Guardar' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (showSubjectModal()) {
+    <div class="period-modal-backdrop" (click)="closeSubjectModal()">
+      <div class="period-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <div>
+            <h3>{{ editingSubjectId() !== null ? 'Editar Materia' : 'Nueva Materia' }}</h3>
+            <p>Catálogo Académico</p>
+          </div>
+          <button type="button" class="close-btn" (click)="closeSubjectModal()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Nombre de la Materia</label>
+            <input
+              type="text"
+              placeholder="Ej. Matemáticas V"
+              [(ngModel)]="subjectForm.name"
+              [ngModelOptions]="{ standalone: true }">
+          </div>
+
+          <div class="form-group">
+            <label>Código de Materia</label>
+            <input
+              type="text"
+              placeholder="Ej. MAT-501"
+              [(ngModel)]="subjectForm.code"
+              [ngModelOptions]="{ standalone: true }">
+          </div>
+
+          <div class="form-group">
+            <label>Créditos</label>
+            <select [(ngModel)]="subjectForm.credits" [ngModelOptions]="{ standalone: true }">
+              @for (credit of creditOptions; track credit) {
+                <option [ngValue]="credit">{{ credit }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Área Académica</label>
+            <select [(ngModel)]="subjectForm.department" [ngModelOptions]="{ standalone: true }">
+              <option value="" disabled>Seleccionar área</option>
+              @for (area of areaOptions; track area) {
+                <option [value]="area">{{ area }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="cancel-btn" (click)="closeSubjectModal()">Cancelar</button>
+          <button
+            type="button"
+            class="save-btn"
+            [disabled]="!subjectForm.name.trim() || !subjectForm.code.trim() || !subjectForm.department"
+            (click)="saveSubject()">
+            {{ editingSubjectId() !== null ? 'Actualizar' : 'Guardar' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (showGroupModal()) {
+    <div class="period-modal-backdrop" (click)="closeGroupModal()">
+      <div class="period-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <div>
+            <h3>{{ editingGroupId() !== null ? 'Editar Grupo' : 'Nuevo Grupo' }}</h3>
+            <p>Configuración Académica</p>
+          </div>
+          <button type="button" class="close-btn" (click)="closeGroupModal()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Nombre del Grupo</label>
+            <input
+              type="text"
+              placeholder="Ej. G-5A"
+              [(ngModel)]="groupForm.name"
+              [ngModelOptions]="{ standalone: true }">
+          </div>
+
+          <div class="form-group">
+            <label>Materia Asignada</label>
+            <select [(ngModel)]="groupForm.subject" [ngModelOptions]="{ standalone: true }">
+              <option value="" disabled>Buscar materia...</option>
+              @for (subject of subjects(); track subject.id) {
+                <option [value]="subject.name">{{ subject.name }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Semestre</label>
+            <input
+              type="text"
+              placeholder="Ej. 3er semestre"
+              [(ngModel)]="groupForm.semester"
+              [ngModelOptions]="{ standalone: true }">
+          </div>
+
+          <div class="form-group">
+            <label>Cupo Máximo</label>
+            <input
+              type="number"
+              min="1"
+              [(ngModel)]="groupForm.maxCapacity"
+              [ngModelOptions]="{ standalone: true }">
+          </div>
+
+          <div class="info-box">
+            <mat-icon>info</mat-icon>
+            <p>Asegúrate de que el nombre del grupo sea único para evitar duplicados y materia asignada.</p>
+          </div>
+
+          @if (isGroupNameTaken()) {
+            <p class="error-text">Ya existe un grupo con este nombre.</p>
+          }
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="cancel-btn" (click)="closeGroupModal()">Cancelar</button>
+          <button
+            type="button"
+            class="save-btn"
+            [disabled]="!groupForm.name.trim() || !groupForm.subject || !groupForm.semester.trim() || !groupForm.maxCapacity || isGroupNameTaken()"
+            (click)="saveGroup()">
+            {{ editingGroupId() !== null ? 'Actualizar' : 'Guardar' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (showClassroomModal()) {
+    <div class="period-modal-backdrop" (click)="closeClassroomModal()">
+      <div class="period-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <div>
+            <h3>{{ editingClassroomId() !== null ? 'Editar Aula' : 'Nueva Aula' }}</h3>
+            <p>Edificio Aulas</p>
+          </div>
+          <button type="button" class="close-btn" (click)="closeClassroomModal()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Edificio</label>
+            <select [(ngModel)]="classroomForm.building" [ngModelOptions]="{ standalone: true }">
+              <option value="" disabled>Seleccionar edificio</option>
+              @for (building of buildingOptions; track building) {
+                <option [value]="building">{{ building }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Número de Aula / Nombre</label>
+            <input
+              type="text"
+              placeholder="Ej. Aula 305"
+              [(ngModel)]="classroomForm.name"
+              [ngModelOptions]="{ standalone: true }">
+          </div>
+
+          <div class="form-group">
+            <label>Capacidad (Estudiantes)</label>
+            <div class="capacity-row">
+              <input
+                type="number"
+                min="1"
+                [(ngModel)]="classroomForm.capacity"
+                [ngModelOptions]="{ standalone: true }">
+              <button type="button" class="capacity-btn" (click)="decrementCapacity()">−</button>
+              <button type="button" class="capacity-btn" (click)="incrementCapacity()">+</button>
+            </div>
+          </div>
+
+          <div class="resources-block">
+            <p class="resources-title">Recursos Disponibles</p>
+
+            <div class="resource-list">
+              @for (resource of resourceOptions; track resource.name) {
+                <button
+                  type="button"
+                  class="resource-item"
+                  [class.active]="hasResource(resource.name)"
+                  (click)="toggleResource(resource.name)">
+                  <span class="resource-check" [class.checked]="hasResource(resource.name)"></span>
+                  <mat-icon>{{ resource.icon }}</mat-icon>
+                  <span>{{ resource.name }}</span>
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="cancel-btn" (click)="closeClassroomModal()">Cancelar</button>
+          <button
+            type="button"
+            class="save-btn"
+            [disabled]="!classroomForm.building || !classroomForm.name.trim() || !classroomForm.capacity"
+            (click)="saveClassroom()">
+            {{ editingClassroomId() !== null ? 'Actualizar' : 'Guardar' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (showTeacherModal()) {
+    <div class="period-modal-backdrop" (click)="closeTeacherModal()">
+      <div class="period-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <div>
+            <h3>{{ editingTeacherId() !== null ? 'Editar Docente' : 'Nuevo Docente' }}</h3>
+            <p>Información del profesor</p>
+          </div>
+          <button type="button" class="close-btn" (click)="closeTeacherModal()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Nombre Completo</label>
+            <input
+              type="text"
+              placeholder="Ej. Dr. Carlos Ruiz Martínez"
+              [(ngModel)]="teacherForm.name"
+              [ngModelOptions]="{ standalone: true }">
+          </div>
+
+          <div class="form-group">
+            <label>ID de Empleado</label>
+            <input
+              type="text"
+              placeholder="Ej. EMP-2024-001"
+              [(ngModel)]="teacherForm.employeeId"
+              [ngModelOptions]="{ standalone: true }">
+          </div>
+
+          <div class="form-group">
+            <label>Email Institucional</label>
+            <input
+              type="email"
+              placeholder="nombre@universidad.edu"
+              [(ngModel)]="teacherForm.email"
+              [ngModelOptions]="{ standalone: true }">
+          </div>
+
+          <div class="form-group">
+            <label>Teléfono</label>
+            <input
+              type="text"
+              placeholder="Ej. (222) 123-4567"
+              [(ngModel)]="teacherForm.phone"
+              [ngModelOptions]="{ standalone: true }">
+          </div>
+
+          <div class="form-group">
+            <label>Departamento</label>
+            <select [(ngModel)]="teacherForm.department" [ngModelOptions]="{ standalone: true }">
+              <option value="" disabled>Seleccionar departamento</option>
+              @for (department of teacherDepartmentOptions; track department) {
+                <option [value]="department">{{ department }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Especialización</label>
+            <input
+              type="text"
+              placeholder="Ej. Inteligencia Artificial, Algoritmos"
+              [(ngModel)]="teacherForm.specialization"
+              [ngModelOptions]="{ standalone: true }">
+          </div>
+
+          <div class="form-group">
+            <label>Tipo de Contrato</label>
+            <select [(ngModel)]="teacherForm.contractType" [ngModelOptions]="{ standalone: true }">
+              @for (contractType of contractTypeOptions; track contractType) {
+                <option [value]="contractType">{{ contractType }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Fecha de Contratación</label>
+            <input
+              type="date"
+              [(ngModel)]="teacherForm.hireDate"
+              [ngModelOptions]="{ standalone: true }">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="cancel-btn" (click)="closeTeacherModal()">Cancelar</button>
+          <button
+            type="button"
+            class="save-btn"
+            [disabled]="!teacherForm.name.trim() || !teacherForm.employeeId.trim() || !teacherForm.email.trim() || !teacherForm.department || !teacherForm.contractType || !teacherForm.hireDate"
+            (click)="saveTeacher()">
+            {{ editingTeacherId() !== null ? 'Actualizar' : 'Guardar' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (showStudentModal()) {
+    <div class="period-modal-backdrop" (click)="closeStudentModal()">
+      <div class="period-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <div>
+            <h3>{{ editingStudentId() !== null ? 'Editar Estudiante' : 'Nuevo Estudiante' }}</h3>
+            <p>Información del alumno</p>
+          </div>
+          <button type="button" class="close-btn" (click)="closeStudentModal()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Nombre Completo</label>
+            <input
+              type="text"
+              placeholder="Ej. Juan Pérez García"
+              [(ngModel)]="studentForm.name"
+              [ngModelOptions]="{ standalone: true }">
+          </div>
+
+          <div class="form-group">
+            <label>Matrícula</label>
+            <input
+              type="text"
+              placeholder="Ej. A01234567"
+              [(ngModel)]="studentForm.enrollment"
+              [ngModelOptions]="{ standalone: true }">
+          </div>
+
+          <div class="form-group">
+            <label>Email Institucional</label>
+            <input
+              type="email"
+              placeholder="matricula@alumno.buap.mx"
+              [(ngModel)]="studentForm.email"
+              [ngModelOptions]="{ standalone: true }">
+          </div>
+
+          <div class="form-group">
+            <label>Teléfono</label>
+            <input
+              type="text"
+              placeholder="Ej. (222) 123-4567"
+              [(ngModel)]="studentForm.phone"
+              [ngModelOptions]="{ standalone: true }">
+          </div>
+
+          <div class="form-group">
+            <label>Programa Académico</label>
+            <select [(ngModel)]="studentForm.program" [ngModelOptions]="{ standalone: true }">
+              <option value="" disabled>Seleccionar programa</option>
+              @for (program of studentProgramOptions; track program) {
+                <option [value]="program">{{ program }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Semestre Actual</label>
+            <select [(ngModel)]="studentForm.semester" [ngModelOptions]="{ standalone: true }">
+              @for (semester of studentSemesterOptions; track semester) {
+                <option [value]="semester">{{ semester }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Fecha de Inscripción</label>
+            <input
+              type="date"
+              [(ngModel)]="studentForm.enrollmentDate"
+              [ngModelOptions]="{ standalone: true }">
+          </div>
+
+          <div class="form-group">
+            <label>Dirección</label>
+            <input
+              type="text"
+              placeholder="Calle, número, colonia, ciudad"
+              [(ngModel)]="studentForm.address"
+              [ngModelOptions]="{ standalone: true }">
+          </div>
+
+          <div class="dual-input-row">
+            <div class="form-group">
+              <label>Contacto de Emergencia</label>
+              <input
+                type="text"
+                placeholder="Nombre"
+                [(ngModel)]="studentForm.emergencyContactName"
+                [ngModelOptions]="{ standalone: true }">
+            </div>
+
+            <div class="form-group">
+              <label>Teléfono</label>
+              <input
+                type="text"
+                placeholder="(222) 123-4567"
+                [(ngModel)]="studentForm.emergencyContactPhone"
+                [ngModelOptions]="{ standalone: true }">
+            </div>
+          </div>
+
+          <div class="status-row">
+            <div>
+              <p class="status-label">Estado del Estudiante</p>
+              <p class="status-value">Activo</p>
+            </div>
+
+            <label class="switch">
+              <input
+                type="checkbox"
+                [(ngModel)]="studentForm.isActive"
+                [ngModelOptions]="{ standalone: true }">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="cancel-btn" (click)="closeStudentModal()">Cancelar</button>
+          <button
+            type="button"
+            class="save-btn"
+            [disabled]="!studentForm.name.trim() || !studentForm.enrollment.trim() || !studentForm.email.trim() || !studentForm.program || !studentForm.semester || !studentForm.enrollmentDate"
+            (click)="saveStudent()">
+            {{ editingStudentId() !== null ? 'Actualizar' : 'Guardar' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,126 @@
+<div class="container py-4 solicitudes-container">
+  <div class="row align-items-center mb-4">
+    <div class="col-md-8">
+      <h1 class="h2 fw-bold text-dark mb-1">Solicitudes</h1>
+      <p class="text-muted">Gestiona tus solicitudes de aulas, materiales y reportes</p>
+    </div>
+    <div class="col-md-4 text-md-end">
+      <button mat-flat-button class="new-request-btn" (click)="openNewRequestModal()">
+        <mat-icon class="me-2">add</mat-icon>
+        Nueva Solicitud
+      </button>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+      <mat-card class="stat-card border-0 shadow-sm">
+        <div class="d-flex align-items-center justify-content-between p-3">
+          <div>
+            <div class="stat-label">Total</div>
+            <div class="stat-value">{{ stats().total }}</div>
+          </div>
+          <div class="stat-icon bg-gray-light"><mat-icon>description</mat-icon></div>
+        </div>
+      </mat-card>
+    </div>
+    <div class="col-6 col-lg-3">
+      <mat-card class="stat-card border-0 shadow-sm border-bottom-warning">
+        <div class="d-flex align-items-center justify-content-between p-3">
+          <div>
+            <div class="stat-label">Pendientes</div>
+            <div class="stat-value text-warning">{{ stats().pendiente }}</div>
+          </div>
+          <div class="stat-icon bg-warning-light"><mat-icon>history</mat-icon></div>
+        </div>
+      </mat-card>
+    </div>
+    <div class="col-6 col-lg-3">
+      <mat-card class="stat-card border-0 shadow-sm border-bottom-success">
+        <div class="d-flex align-items-center justify-content-between p-3">
+          <div>
+            <div class="stat-label">Aprobadas</div>
+            <div class="stat-value text-success">{{ stats().aprobada }}</div>
+          </div>
+          <div class="stat-icon bg-success-light"><mat-icon>check_circle</mat-icon></div>
+        </div>
+      </mat-card>
+    </div>
+    <div class="col-6 col-lg-3">
+      <mat-card class="stat-card border-0 shadow-sm border-bottom-danger">
+        <div class="d-flex align-items-center justify-content-between p-3">
+          <div>
+            <div class="stat-label">Rechazadas</div>
+            <div class="stat-value text-danger">{{ stats().rechazada }}</div>
+          </div>
+          <div class="stat-icon bg-danger-light"><mat-icon>error_outline</mat-icon></div>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+
+  <mat-card class="filter-card border-0 shadow-sm mb-4">
+    <div class="p-3 d-flex align-items-center gap-3 flex-wrap">
+      <div class="d-flex align-items-center gap-2 text-muted fw-bold small">
+        <mat-icon class="icon-sm">filter_list</mat-icon> FILTRAR:
+      </div>
+      <div class="btn-group-filter">
+        <button [class.active]="filterStatus() === 'todas'" (click)="filterStatus.set('todas')">Todas</button>
+        <button [class.active]="filterStatus() === 'pendiente'" (click)="filterStatus.set('pendiente')">Pendientes</button>
+        <button [class.active]="filterStatus() === 'aprobada'" (click)="filterStatus.set('aprobada')">Aprobadas</button>
+        <button [class.active]="filterStatus() === 'rechazada'" (click)="filterStatus.set('rechazada')">Rechazadas</button>
+      </div>
+    </div>
+  </mat-card>
+
+  <div class="row g-3">
+    @for (req of filteredRequests(); track req.id) {
+      <div class="col-12">
+        <mat-card class="request-item-card border-0 shadow-sm">
+          <mat-card-content class="p-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-start mb-3">
+              <div class="d-flex gap-2 mb-2 mb-sm-0">
+                <span class="type-badge" [ngClass]="req.type.replace(' ', '-')">{{ req.type }}</span>
+                <span class="status-pill" [ngClass]="req.status">
+                  <mat-icon class="icon-xs">{{ getStatusIcon(req.status) }}</mat-icon>
+                  {{ req.status | titlecase }}
+                </span>
+              </div>
+              <h3 class="h5 fw-bold text-dark w-100 mt-2">{{ req.reason }}</h3>
+            </div>
+
+            <div class="row g-3 mb-3 info-grid">
+              <div class="col-sm-6 d-flex align-items-center gap-2">
+                <mat-icon class="text-success">domain</mat-icon>
+                <div>
+                  <div class="label">Aula/Laboratorio</div>
+                  <div class="value">{{ req.classroom }}</div>
+                </div>
+              </div>
+              <div class="col-sm-6 d-flex align-items-center gap-2">
+                <mat-icon class="text-success">event</mat-icon>
+                <div>
+                  <div class="label">Fecha de solicitud</div>
+                  <div class="value">{{ req.date }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="info-box bg-light p-3 rounded-3">
+              <div class="small fw-bold text-muted mb-1">Información adicional:</div>
+              <p class="mb-0 small text-secondary">{{ req.information }}</p>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    } @empty {
+      <div class="col-12 text-center py-5">
+        <div class="empty-state p-5 bg-white rounded-4 shadow-sm">
+          <mat-icon class="display-4 text-muted opacity-25">inbox</mat-icon>
+          <h3 class="h5 mt-3">No hay solicitudes para mostrar</h3>
+          <p class="text-muted small">Intenta cambiando el filtro o crea una nueva solicitud.</p>
+        </div>
+      </div>
+    }
+  </div>
+</div>

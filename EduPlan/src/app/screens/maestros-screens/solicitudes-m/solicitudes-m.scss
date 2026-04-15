@@ -1,0 +1,74 @@
+$green-buap: #16a34a;
+
+.solicitudes-container {
+  .new-request-btn {
+    background-color: $green-buap;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 12px;
+  }
+
+  .stat-card {
+    border-radius: 16px;
+    .stat-label { font-size: 0.8rem; font-weight: 600; color: #64748b; }
+    .stat-value { font-size: 1.5rem; font-weight: 800; }
+    .stat-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      mat-icon { font-size: 24px; color: #475569; }
+    }
+
+    &.border-bottom-warning { border-bottom: 4px solid #f59e0b !important; }
+    &.border-bottom-success { border-bottom: 4px solid #10b981 !important; }
+    &.border-bottom-danger { border-bottom: 4px solid #ef4444 !important; }
+  }
+
+  .bg-warning-light { background: #fffbeb; mat-icon { color: #d97706; } }
+  .bg-success-light { background: #ecfdf5; mat-icon { color: #059669; } }
+  .bg-danger-light { background: #fef2f2; mat-icon { color: #dc2626; } }
+  .bg-gray-light { background: #f8fafc; }
+
+  .filter-card {
+    border-radius: 12px;
+    .btn-group-filter {
+      display: flex; gap: 8px;
+      button {
+        border: none; padding: 8px 16px; border-radius: 8px;
+        font-size: 0.85rem; font-weight: 600; background: #f1f5f9;
+        color: #475569; transition: all 0.2s;
+        &.active { background: $green-buap; color: white; }
+        &:hover:not(.active) { background: #e2e8f0; }
+      }
+    }
+  }
+
+  .request-item-card {
+    border-radius: 16px;
+    transition: transform 0.2s;
+    &:hover { transform: translateY(-4px); }
+
+    .type-badge {
+      font-size: 0.75rem; font-weight: 700; padding: 4px 12px; border-radius: 8px;
+      &.Cambio-de-Aula { background: #eff6ff; color: #2563eb; }
+      &.Solicitud-de-Material { background: #f5f3ff; color: #7c3aed; }
+      &.Reporte-de-Falla-Técnica { background: #fef2f2; color: #dc2626; }
+      &.Ajuste-de-Horario { background: #fff7ed; color: #ea580c; }
+    }
+
+    .status-pill {
+      display: flex; align-items: center; gap: 4px; padding: 4px 10px;
+      border-radius: 20px; font-size: 0.7rem; font-weight: 700; border: 1px solid transparent;
+      &.pendiente { background: #fffbeb; color: #92400e; border-color: #fde68a; }
+      &.aprobada { background: #ecfdf5; color: #065f46; border-color: #a7f3d0; }
+      &.rechazada { background: #fef2f2; color: #991b1b; border-color: #fecaca; }
+    }
+
+    .info-grid {
+      .label { font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; }
+      .value { font-weight: 700; color: #1e293b; font-size: 0.9rem; }
+    }
+  }
+
+  .icon-sm { font-size: 18px; width: 18px; height: 18px; }
+  .icon-xs { font-size: 16px; width: 16px; height: 16px; }
+}

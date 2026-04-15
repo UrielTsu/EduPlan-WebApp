@@ -1,0 +1,82 @@
+<div class="container-fluid py-4 profile-wrapper">
+  <button mat-button class="mb-3 back-btn" (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+    <span>Volver</span>
+  </button>
+
+  <mat-card class="header-card border-0 shadow-sm mb-4">
+    <mat-card-content class="p-4">
+      <div class="row align-items-center g-4">
+        <div class="col-auto">
+          <div class="profile-avatar shadow-sm">
+            <mat-icon>person</mat-icon>
+          </div>
+        </div>
+        <div class="col text-center text-sm-start">
+          <h1 class="h3 fw-bold mb-1">{{ profileData().name }}</h1>
+          <p class="text-muted mb-1">{{ profileData().program }}</p>
+          <span class="badge rounded-pill bg-light text-dark border">ID: {{ profileData().studentId }}</span>
+        </div>
+      </div>
+    </mat-card-content>
+
+    <div class="custom-tabs d-flex border-top mt-3">
+      <button class="tab-item" [class.active]="activeTab() === 'info'" (click)="activeTab.set('info')">
+        Información del Estudiante
+      </button>
+    </div>
+  </mat-card>
+
+  <div class="row g-4">
+    <div class="col-12">
+      <div class="space-y-4">
+
+        <mat-card class="border-0 shadow-sm section-card">
+          <mat-card-content class="p-4">
+            <h2 class="h5 fw-bold mb-4 d-flex align-items-center">
+              <mat-icon class="me-2 color-primary">contact_mail</mat-icon>
+              Información de Contacto
+            </h2>
+
+            <div class="row g-4">
+              <div class="col-12 col-md-6">
+                <label class="info-label">Correo Electrónico</label>
+                <p class="info-value text-break">{{ profileData().email }}</p>
+              </div>
+
+              <div class="col-12 col-md-6">
+                <label class="info-label">Teléfono</label>
+                <p class="info-value">{{ profileData().phone }}</p>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="border-0 shadow-sm section-card mt-4">
+          <mat-card-content class="p-4">
+            <h2 class="h5 fw-bold mb-4 d-flex align-items-center">
+              <mat-icon class="me-2 color-primary">school</mat-icon>
+              Información Académica
+            </h2>
+
+            <div class="row g-4">
+              <div class="col-md-6">
+                <label class="info-label">Institución</label>
+                <p class="info-value">{{ profileData().institution }}</p>
+              </div>
+              <div class="col-md-6">
+                <label class="info-label">Facultad</label>
+                <p class="info-value">{{ profileData().faculty }}</p>
+              </div>
+              <div class="col-md-6">
+                <label class="info-label">Asesor Académico</label>
+                <p class="info-value">{{ profileData().advisor }}</p>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+
+  </div>
+</div>
