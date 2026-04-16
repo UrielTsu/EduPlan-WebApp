@@ -472,6 +472,16 @@
           </div>
 
           <div class="form-group">
+            <label>Docente Asignado</label>
+            <select [(ngModel)]="groupForm.teacher" [ngModelOptions]="{ standalone: true }">
+              <option value="" disabled>Seleccionar docente...</option>
+              @for (teacher of teachers(); track teacher.id) {
+                <option [value]="teacher.name">{{ teacher.name }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
             <label>Semestre</label>
             <input
               type="text"

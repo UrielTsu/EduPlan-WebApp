@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { DocenteCreate, DocenteUpdate, EstudianteCreate, EstudianteUpdate, GrupoCreate, GrupoUpdate, MateriaCreate, MateriaUpdate, PeriodoCreate, PeriodoUpdate } from '../../../models/admin.models';
+import { AulaCreate, AulaUpdate, DocenteCreate, DocenteUpdate, EstudianteCreate, EstudianteUpdate, GrupoCreate, GrupoUpdate, MateriaCreate, MateriaUpdate, PeriodoCreate, PeriodoUpdate } from '../../../models/admin.models';
 import { AdminService } from '../../../services/admin.service';
 
 type GestionTabKey = 'periodos' | 'materias' | 'grupos' | 'aulas' | 'docentes' | 'estudiantes';
@@ -54,6 +54,7 @@ interface GroupItem {
 interface GroupFormModel {
   name: string;
   subject: string;
+  teacher: string;
   semester: string;
   maxCapacity: number;
 }
@@ -148,6 +149,13 @@ interface ApiDocente {
 interface ApiEstudiante {
   usuario: ApiUser;
   matricula: string;
+  telefono: string;
+  programa: string;
+  semestre: string;
+  fecha_inscripcion: string | null;
+  direccion: string;
+  contacto_emergencia_nombre: string;
+  contacto_emergencia_telefono: string;
 }
 
 interface ApiPeriodo {
@@ -174,6 +182,15 @@ interface ApiGrupo {
   semestre: string;
   cupo_max: number;
   inscritos: number;
+}
+
+interface ApiAula {
+  id: number;
+  edificio: string;
+  numero: string;
+  capacidad: number;
+  recursos: string[];
+  estado: ClassroomStatus;
 }
 
 @Component({
@@ -263,6 +280,7 @@ export class GestionAdminComponent {
   groupForm: GroupFormModel = {
     name: '',
     subject: '',
+    teacher: '',
     semester: '',
     maxCapacity: 40
   };
@@ -408,6 +426,7 @@ export class GestionAdminComponent {
     this.loadPeriodsFromApi();
     this.loadSubjectsFromApi();
     this.loadGroupsFromApi();
+    this.loadClassroomsFromApi();
     this.loadUsersFromApi();
   }
 
@@ -504,7 +523,10 @@ export class GestionAdminComponent {
         });
         break;
       case 'aulas':
-        this.classrooms.update((items) => items.filter((item) => item.id !== id));
+        this.adminService.deleteAula(id).subscribe({
+          next: () => this.classrooms.update((items) => items.filter((item) => item.id !== id)),
+          error: (error) => alert(`No se pudo eliminar el aula. ${this.getApiErrorMessage(error)}`)
+        });
         break;
       case 'docentes':
         this.adminService.deleteDocente(id).subscribe({
@@ -732,6 +754,7 @@ export class GestionAdminComponent {
     this.groupForm = {
       name: '',
       subject: '',
+      teacher: '',
       semester: '',
       maxCapacity: 40
     };
@@ -749,6 +772,7 @@ export class GestionAdminComponent {
     this.groupForm = {
       name: selectedGroup.code,
       subject: selectedGroup.subject,
+      teacher: selectedGroup.teacher,
       semester: selectedGroup.semester,
       maxCapacity: selectedGroup.maxCapacity
     };
@@ -788,7 +812,7 @@ export class GestionAdminComponent {
 
   isGroupFormValid(): boolean {
     const f = this.groupForm;
-    if (!f.name.trim() || !f.subject || !f.semester.trim() || !f.maxCapacity || this.isGroupNameTaken()) {
+    if (!f.name.trim() || !f.subject || !f.teacher || !f.semester.trim() || !f.maxCapacity || this.isGroupNameTaken()) {
       return false;
     }
     const nameRegex = /^[A-Z0-9]{5}-[A-Z]$/;
@@ -801,6 +825,7 @@ export class GestionAdminComponent {
   saveGroup(): void {
     const name = this.groupForm.name.trim();
     const subject = this.groupForm.subject;
+    const teacher = this.groupForm.teacher;
     const semester = this.groupForm.semester.trim();
     const maxCapacity = Number(this.groupForm.maxCapacity);
 
@@ -808,7 +833,6 @@ export class GestionAdminComponent {
       return;
     }
 
-    const teacher = this.resolveTeacherBySubject(subject);
     const currentId = this.editingGroupId();
     const payload = {
       codigo: name,
@@ -915,40 +939,41 @@ export class GestionAdminComponent {
     const name = this.classroomForm.name.trim();
     const capacity = Number(this.classroomForm.capacity);
     const resources = [...this.classroomForm.resources];
+    const status = this.classroomForm.status;
 
     if (!this.isClassroomFormValid()) {
       return;
     }
 
     const currentId = this.editingClassroomId();
+    const payload = {
+      edificio: building,
+      numero: name,
+      capacidad: capacity,
+      recursos: resources,
+      estado: status
+    };
 
     if (currentId !== null) {
-      this.classrooms.update((items) =>
-        items.map((item) =>
-          item.id === currentId
-            ? { ...item, building, name, capacity, resources }
-            : item
-        )
-      );
-    } else {
-      const nextId = this.classrooms().length > 0
-        ? Math.max(...this.classrooms().map((item) => item.id)) + 1
-        : 1;
-
-      this.classrooms.update((items) => [
-        ...items,
-        {
-          id: nextId,
-          building,
-          name,
-          capacity,
-          resources,
-          status: 'Disponible'
-        }
-      ]);
+      this.adminService.updateAula(currentId, payload as unknown as AulaUpdate).subscribe({
+        next: (aula) => {
+          const mapped = this.mapApiAulaToClassroomItem(aula as unknown as ApiAula);
+          this.classrooms.update((items) => items.map((item) => (item.id === currentId ? mapped : item)));
+          this.closeClassroomModal();
+        },
+        error: (error) => alert(`No se pudo actualizar el aula. ${this.getApiErrorMessage(error)}`)
+      });
+      return;
     }
 
-    this.closeClassroomModal();
+    this.adminService.createAula(payload as unknown as AulaCreate).subscribe({
+      next: (aula) => {
+        const mapped = this.mapApiAulaToClassroomItem(aula as unknown as ApiAula);
+        this.classrooms.update((items) => [...items, mapped]);
+        this.closeClassroomModal();
+      },
+      error: (error) => alert(`No se pudo guardar el aula. ${this.getApiErrorMessage(error)}`)
+    });
   }
 
   openCreateTeacherModal(): void {
@@ -1258,6 +1283,13 @@ export class GestionAdminComponent {
       last_name: nameParts.lastName,
       email,
       matricula: enrollment,
+      telefono: phone,
+      programa: program,
+      semestre: tableSemester,
+      fecha_inscripcion: enrollmentDate || null,
+      direccion: address,
+      contacto_emergencia_nombre: emergencyContactName,
+      contacto_emergencia_telefono: emergencyContactPhone,
       is_active: status === 'Activo'
     };
 
@@ -1270,23 +1302,7 @@ export class GestionAdminComponent {
       this.adminService.updateEstudiante(currentId, payload as unknown as EstudianteUpdate).subscribe({
         next: (response) => {
           const mapped = this.mapApiEstudianteToStudentItem(response as unknown as ApiEstudiante);
-          this.students.update((items) =>
-            items.map((item) =>
-              item.id === currentId
-                ? {
-                  ...item,
-                  ...mapped,
-                  phone,
-                  program,
-                  semester: tableSemester,
-                  enrollmentDate,
-                  address,
-                  emergencyContactName,
-                  emergencyContactPhone
-                }
-                : item
-            )
-          );
+          this.students.update((items) => items.map((item) => (item.id === currentId ? mapped : item)));
           this.closeStudentModal();
         },
         error: (error) => alert(`No se pudo actualizar el estudiante. ${this.getApiErrorMessage(error)}`)
@@ -1298,19 +1314,7 @@ export class GestionAdminComponent {
     this.adminService.createEstudiante(createPayload as unknown as EstudianteCreate).subscribe({
       next: (response) => {
         const mapped = this.mapApiEstudianteToStudentItem(response as unknown as ApiEstudiante);
-        this.students.update((items) => [
-          ...items,
-          {
-            ...mapped,
-            phone,
-            program,
-            semester: tableSemester,
-            enrollmentDate,
-            address,
-            emergencyContactName,
-            emergencyContactPhone
-          }
-        ]);
+        this.students.update((items) => [...items, mapped]);
         this.closeStudentModal();
       },
       error: (error) => alert(`No se pudo guardar el estudiante. ${this.getApiErrorMessage(error)}`)
@@ -1323,16 +1327,6 @@ export class GestionAdminComponent {
     }
 
     return `${semester} Semestre`;
-  }
-
-  private resolveTeacherBySubject(subject: string): string {
-    const mapping: Record<string, string> = {
-      'Programación Orientada a Objetos': 'Prof. Carlos Ruiz',
-      'Estructuras de Datos Avanzadas': 'Dra. María González',
-      'Matemáticas Discretas': 'Dr. José Hernández'
-    };
-
-    return mapping[subject] ?? 'Docente por asignar';
   }
 
   private loadAllFromStorage(): void {
@@ -1367,6 +1361,15 @@ export class GestionAdminComponent {
       next: (grupos) => {
         const mapped = (grupos as unknown as ApiGrupo[]).map((grupo) => this.mapApiGrupoToGroupItem(grupo));
         this.groups.set(mapped);
+      }
+    });
+  }
+
+  private loadClassroomsFromApi(): void {
+    this.adminService.getAulas().subscribe({
+      next: (aulas) => {
+        const mapped = (aulas as unknown as ApiAula[]).map((aula) => this.mapApiAulaToClassroomItem(aula));
+        this.classrooms.set(mapped);
       }
     });
   }
@@ -1468,13 +1471,13 @@ export class GestionAdminComponent {
       name: `${firstName} ${lastName}`.trim() || estudiante.usuario?.email || 'Estudiante',
       enrollment: estudiante.matricula,
       email: estudiante.usuario?.email ?? '',
-      phone: '',
-      program: '',
-      semester: '1°',
-      enrollmentDate: '',
-      address: '',
-      emergencyContactName: '',
-      emergencyContactPhone: '',
+      phone: estudiante.telefono ?? '',
+      program: estudiante.programa ?? '',
+      semester: estudiante.semestre ?? '1°',
+      enrollmentDate: estudiante.fecha_inscripcion ?? '',
+      address: estudiante.direccion ?? '',
+      emergencyContactName: estudiante.contacto_emergencia_nombre ?? '',
+      emergencyContactPhone: estudiante.contacto_emergencia_telefono ?? '',
       status: estudiante.usuario?.is_active ? 'Activo' : 'Inactivo'
     };
   }
@@ -1508,6 +1511,17 @@ export class GestionAdminComponent {
       students: grupo.inscritos,
       semester: grupo.semestre,
       maxCapacity: grupo.cupo_max
+    };
+  }
+
+  private mapApiAulaToClassroomItem(aula: ApiAula): ClassroomItem {
+    return {
+      id: aula.id,
+      name: aula.numero,
+      building: aula.edificio,
+      capacity: aula.capacidad,
+      status: aula.estado,
+      resources: Array.isArray(aula.recursos) ? aula.recursos : []
     };
   }
 

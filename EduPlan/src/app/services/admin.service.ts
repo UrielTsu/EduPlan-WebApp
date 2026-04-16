@@ -100,19 +100,19 @@ export class AdminService {
   }
 
   getAulas(): Observable<Aula[]> {
-    return this.http.get<Aula[]>(this.endpoint('/admin/aulas/'), this.options());
+    return this.http.get<Aula[]>(this.endpoint('/api/aulas/'), this.options());
   }
 
   createAula(payload: AulaCreate): Observable<Aula> {
-    return this.http.post<Aula>(this.endpoint('/admin/aulas/'), payload, this.options());
+    return this.http.post<Aula>(this.endpoint('/api/aulas/'), payload, this.options());
   }
 
   updateAula(id: number, payload: AulaUpdate): Observable<Aula> {
-    return this.http.patch<Aula>(this.endpoint(`/admin/aulas/${id}/`), payload, this.options());
+    return this.http.patch<Aula>(this.endpoint(`/api/aulas/${id}/`), payload, this.options());
   }
 
   deleteAula(id: number): Observable<void> {
-    return this.http.delete<void>(this.endpoint(`/admin/aulas/${id}/`), this.options());
+    return this.http.delete<void>(this.endpoint(`/api/aulas/${id}/`), this.options());
   }
 
   getDocentes(): Observable<Docente[]> {
