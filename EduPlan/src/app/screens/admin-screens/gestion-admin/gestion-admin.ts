@@ -1,9 +1,12 @@
-import { Component, effect, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { DocenteCreate, DocenteUpdate, EstudianteCreate, EstudianteUpdate } from '../../../models/admin.models';
+import { AdminService } from '../../../services/admin.service';
 
 type GestionTabKey = 'periodos' | 'materias' | 'grupos' | 'aulas' | 'docentes' | 'estudiantes';
 type PeriodStatus = 'Activo' | 'Finalizado';
@@ -91,6 +94,7 @@ interface TeacherFormModel {
   name: string;
   employeeId: string;
   email: string;
+  password: string;
   phone: string;
   department: string;
   specialization: string;
@@ -117,6 +121,7 @@ interface StudentFormModel {
   name: string;
   enrollment: string;
   email: string;
+  password: string;
   phone: string;
   program: string;
   semester: string;
@@ -127,6 +132,24 @@ interface StudentFormModel {
   isActive: boolean;
 }
 
+interface ApiUser {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  is_active: boolean;
+}
+
+interface ApiDocente {
+  usuario: ApiUser;
+  numero_empleado: string;
+}
+
+interface ApiEstudiante {
+  usuario: ApiUser;
+  matricula: string;
+}
+
 @Component({
   selector: 'app-general-management',
   standalone: true,
@@ -135,6 +158,8 @@ interface StudentFormModel {
   styleUrls: ['./gestion-admin.scss']
 })
 export class GestionAdminComponent {
+  private readonly adminService = inject(AdminService);
+
   private readonly storageKeys = {
     periods: 'edplan.gestion.periodos',
     subjects: 'edplan.gestion.materias',
@@ -288,6 +313,7 @@ export class GestionAdminComponent {
     name: '',
     employeeId: '',
     email: '',
+    password: '',
     phone: '',
     department: '',
     specialization: '',
@@ -339,6 +365,7 @@ export class GestionAdminComponent {
     name: '',
     enrollment: '',
     email: '',
+    password: '',
     phone: '',
     program: '',
     semester: '1° Semestre',
@@ -352,6 +379,7 @@ export class GestionAdminComponent {
   constructor() {
     this.loadAllFromStorage();
     this.registerPersistenceEffects();
+    this.loadUsersFromApi();
   }
 
   setActiveTab(tab: GestionTabKey): void {
@@ -441,10 +469,16 @@ export class GestionAdminComponent {
         this.classrooms.update((items) => items.filter((item) => item.id !== id));
         break;
       case 'docentes':
-        this.teachers.update((items) => items.filter((item) => item.id !== id));
+        this.adminService.deleteDocente(id).subscribe({
+          next: () => this.teachers.update((items) => items.filter((item) => item.id !== id)),
+          error: (error) => alert(`No se pudo eliminar el docente. ${this.getApiErrorMessage(error)}`)
+        });
         break;
       case 'estudiantes':
-        this.students.update((items) => items.filter((item) => item.id !== id));
+        this.adminService.deleteEstudiante(id).subscribe({
+          next: () => this.students.update((items) => items.filter((item) => item.id !== id)),
+          error: (error) => alert(`No se pudo eliminar el estudiante. ${this.getApiErrorMessage(error)}`)
+        });
         break;
     }
   }
@@ -881,6 +915,7 @@ export class GestionAdminComponent {
       name: '',
       employeeId: '',
       email: '',
+      password: '',
       phone: '',
       department: '',
       specialization: '',
@@ -902,6 +937,7 @@ export class GestionAdminComponent {
       name: selectedTeacher.name,
       employeeId: selectedTeacher.employeeId,
       email: selectedTeacher.email,
+      password: '',
       phone: selectedTeacher.phone,
       department: selectedTeacher.department,
       specialization: selectedTeacher.specialization,
@@ -958,6 +994,13 @@ export class GestionAdminComponent {
     if (!f.name.trim() || !f.employeeId.trim() || !f.email.trim() || !f.department || !f.contractType || !f.hireDate) {
       return false;
     }
+    const password = f.password.trim();
+    if (this.editingTeacherId() === null && !password) {
+      return false;
+    }
+    if (password && password.length < 6) {
+      return false;
+    }
     if (f.employeeId.trim().length !== 12) {
       return false;
     }
@@ -972,6 +1015,7 @@ export class GestionAdminComponent {
     const name = this.teacherForm.name.trim();
     const employeeId = this.teacherForm.employeeId.trim().toUpperCase();
     const email = this.teacherForm.email.trim().toLowerCase();
+    const password = this.teacherForm.password.trim();
     const phone = this.teacherForm.phone.trim();
     const department = this.teacherForm.department;
     const specialization = this.teacherForm.specialization.trim();
@@ -982,49 +1026,67 @@ export class GestionAdminComponent {
       return;
     }
 
+    const nameParts = this.splitFullName(name);
     const currentId = this.editingTeacherId();
+    const basePayload = {
+      first_name: nameParts.firstName,
+      last_name: nameParts.lastName,
+      email,
+      numero_empleado: employeeId,
+      is_active: true
+    };
 
     if (currentId !== null) {
-      this.teachers.update((items) =>
-        items.map((item) =>
-          item.id === currentId
-            ? {
-              ...item,
-              name,
-              employeeId,
-              email,
-              phone,
-              department,
-              specialization,
-              contractType,
-              hireDate
-            }
-            : item
-        )
-      );
-    } else {
-      const nextId = this.teachers().length > 0
-        ? Math.max(...this.teachers().map((item) => item.id)) + 1
-        : 1;
+      const payload: Partial<{ password: string }> & typeof basePayload = { ...basePayload };
+      if (password) {
+        payload.password = password;
+      }
 
-      this.teachers.update((items) => [
-        ...items,
-        {
-          id: nextId,
-          name,
-          employeeId,
-          email,
-          phone,
-          department,
-          specialization,
-          contractType,
-          hireDate,
-          courses: 0
-        }
-      ]);
+      this.adminService.updateDocente(currentId, payload as unknown as DocenteUpdate).subscribe({
+        next: (response) => {
+          const mapped = this.mapApiDocenteToTeacherItem(response as unknown as ApiDocente);
+          this.teachers.update((items) =>
+            items.map((item) =>
+              item.id === currentId
+                ? {
+                  ...item,
+                  ...mapped,
+                  phone,
+                  department,
+                  specialization,
+                  contractType,
+                  hireDate
+                }
+                : item
+            )
+          );
+          this.closeTeacherModal();
+        },
+        error: (error) => alert(`No se pudo actualizar el docente. ${this.getApiErrorMessage(error)}`)
+      });
+      return;
     }
 
-    this.closeTeacherModal();
+    const createPayload = { ...basePayload, password };
+    this.adminService.createDocente(createPayload as unknown as DocenteCreate).subscribe({
+      next: (response) => {
+        const mapped = this.mapApiDocenteToTeacherItem(response as unknown as ApiDocente);
+        this.teachers.update((items) => [
+          ...items,
+          {
+            ...mapped,
+            phone,
+            department,
+            specialization,
+            contractType,
+            hireDate,
+            courses: 0
+          }
+        ]);
+        this.closeTeacherModal();
+      },
+      error: (error) => alert(`No se pudo guardar el docente. ${this.getApiErrorMessage(error)}`)
+    });
   }
 
   openCreateStudentModal(): void {
@@ -1033,6 +1095,7 @@ export class GestionAdminComponent {
       name: '',
       enrollment: '',
       email: '',
+      password: '',
       phone: '',
       program: '',
       semester: '1° Semestre',
@@ -1057,6 +1120,7 @@ export class GestionAdminComponent {
       name: selectedStudent.name,
       enrollment: selectedStudent.enrollment,
       email: selectedStudent.email,
+      password: '',
       phone: selectedStudent.phone,
       program: selectedStudent.program,
       semester: this.normalizeSemesterForSelect(selectedStudent.semester),
@@ -1108,6 +1172,13 @@ export class GestionAdminComponent {
     if (!f.name.trim() || !f.enrollment.trim() || !f.email.trim() || !f.program || !f.semester || !f.enrollmentDate) {
       return false;
     }
+    const password = f.password.trim();
+    if (this.editingStudentId() === null && !password) {
+      return false;
+    }
+    if (password && password.length < 6) {
+      return false;
+    }
     if (f.enrollment.trim().length !== 9) {
       return false;
     }
@@ -1122,6 +1193,7 @@ export class GestionAdminComponent {
     const name = this.studentForm.name.trim();
     const enrollment = this.studentForm.enrollment.trim().toUpperCase();
     const email = this.studentForm.email.trim().toLowerCase();
+    const password = this.studentForm.password.trim();
     const phone = this.studentForm.phone.trim();
     const program = this.studentForm.program;
     const semester = this.studentForm.semester;
@@ -1136,54 +1208,71 @@ export class GestionAdminComponent {
     }
 
     const tableSemester = semester.replace(' Semestre', '');
+    const nameParts = this.splitFullName(name);
     const currentId = this.editingStudentId();
 
-    if (currentId !== null) {
-      this.students.update((items) =>
-        items.map((item) =>
-          item.id === currentId
-            ? {
-              ...item,
-              name,
-              enrollment,
-              email,
-              phone,
-              program,
-              semester: tableSemester,
-              enrollmentDate,
-              address,
-              emergencyContactName,
-              emergencyContactPhone,
-              status
-            }
-            : item
-        )
-      );
-    } else {
-      const nextId = this.students().length > 0
-        ? Math.max(...this.students().map((item) => item.id)) + 1
-        : 1;
+    const basePayload = {
+      first_name: nameParts.firstName,
+      last_name: nameParts.lastName,
+      email,
+      matricula: enrollment,
+      is_active: status === 'Activo'
+    };
 
-      this.students.update((items) => [
-        ...items,
-        {
-          id: nextId,
-          name,
-          enrollment,
-          email,
-          phone,
-          program,
-          semester: tableSemester,
-          enrollmentDate,
-          address,
-          emergencyContactName,
-          emergencyContactPhone,
-          status
-        }
-      ]);
+    if (currentId !== null) {
+      const payload: Partial<{ password: string }> & typeof basePayload = { ...basePayload };
+      if (password) {
+        payload.password = password;
+      }
+
+      this.adminService.updateEstudiante(currentId, payload as unknown as EstudianteUpdate).subscribe({
+        next: (response) => {
+          const mapped = this.mapApiEstudianteToStudentItem(response as unknown as ApiEstudiante);
+          this.students.update((items) =>
+            items.map((item) =>
+              item.id === currentId
+                ? {
+                  ...item,
+                  ...mapped,
+                  phone,
+                  program,
+                  semester: tableSemester,
+                  enrollmentDate,
+                  address,
+                  emergencyContactName,
+                  emergencyContactPhone
+                }
+                : item
+            )
+          );
+          this.closeStudentModal();
+        },
+        error: (error) => alert(`No se pudo actualizar el estudiante. ${this.getApiErrorMessage(error)}`)
+      });
+      return;
     }
 
-    this.closeStudentModal();
+    const createPayload = { ...basePayload, password };
+    this.adminService.createEstudiante(createPayload as unknown as EstudianteCreate).subscribe({
+      next: (response) => {
+        const mapped = this.mapApiEstudianteToStudentItem(response as unknown as ApiEstudiante);
+        this.students.update((items) => [
+          ...items,
+          {
+            ...mapped,
+            phone,
+            program,
+            semester: tableSemester,
+            enrollmentDate,
+            address,
+            emergencyContactName,
+            emergencyContactPhone
+          }
+        ]);
+        this.closeStudentModal();
+      },
+      error: (error) => alert(`No se pudo guardar el estudiante. ${this.getApiErrorMessage(error)}`)
+    });
   }
 
   private normalizeSemesterForSelect(semester: string): string {
@@ -1211,6 +1300,22 @@ export class GestionAdminComponent {
     this.classrooms.set(this.readFromStorage<ClassroomItem>(this.storageKeys.classrooms, this.classrooms()));
     this.teachers.set(this.readFromStorage<TeacherItem>(this.storageKeys.teachers, this.teachers()));
     this.students.set(this.readFromStorage<StudentItem>(this.storageKeys.students, this.students()));
+  }
+
+  private loadUsersFromApi(): void {
+    this.adminService.getDocentes().subscribe({
+      next: (docentes) => {
+        const mapped = (docentes as unknown as ApiDocente[]).map((docente) => this.mapApiDocenteToTeacherItem(docente));
+        this.teachers.set(mapped);
+      }
+    });
+
+    this.adminService.getEstudiantes().subscribe({
+      next: (estudiantes) => {
+        const mapped = (estudiantes as unknown as ApiEstudiante[]).map((estudiante) => this.mapApiEstudianteToStudentItem(estudiante));
+        this.students.set(mapped);
+      }
+    });
   }
 
   private registerPersistenceEffects(): void {
@@ -1251,5 +1356,87 @@ export class GestionAdminComponent {
 
   private canUseLocalStorage(): boolean {
     return typeof window !== 'undefined' && !!window.localStorage;
+  }
+
+  private splitFullName(fullName: string): { firstName: string; lastName: string } {
+    const cleaned = fullName.trim().replace(/\s+/g, ' ');
+
+    if (!cleaned) {
+      return { firstName: '', lastName: '' };
+    }
+
+    const parts = cleaned.split(' ');
+    return {
+      firstName: parts[0],
+      lastName: parts.slice(1).join(' ')
+    };
+  }
+
+  private mapApiDocenteToTeacherItem(docente: ApiDocente): TeacherItem {
+    const firstName = docente.usuario?.first_name?.trim() ?? '';
+    const lastName = docente.usuario?.last_name?.trim() ?? '';
+
+    return {
+      id: docente.usuario?.id ?? 0,
+      name: `${firstName} ${lastName}`.trim() || docente.usuario?.email || 'Docente',
+      employeeId: docente.numero_empleado,
+      email: docente.usuario?.email ?? '',
+      phone: '',
+      department: '',
+      specialization: '',
+      contractType: 'Tiempo Completo',
+      hireDate: '',
+      courses: 0
+    };
+  }
+
+  private mapApiEstudianteToStudentItem(estudiante: ApiEstudiante): StudentItem {
+    const firstName = estudiante.usuario?.first_name?.trim() ?? '';
+    const lastName = estudiante.usuario?.last_name?.trim() ?? '';
+
+    return {
+      id: estudiante.usuario?.id ?? 0,
+      name: `${firstName} ${lastName}`.trim() || estudiante.usuario?.email || 'Estudiante',
+      enrollment: estudiante.matricula,
+      email: estudiante.usuario?.email ?? '',
+      phone: '',
+      program: '',
+      semester: '1°',
+      enrollmentDate: '',
+      address: '',
+      emergencyContactName: '',
+      emergencyContactPhone: '',
+      status: estudiante.usuario?.is_active ? 'Activo' : 'Inactivo'
+    };
+  }
+
+  private getApiErrorMessage(error: unknown): string {
+    const fallback = 'Revisa los datos e intenta de nuevo.';
+    const httpError = error as HttpErrorResponse;
+    const payload = httpError?.error as Record<string, unknown> | string | undefined;
+
+    if (!payload) {
+      return fallback;
+    }
+
+    if (typeof payload === 'string') {
+      return payload;
+    }
+
+    if (typeof payload['message'] === 'string' && payload['message'].trim()) {
+      return payload['message'];
+    }
+
+    const messages: string[] = [];
+    for (const key of Object.keys(payload)) {
+      const value = payload[key];
+      if (Array.isArray(value)) {
+        messages.push(`${key}: ${value.join(', ')}`);
+      } else if (typeof value === 'string') {
+        messages.push(`${key}: ${value}`);
+      }
+    }
+
+    return messages.length > 0 ? messages.join(' | ') : fallback;
   }
 }

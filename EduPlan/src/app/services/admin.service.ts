@@ -116,35 +116,35 @@ export class AdminService {
   }
 
   getDocentes(): Observable<Docente[]> {
-    return this.http.get<Docente[]>(this.endpoint('/admin/docentes/'), this.options());
+    return this.http.get<Docente[]>(this.endpoint('/api/docentes/'), this.options());
   }
 
   createDocente(payload: DocenteCreate): Observable<Docente> {
-    return this.http.post<Docente>(this.endpoint('/admin/docentes/'), payload, this.options());
+    return this.http.post<Docente>(this.endpoint('/api/docentes/'), payload, this.options());
   }
 
   updateDocente(idUsuario: number, payload: DocenteUpdate): Observable<Docente> {
-    return this.http.patch<Docente>(this.endpoint(`/admin/docentes/${idUsuario}/`), payload, this.options());
+    return this.http.patch<Docente>(this.endpoint(`/api/docentes/${idUsuario}/`), payload, this.options());
   }
 
   deleteDocente(idUsuario: number): Observable<void> {
-    return this.http.delete<void>(this.endpoint(`/admin/docentes/${idUsuario}/`), this.options());
+    return this.http.delete<void>(this.endpoint(`/api/docentes/${idUsuario}/`), this.options());
   }
 
   getEstudiantes(): Observable<Estudiante[]> {
-    return this.http.get<Estudiante[]>(this.endpoint('/admin/estudiantes/'), this.options());
+    return this.http.get<Estudiante[]>(this.endpoint('/api/estudiantes/'), this.options());
   }
 
   createEstudiante(payload: EstudianteCreate): Observable<Estudiante> {
-    return this.http.post<Estudiante>(this.endpoint('/admin/estudiantes/'), payload, this.options());
+    return this.http.post<Estudiante>(this.endpoint('/api/estudiantes/'), payload, this.options());
   }
 
   updateEstudiante(idUsuario: number, payload: EstudianteUpdate): Observable<Estudiante> {
-    return this.http.patch<Estudiante>(this.endpoint(`/admin/estudiantes/${idUsuario}/`), payload, this.options());
+    return this.http.patch<Estudiante>(this.endpoint(`/api/estudiantes/${idUsuario}/`), payload, this.options());
   }
 
   deleteEstudiante(idUsuario: number): Observable<void> {
-    return this.http.delete<void>(this.endpoint(`/admin/estudiantes/${idUsuario}/`), this.options());
+    return this.http.delete<void>(this.endpoint(`/api/estudiantes/${idUsuario}/`), this.options());
   }
 
   getHorarios(): Observable<Horario[]> {
