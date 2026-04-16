@@ -1,8 +1,10 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { Router } from '@angular/router';
+import { AuthService } from '../../../services/auth.service';
 
 
 interface TeacherProfile {
@@ -30,7 +32,7 @@ interface TeacherProfile {
   templateUrl: './perfil-m.html',
   styleUrls: ['./perfil-m.scss']
 })
-export class PerfilM {
+export class PerfilM implements OnInit {
   profileData = signal<TeacherProfile>({
     name: 'Dr. Carlos Martínez',
     email: 'carlos.martinez@profesor.edu',
@@ -56,4 +58,22 @@ export class PerfilM {
     { name: 'Estructuras de Datos Avanzadas', code: 'CS302', students: 32 },
     { name: 'Algoritmos Avanzados', code: 'CS401', students: 28 }
   ];
+
+  constructor(private router: Router, private authService: AuthService) {}
+
+  ngOnInit(): void {
+    this.authService.getCurrentUser().subscribe({
+      next: (user) => {
+        this.profileData.update((current) => ({
+          ...current,
+          name: user.fullName,
+          email: user.email
+        }));
+      },
+      error: () => {
+        this.authService.clearSession();
+        this.router.navigate(['/login']);
+      }
+    });
+  }
 }

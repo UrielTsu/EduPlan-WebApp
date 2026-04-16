@@ -18,6 +18,7 @@ import { TeacherScheduleComponent } from './screens/maestros-screens/horario-m/h
 import { SolicitudesM } from './screens/maestros-screens/solicitudes-m/solicitudes-m';
 import { CursosM } from './screens/maestros-screens/cursos-m/cursos-m';
 import { PerfilM } from './screens/maestros-screens/perfil-m/perfil-m';
+import { authRoleGuard } from './guards/auth-role.guard';
 
 
 export const routes: Routes = [
@@ -27,70 +28,87 @@ export const routes: Routes = [
   {
     path: '',
     component: NavAlumno, // Este componente actúa como "cascarón"
+    canActivateChild: [authRoleGuard],
     children: [
       {
         path: 'dashboard-alumno',
-        component: DashboardAlumno
+        component: DashboardAlumno,
+        data: { roles: ['estudiante'] }
       },
       {
         path: 'horario-a',
-        component: HorarioA
+        component: HorarioA,
+        data: { roles: ['estudiante'] }
       },
       {
         path: 'cursos-a',
-        component: CursosA
+        component: CursosA,
+        data: { roles: ['estudiante'] }
       },
       {
         path: 'admin',
-        component: AdminDashboard
+        component: AdminDashboard,
+        data: { roles: ['admin'] }
       },
       {
         path: 'admin/aulas',
-        component: AulaComponent
+        component: AulaComponent,
+        data: { roles: ['admin'] }
       },
       {
         path: 'admin/solicitudes',
-        component: SolicitudesAdminComponent
+        component: SolicitudesAdminComponent,
+        data: { roles: ['admin'] }
       },
       {
         path: 'admin/gestion',
-        component: GestionAdminComponent
+        component: GestionAdminComponent,
+        data: { roles: ['admin'] }
       }
       ,{
         path: 'cursos-d/:id',
-        component: CursosD
+        component: CursosD,
+        data: { roles: ['estudiante'] }
       },
         {
         path : 'tareas',
-        component : TareasA
+        component : TareasA,
+        data: { roles: ['estudiante'] }
       },
       {
         path : 'tareas-d/:id',
-        component : TareasD
+        component : TareasD,
+        data: { roles: ['estudiante'] }
       },
       {
         path : 'perfil',
-        component : PerfilA
+        component : PerfilA,
+        data: { roles: ['estudiante'] }
       },
       {
         path : 'dashboard-maestros',
-        component : MaestroHome
+        component : MaestroHome,
+        data: { roles: ['maestro'] }
       },
       {
         path : 'horario-m',
-        component : TeacherScheduleComponent
+        component : TeacherScheduleComponent,
+        data: { roles: ['maestro'] }
       },
       {
         path : 'profesor/solicitudes',
-        component : SolicitudesM
+        component : SolicitudesM,
+        data: { roles: ['maestro'] }
       },
       {
         path : 'cursos-m',
-        component : CursosM
+        component : CursosM,
+        data: { roles: ['maestro'] }
       },
       {
         path : 'perfil-m',
-        component : PerfilM
+        component : PerfilM,
+        data: { roles: ['maestro'] }
       }
 
     ]

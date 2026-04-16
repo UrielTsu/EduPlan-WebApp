@@ -100,14 +100,14 @@
           <div *ngIf="userRole === 'admin'" class="admin-label">
             Administrador
           </div>
-          <button mat-menu-item *ngIf="userRole !== 'admin'" routerLink="/perfil">
+          <button mat-menu-item *ngIf="userRole !== 'admin'" [routerLink]="profileRoute">
             <mat-icon>person</mat-icon>
             <span>Mi Perfil</span>
           </button>
           <mat-divider></mat-divider>
-          <button mat-menu-item (click)="handleLogout()" class="logout-item">
+          <button mat-menu-item (click)="handleLogout()" class="logout-item" [disabled]="isLoggingOut">
             <mat-icon>logout</mat-icon>
-            <span>Cerrar sesión</span>
+            <span>{{ isLoggingOut ? 'Cerrando sesión...' : 'Cerrar sesión' }}</span>
           </button>
         </mat-menu>
       </div>

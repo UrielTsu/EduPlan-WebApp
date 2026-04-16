@@ -8,9 +8,9 @@
 
         </a>
 
-         <a routerLink="/" class="btn btn-primary">
-    Volver a Inicio
-     </a>
+        <a routerLink="/" class="btn btn-primary">
+          Volver a Inicio
+        </a>
       </div>
     </div>
   </header>
@@ -30,24 +30,16 @@
 
             <div class="input">
               <div class="input__left">
-                  <mat-icon>email</mat-icon>
+                <mat-icon>email</mat-icon>
 
               </div>
 
-              <input
-                id="email"
-                type="email"
-                formControlName="email"
-                class="input__control"
+              <input id="email" type="email" formControlName="email" class="input__control"
                 [class.is-invalid]="emailControl?.invalid && emailControl?.touched"
-                placeholder="estudiante@universidad.edu"
-              />
+                placeholder="estudiante@universidad.edu" />
             </div>
 
-            <div
-              *ngIf="emailControl?.invalid && emailControl?.touched"
-              class="field__error"
-            >
+            <div *ngIf="emailControl?.invalid && emailControl?.touched" class="field__error">
               <mat-icon>warning</mat-icon>
 
               <span>{{ getEmailErrorMessage() }}</span>
@@ -60,34 +52,22 @@
 
             <div class="input">
               <div class="input__left">
-                  <mat-icon>lock</mat-icon>
+                <mat-icon>lock</mat-icon>
 
               </div>
 
-              <input
-                id="password"
-                [type]="showPassword ? 'text' : 'password'"
-                formControlName="password"
+              <input id="password" [type]="showPassword ? 'text' : 'password'" formControlName="password"
                 class="input__control input__control--with-right"
-                [class.is-invalid]="passwordControl?.invalid && passwordControl?.touched"
-                placeholder="••••••••"
-              />
+                [class.is-invalid]="passwordControl?.invalid && passwordControl?.touched" placeholder="••••••••" />
 
-              <button
-                type="button"
-                (click)="togglePasswordVisibility()"
-                class="input__right-btn"
-                aria-label="Mostrar u ocultar contraseña"
-              >
+              <button type="button" (click)="togglePasswordVisibility()" class="input__right-btn"
+                aria-label="Mostrar u ocultar contraseña">
                 <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
 
               </button>
             </div>
 
-            <div
-              *ngIf="passwordControl?.invalid && passwordControl?.touched"
-              class="field__error"
-            >
+            <div *ngIf="passwordControl?.invalid && passwordControl?.touched" class="field__error">
               <mat-icon>warning</mat-icon>
 
               <span>{{ getPasswordErrorMessage() }}</span>
@@ -105,17 +85,18 @@
           </div> -->
 
           <!-- SUBMIT -->
-          <button
-            type="submit"
-            [disabled]="isLoading"
-            class="btn btn--primary btn--block"
-          >
+          <button type="submit" [disabled]="isLoading" class="btn btn--primary btn--block">
             <ng-container *ngIf="isLoading; else submitText">
               <span class="spinner" aria-hidden="true"></span>
               Iniciando sesión...
             </ng-container>
             <ng-template #submitText>Iniciar sesión</ng-template>
           </button>
+
+          <div *ngIf="loginError" class="field__error">
+            <mat-icon>error</mat-icon>
+            <span>{{ loginError }}</span>
+          </div>
 
           <!-- DIVIDER -->
           <!-- <div class="divider" role="separator" aria-label="O continúa con">
