@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { DocenteCreate, DocenteUpdate, EstudianteCreate, EstudianteUpdate } from '../../../models/admin.models';
+import { DocenteCreate, DocenteUpdate, EstudianteCreate, EstudianteUpdate, GrupoCreate, GrupoUpdate, MateriaCreate, MateriaUpdate, PeriodoCreate, PeriodoUpdate } from '../../../models/admin.models';
 import { AdminService } from '../../../services/admin.service';
 
 type GestionTabKey = 'periodos' | 'materias' | 'grupos' | 'aulas' | 'docentes' | 'estudiantes';
@@ -148,6 +148,32 @@ interface ApiDocente {
 interface ApiEstudiante {
   usuario: ApiUser;
   matricula: string;
+}
+
+interface ApiPeriodo {
+  id: number;
+  nombre: string;
+  fecha_inicio: string;
+  fecha_fin: string;
+  estado: PeriodStatus;
+}
+
+interface ApiMateria {
+  id: number;
+  nombre: string;
+  codigo: string;
+  creditos: number;
+  area_academica: string;
+}
+
+interface ApiGrupo {
+  id: number;
+  codigo: string;
+  materia: string;
+  docente: string;
+  semestre: string;
+  cupo_max: number;
+  inscritos: number;
 }
 
 @Component({
@@ -379,6 +405,9 @@ export class GestionAdminComponent {
   constructor() {
     this.loadAllFromStorage();
     this.registerPersistenceEffects();
+    this.loadPeriodsFromApi();
+    this.loadSubjectsFromApi();
+    this.loadGroupsFromApi();
     this.loadUsersFromApi();
   }
 
@@ -457,13 +486,22 @@ export class GestionAdminComponent {
   deleteItem(id: number, tab: GestionTabKey): void {
     switch (tab) {
       case 'periodos':
-        this.periods.update((items) => items.filter((item) => item.id !== id));
+        this.adminService.deletePeriodo(id).subscribe({
+          next: () => this.periods.update((items) => items.filter((item) => item.id !== id)),
+          error: (error) => alert(`No se pudo eliminar el periodo. ${this.getApiErrorMessage(error)}`)
+        });
         break;
       case 'materias':
-        this.subjects.update((items) => items.filter((item) => item.id !== id));
+        this.adminService.deleteMateria(id).subscribe({
+          next: () => this.subjects.update((items) => items.filter((item) => item.id !== id)),
+          error: (error) => alert(`No se pudo eliminar la materia. ${this.getApiErrorMessage(error)}`)
+        });
         break;
       case 'grupos':
-        this.groups.update((items) => items.filter((item) => item.id !== id));
+        this.adminService.deleteGrupo(id).subscribe({
+          next: () => this.groups.update((items) => items.filter((item) => item.id !== id)),
+          error: (error) => alert(`No se pudo eliminar el grupo. ${this.getApiErrorMessage(error)}`)
+        });
         break;
       case 'aulas':
         this.classrooms.update((items) => items.filter((item) => item.id !== id));
@@ -565,27 +603,33 @@ export class GestionAdminComponent {
 
     const status: PeriodStatus = this.periodForm.isActive ? 'Activo' : 'Finalizado';
     const currentId = this.editingPeriodId();
+    const payload = {
+      nombre: name,
+      fecha_inicio: startDate,
+      fecha_fin: endDate,
+      estado: status
+    };
 
     if (currentId !== null) {
-      this.periods.update((items) =>
-        items.map((item) =>
-          item.id === currentId
-            ? { ...item, name, startDate, endDate, status }
-            : item
-        )
-      );
-    } else {
-      const nextId = this.periods().length > 0
-        ? Math.max(...this.periods().map((item) => item.id)) + 1
-        : 1;
-
-      this.periods.update((items) => [
-        ...items,
-        { id: nextId, name, startDate, endDate, status }
-      ]);
+      this.adminService.updatePeriodo(currentId, payload as unknown as PeriodoUpdate).subscribe({
+        next: (periodo) => {
+          const mapped = this.mapApiPeriodoToPeriodItem(periodo as unknown as ApiPeriodo);
+          this.periods.update((items) => items.map((item) => (item.id === currentId ? mapped : item)));
+          this.closePeriodModal();
+        },
+        error: (error) => alert(`No se pudo actualizar el periodo. ${this.getApiErrorMessage(error)}`)
+      });
+      return;
     }
 
-    this.closePeriodModal();
+    this.adminService.createPeriodo(payload as unknown as PeriodoCreate).subscribe({
+      next: (periodo) => {
+        const mapped = this.mapApiPeriodoToPeriodItem(periodo as unknown as ApiPeriodo);
+        this.periods.update((items) => [...items, mapped]);
+        this.closePeriodModal();
+      },
+      error: (error) => alert(`No se pudo guardar el periodo. ${this.getApiErrorMessage(error)}`)
+    });
   }
 
   openCreateSubjectModal(): void {
@@ -654,27 +698,33 @@ export class GestionAdminComponent {
     }
 
     const currentId = this.editingSubjectId();
+    const payload = {
+      nombre: name,
+      codigo: code,
+      creditos: credits,
+      area_academica: department
+    };
 
     if (currentId !== null) {
-      this.subjects.update((items) =>
-        items.map((item) =>
-          item.id === currentId
-            ? { ...item, name, code, credits, department }
-            : item
-        )
-      );
-    } else {
-      const nextId = this.subjects().length > 0
-        ? Math.max(...this.subjects().map((item) => item.id)) + 1
-        : 1;
-
-      this.subjects.update((items) => [
-        ...items,
-        { id: nextId, name, code, credits, department }
-      ]);
+      this.adminService.updateMateria(currentId, payload as unknown as MateriaUpdate).subscribe({
+        next: (materia) => {
+          const mapped = this.mapApiMateriaToSubjectItem(materia as unknown as ApiMateria);
+          this.subjects.update((items) => items.map((item) => (item.id === currentId ? mapped : item)));
+          this.closeSubjectModal();
+        },
+        error: (error) => alert(`No se pudo actualizar la materia. ${this.getApiErrorMessage(error)}`)
+      });
+      return;
     }
 
-    this.closeSubjectModal();
+    this.adminService.createMateria(payload as unknown as MateriaCreate).subscribe({
+      next: (materia) => {
+        const mapped = this.mapApiMateriaToSubjectItem(materia as unknown as ApiMateria);
+        this.subjects.update((items) => [...items, mapped]);
+        this.closeSubjectModal();
+      },
+      error: (error) => alert(`No se pudo guardar la materia. ${this.getApiErrorMessage(error)}`)
+    });
   }
 
   openCreateGroupModal(): void {
@@ -760,43 +810,35 @@ export class GestionAdminComponent {
 
     const teacher = this.resolveTeacherBySubject(subject);
     const currentId = this.editingGroupId();
+    const payload = {
+      codigo: name,
+      materia: subject,
+      docente: teacher,
+      semestre: semester,
+      cupo_max: maxCapacity,
+      inscritos: maxCapacity
+    };
 
     if (currentId !== null) {
-      this.groups.update((items) =>
-        items.map((item) =>
-          item.id === currentId
-            ? {
-              ...item,
-              code: name,
-              subject,
-              semester,
-              maxCapacity,
-              students: maxCapacity,
-              teacher
-            }
-            : item
-        )
-      );
-    } else {
-      const nextId = this.groups().length > 0
-        ? Math.max(...this.groups().map((item) => item.id)) + 1
-        : 1;
-
-      this.groups.update((items) => [
-        ...items,
-        {
-          id: nextId,
-          code: name,
-          subject,
-          semester,
-          maxCapacity,
-          students: maxCapacity,
-          teacher
-        }
-      ]);
+      this.adminService.updateGrupo(currentId, payload as unknown as GrupoUpdate).subscribe({
+        next: (grupo) => {
+          const mapped = this.mapApiGrupoToGroupItem(grupo as unknown as ApiGrupo);
+          this.groups.update((items) => items.map((item) => (item.id === currentId ? mapped : item)));
+          this.closeGroupModal();
+        },
+        error: (error) => alert(`No se pudo actualizar el grupo. ${this.getApiErrorMessage(error)}`)
+      });
+      return;
     }
 
-    this.closeGroupModal();
+    this.adminService.createGrupo(payload as unknown as GrupoCreate).subscribe({
+      next: (grupo) => {
+        const mapped = this.mapApiGrupoToGroupItem(grupo as unknown as ApiGrupo);
+        this.groups.update((items) => [...items, mapped]);
+        this.closeGroupModal();
+      },
+      error: (error) => alert(`No se pudo guardar el grupo. ${this.getApiErrorMessage(error)}`)
+    });
   }
 
   openCreateClassroomModal(): void {
@@ -1302,6 +1344,33 @@ export class GestionAdminComponent {
     this.students.set(this.readFromStorage<StudentItem>(this.storageKeys.students, this.students()));
   }
 
+  private loadPeriodsFromApi(): void {
+    this.adminService.getPeriodos().subscribe({
+      next: (periodos) => {
+        const mapped = (periodos as unknown as ApiPeriodo[]).map((periodo) => this.mapApiPeriodoToPeriodItem(periodo));
+        this.periods.set(mapped);
+      }
+    });
+  }
+
+  private loadSubjectsFromApi(): void {
+    this.adminService.getMaterias().subscribe({
+      next: (materias) => {
+        const mapped = (materias as unknown as ApiMateria[]).map((materia) => this.mapApiMateriaToSubjectItem(materia));
+        this.subjects.set(mapped);
+      }
+    });
+  }
+
+  private loadGroupsFromApi(): void {
+    this.adminService.getGrupos().subscribe({
+      next: (grupos) => {
+        const mapped = (grupos as unknown as ApiGrupo[]).map((grupo) => this.mapApiGrupoToGroupItem(grupo));
+        this.groups.set(mapped);
+      }
+    });
+  }
+
   private loadUsersFromApi(): void {
     this.adminService.getDocentes().subscribe({
       next: (docentes) => {
@@ -1407,6 +1476,38 @@ export class GestionAdminComponent {
       emergencyContactName: '',
       emergencyContactPhone: '',
       status: estudiante.usuario?.is_active ? 'Activo' : 'Inactivo'
+    };
+  }
+
+  private mapApiPeriodoToPeriodItem(periodo: ApiPeriodo): PeriodItem {
+    return {
+      id: periodo.id,
+      name: periodo.nombre,
+      startDate: periodo.fecha_inicio,
+      endDate: periodo.fecha_fin,
+      status: periodo.estado
+    };
+  }
+
+  private mapApiMateriaToSubjectItem(materia: ApiMateria): SubjectItem {
+    return {
+      id: materia.id,
+      code: materia.codigo,
+      name: materia.nombre,
+      credits: materia.creditos,
+      department: materia.area_academica
+    };
+  }
+
+  private mapApiGrupoToGroupItem(grupo: ApiGrupo): GroupItem {
+    return {
+      id: grupo.id,
+      code: grupo.codigo,
+      subject: grupo.materia,
+      teacher: grupo.docente,
+      students: grupo.inscritos,
+      semester: grupo.semestre,
+      maxCapacity: grupo.cupo_max
     };
   }
 

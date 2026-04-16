@@ -52,51 +52,51 @@ export class AdminService {
   }
 
   getPeriodos(): Observable<Periodo[]> {
-    return this.http.get<Periodo[]>(this.endpoint('/admin/periodos/'), this.options());
+    return this.http.get<Periodo[]>(this.endpoint('/api/periodos/'), this.options());
   }
 
   createPeriodo(payload: PeriodoCreate): Observable<Periodo> {
-    return this.http.post<Periodo>(this.endpoint('/admin/periodos/'), payload, this.options());
+    return this.http.post<Periodo>(this.endpoint('/api/periodos/'), payload, this.options());
   }
 
   updatePeriodo(id: number, payload: PeriodoUpdate): Observable<Periodo> {
-    return this.http.patch<Periodo>(this.endpoint(`/admin/periodos/${id}/`), payload, this.options());
+    return this.http.patch<Periodo>(this.endpoint(`/api/periodos/${id}/`), payload, this.options());
   }
 
   deletePeriodo(id: number): Observable<void> {
-    return this.http.delete<void>(this.endpoint(`/admin/periodos/${id}/`), this.options());
+    return this.http.delete<void>(this.endpoint(`/api/periodos/${id}/`), this.options());
   }
 
   getMaterias(): Observable<Materia[]> {
-    return this.http.get<Materia[]>(this.endpoint('/admin/materias/'), this.options());
+    return this.http.get<Materia[]>(this.endpoint('/api/materias/'), this.options());
   }
 
   createMateria(payload: MateriaCreate): Observable<Materia> {
-    return this.http.post<Materia>(this.endpoint('/admin/materias/'), payload, this.options());
+    return this.http.post<Materia>(this.endpoint('/api/materias/'), payload, this.options());
   }
 
   updateMateria(id: number, payload: MateriaUpdate): Observable<Materia> {
-    return this.http.patch<Materia>(this.endpoint(`/admin/materias/${id}/`), payload, this.options());
+    return this.http.patch<Materia>(this.endpoint(`/api/materias/${id}/`), payload, this.options());
   }
 
   deleteMateria(id: number): Observable<void> {
-    return this.http.delete<void>(this.endpoint(`/admin/materias/${id}/`), this.options());
+    return this.http.delete<void>(this.endpoint(`/api/materias/${id}/`), this.options());
   }
 
   getGrupos(): Observable<Grupo[]> {
-    return this.http.get<Grupo[]>(this.endpoint('/admin/grupos/'), this.options());
+    return this.http.get<Grupo[]>(this.endpoint('/api/grupos/'), this.options());
   }
 
   createGrupo(payload: GrupoCreate): Observable<Grupo> {
-    return this.http.post<Grupo>(this.endpoint('/admin/grupos/'), payload, this.options());
+    return this.http.post<Grupo>(this.endpoint('/api/grupos/'), payload, this.options());
   }
 
   updateGrupo(id: number, payload: GrupoUpdate): Observable<Grupo> {
-    return this.http.patch<Grupo>(this.endpoint(`/admin/grupos/${id}/`), payload, this.options());
+    return this.http.patch<Grupo>(this.endpoint(`/api/grupos/${id}/`), payload, this.options());
   }
 
   deleteGrupo(id: number): Observable<void> {
-    return this.http.delete<void>(this.endpoint(`/admin/grupos/${id}/`), this.options());
+    return this.http.delete<void>(this.endpoint(`/api/grupos/${id}/`), this.options());
   }
 
   getAulas(): Observable<Aula[]> {
