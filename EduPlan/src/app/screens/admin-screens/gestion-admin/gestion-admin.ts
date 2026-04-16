@@ -7,9 +7,12 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AulaCreate, AulaUpdate, DocenteCreate, DocenteUpdate, EstudianteCreate, EstudianteUpdate, GrupoCreate, GrupoUpdate, MateriaCreate, MateriaUpdate, PeriodoCreate, PeriodoUpdate } from '../../../models/admin.models';
 import { AdminService } from '../../../services/admin.service';
+import { ActualizarScreen } from '../../../modals/actualizar-screen/actualizar-screen';
+import { EliminarScreen } from '../../../modals/eliminar-screen/eliminar-screen';
 
 type GestionTabKey = 'periodos' | 'materias' | 'grupos' | 'aulas' | 'docentes' | 'estudiantes';
 type PeriodStatus = 'Activo' | 'Finalizado';
+type ConfirmActionType = 'update' | 'delete';
 
 interface PeriodItem {
   id: number;
@@ -196,12 +199,13 @@ interface ApiAula {
 @Component({
   selector: 'app-general-management',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, RouterLink, FormsModule],
+  imports: [CommonModule, MatButtonModule, MatIconModule, RouterLink, FormsModule, ActualizarScreen, EliminarScreen],
   templateUrl: './gestion-admin.html',
   styleUrls: ['./gestion-admin.scss']
 })
 export class GestionAdminComponent {
   private readonly adminService = inject(AdminService);
+  private pendingConfirmationAction: (() => void) | null = null;
 
   private readonly storageKeys = {
     periods: 'edplan.gestion.periodos',
@@ -420,6 +424,11 @@ export class GestionAdminComponent {
     isActive: true
   };
 
+  showUpdateConfirmationModal = signal(false);
+  showDeleteConfirmationModal = signal(false);
+  confirmationTitle = signal('');
+  confirmationMessage = signal('');
+
   constructor() {
     this.loadAllFromStorage();
     this.registerPersistenceEffects();
@@ -503,6 +512,42 @@ export class GestionAdminComponent {
   }
 
   deleteItem(id: number, tab: GestionTabKey): void {
+    const label = this.getRecordLabel(tab, id);
+    this.openDeleteConfirmation(tab, label, () => this.executeDeleteItem(id, tab));
+  }
+
+  confirmPendingAction(): void {
+    const action = this.pendingConfirmationAction;
+    this.closeConfirmationModals();
+    action?.();
+  }
+
+  closeConfirmationModals(): void {
+    this.pendingConfirmationAction = null;
+    this.showUpdateConfirmationModal.set(false);
+    this.showDeleteConfirmationModal.set(false);
+    this.confirmationTitle.set('');
+    this.confirmationMessage.set('');
+  }
+
+  private openUpdateConfirmation(entityLabel: string, action: () => void): void {
+    this.pendingConfirmationAction = action;
+    this.confirmationTitle.set('Confirmar actualización');
+    this.confirmationMessage.set(`Se actualizará el registro de ${entityLabel}. Verifica los cambios antes de continuar.`);
+    this.showDeleteConfirmationModal.set(false);
+    this.showUpdateConfirmationModal.set(true);
+  }
+
+  private openDeleteConfirmation(tab: GestionTabKey, recordLabel: string, action: () => void): void {
+    const sectionLabel = this.getTabSingularLabel(tab);
+    this.pendingConfirmationAction = action;
+    this.confirmationTitle.set(`Eliminar ${sectionLabel}`);
+    this.confirmationMessage.set(`Se eliminará ${recordLabel}. Esta acción no se puede deshacer.`);
+    this.showUpdateConfirmationModal.set(false);
+    this.showDeleteConfirmationModal.set(true);
+  }
+
+  private executeDeleteItem(id: number, tab: GestionTabKey): void {
     switch (tab) {
       case 'periodos':
         this.adminService.deletePeriodo(id).subscribe({
@@ -615,6 +660,15 @@ export class GestionAdminComponent {
   }
 
   savePeriod(): void {
+    if (this.editingPeriodId() !== null) {
+      this.openUpdateConfirmation(this.getRecordLabel('periodos', this.editingPeriodId()), () => this.executeSavePeriod());
+      return;
+    }
+
+    this.executeSavePeriod();
+  }
+
+  private executeSavePeriod(): void {
     const name = this.periodForm.name.trim();
     const startDate = this.periodForm.startDate;
     const endDate = this.periodForm.endDate;
@@ -710,6 +764,15 @@ export class GestionAdminComponent {
   }
 
   saveSubject(): void {
+    if (this.editingSubjectId() !== null) {
+      this.openUpdateConfirmation(this.getRecordLabel('materias', this.editingSubjectId()), () => this.executeSaveSubject());
+      return;
+    }
+
+    this.executeSaveSubject();
+  }
+
+  private executeSaveSubject(): void {
     const name = this.subjectForm.name.trim();
     const code = this.subjectForm.code.trim().toUpperCase();
     const credits = Number(this.subjectForm.credits);
@@ -823,6 +886,15 @@ export class GestionAdminComponent {
   }
 
   saveGroup(): void {
+    if (this.editingGroupId() !== null) {
+      this.openUpdateConfirmation(this.getRecordLabel('grupos', this.editingGroupId()), () => this.executeSaveGroup());
+      return;
+    }
+
+    this.executeSaveGroup();
+  }
+
+  private executeSaveGroup(): void {
     const name = this.groupForm.name.trim();
     const subject = this.groupForm.subject;
     const teacher = this.groupForm.teacher;
@@ -935,6 +1007,15 @@ export class GestionAdminComponent {
   }
 
   saveClassroom(): void {
+    if (this.editingClassroomId() !== null) {
+      this.openUpdateConfirmation(this.getRecordLabel('aulas', this.editingClassroomId()), () => this.executeSaveClassroom());
+      return;
+    }
+
+    this.executeSaveClassroom();
+  }
+
+  private executeSaveClassroom(): void {
     const building = this.classroomForm.building;
     const name = this.classroomForm.name.trim();
     const capacity = Number(this.classroomForm.capacity);
@@ -1079,6 +1160,15 @@ export class GestionAdminComponent {
   }
 
   saveTeacher(): void {
+    if (this.editingTeacherId() !== null) {
+      this.openUpdateConfirmation(this.getRecordLabel('docentes', this.editingTeacherId()), () => this.executeSaveTeacher());
+      return;
+    }
+
+    this.executeSaveTeacher();
+  }
+
+  private executeSaveTeacher(): void {
     const name = this.teacherForm.name.trim();
     const employeeId = this.teacherForm.employeeId.trim().toUpperCase();
     const email = this.teacherForm.email.trim().toLowerCase();
@@ -1257,6 +1347,15 @@ export class GestionAdminComponent {
   }
 
   saveStudent(): void {
+    if (this.editingStudentId() !== null) {
+      this.openUpdateConfirmation(this.getRecordLabel('estudiantes', this.editingStudentId()), () => this.executeSaveStudent());
+      return;
+    }
+
+    this.executeSaveStudent();
+  }
+
+  private executeSaveStudent(): void {
     const name = this.studentForm.name.trim();
     const enrollment = this.studentForm.enrollment.trim().toUpperCase();
     const email = this.studentForm.email.trim().toLowerCase();
@@ -1553,5 +1652,55 @@ export class GestionAdminComponent {
     }
 
     return messages.length > 0 ? messages.join(' | ') : fallback;
+  }
+
+  private getTabSingularLabel(tab: GestionTabKey): string {
+    switch (tab) {
+      case 'periodos':
+        return 'periodo';
+      case 'materias':
+        return 'materia';
+      case 'grupos':
+        return 'grupo';
+      case 'aulas':
+        return 'aula';
+      case 'docentes':
+        return 'docente';
+      case 'estudiantes':
+        return 'estudiante';
+    }
+  }
+
+  private getRecordLabel(tab: GestionTabKey, id: number | null): string {
+    if (id === null) {
+      return `el ${this.getTabSingularLabel(tab)}`;
+    }
+
+    switch (tab) {
+      case 'periodos': {
+        const item = this.periods().find((period) => period.id === id);
+        return item ? `el periodo ${item.name}` : 'el periodo seleccionado';
+      }
+      case 'materias': {
+        const item = this.subjects().find((subject) => subject.id === id);
+        return item ? `la materia ${item.name}` : 'la materia seleccionada';
+      }
+      case 'grupos': {
+        const item = this.groups().find((group) => group.id === id);
+        return item ? `el grupo ${item.code}` : 'el grupo seleccionado';
+      }
+      case 'aulas': {
+        const item = this.classrooms().find((classroom) => classroom.id === id);
+        return item ? `el aula ${item.name}` : 'el aula seleccionada';
+      }
+      case 'docentes': {
+        const item = this.teachers().find((teacher) => teacher.id === id);
+        return item ? `el docente ${item.name}` : 'el docente seleccionado';
+      }
+      case 'estudiantes': {
+        const item = this.students().find((student) => student.id === id);
+        return item ? `el estudiante ${item.name}` : 'el estudiante seleccionado';
+      }
+    }
   }
 }

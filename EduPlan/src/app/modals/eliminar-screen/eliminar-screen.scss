@@ -1,0 +1,73 @@
+.confirm-backdrop {
+	position: fixed;
+	inset: 0;
+	z-index: 1200;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 1.5rem;
+	background: rgba(15, 23, 42, 0.6);
+	backdrop-filter: blur(4px);
+}
+
+.confirm-card {
+	width: min(100%, 28rem);
+	border-radius: 24px;
+	padding: 2rem;
+	background: linear-gradient(180deg, #ffffff 0%, #fff7ed 100%);
+	box-shadow: 0 24px 60px rgba(15, 23, 42, 0.22);
+}
+
+.confirm-card.delete {
+	border: 1px solid rgba(239, 68, 68, 0.18);
+}
+
+.confirm-icon-shell {
+	width: 3.5rem;
+	height: 3.5rem;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 18px;
+	margin-bottom: 1rem;
+	background: linear-gradient(135deg, #fee2e2 0%, #fed7aa 100%);
+	color: #b91c1c;
+}
+
+.confirm-copy h3 {
+	margin: 0;
+	font-size: 1.25rem;
+	color: #0f172a;
+}
+
+.confirm-copy p {
+	margin: 0.65rem 0 0;
+	line-height: 1.55;
+	color: #475569;
+}
+
+.confirm-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 0.75rem;
+	margin-top: 1.75rem;
+}
+
+.secondary-btn,
+.danger-btn {
+	border: 0;
+	border-radius: 999px;
+	padding: 0.8rem 1.2rem;
+	font: inherit;
+	cursor: pointer;
+}
+
+.secondary-btn {
+	background: #e2e8f0;
+	color: #334155;
+}
+
+.danger-btn {
+	background: linear-gradient(135deg, #dc2626 0%, #f97316 100%);
+	color: #fff;
+}

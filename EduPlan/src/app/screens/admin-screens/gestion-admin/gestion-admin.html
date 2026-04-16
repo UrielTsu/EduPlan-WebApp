@@ -6,7 +6,7 @@
 
   <header class="header-block">
     <h1>Gestión General</h1>
-    <p>CRUDs completos del sistema académico</p>
+    <p>Seccion de registro</p>
   </header>
 
   <div class="tabs-shell">
@@ -865,3 +865,19 @@
     </div>
   }
 </div>
+
+<app-actualizar-screen
+  [visible]="showUpdateConfirmationModal()"
+  [title]="confirmationTitle()"
+  [message]="confirmationMessage()"
+  (confirm)="confirmPendingAction()"
+  (cancel)="closeConfirmationModals()">
+</app-actualizar-screen>
+
+<app-eliminar-screen
+  [visible]="showDeleteConfirmationModal()"
+  [title]="confirmationTitle()"
+  [message]="confirmationMessage()"
+  (confirm)="confirmPendingAction()"
+  (cancel)="closeConfirmationModals()">
+</app-eliminar-screen>
