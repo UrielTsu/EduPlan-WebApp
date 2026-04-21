@@ -5,12 +5,26 @@
       <p class="text-muted">Gestiona tus solicitudes de aulas, materiales y reportes</p>
     </div>
     <div class="col-md-4 text-md-end">
-      <button mat-flat-button class="new-request-btn" (click)="openNewRequestModal()">
+      <button mat-flat-button class="new-request-btn" (click)="openNewRequestModal()" [disabled]="isSubmitting() || isLoadingClassrooms() || classroomOptions().length === 0">
         <mat-icon class="me-2">add</mat-icon>
         Nueva Solicitud
       </button>
     </div>
   </div>
+
+  @if (isLoadingClassrooms()) {
+    <div class="feedback-banner info mb-4">
+      <mat-icon>meeting_room</mat-icon>
+      <span>Cargando aulas registradas...</span>
+    </div>
+  }
+
+  @if (errorMessage()) {
+    <div class="feedback-banner error mb-4">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ errorMessage() }}</span>
+    </div>
+  }
 
   <div class="row g-3 mb-4">
     <div class="col-6 col-lg-3">
@@ -73,6 +87,13 @@
     </div>
   </mat-card>
 
+  @if (isLoading()) {
+    <div class="loading-shell">
+      <mat-card class="loading-card border-0 shadow-sm">
+        <mat-card-content>Cargando solicitudes...</mat-card-content>
+      </mat-card>
+    </div>
+  } @else {
   <div class="row g-3">
     @for (req of filteredRequests(); track req.id) {
       <div class="col-12">
@@ -123,4 +144,5 @@
       </div>
     }
   </div>
+  }
 </div>

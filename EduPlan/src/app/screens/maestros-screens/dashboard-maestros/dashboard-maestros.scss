@@ -5,9 +5,28 @@ $warning-bg: #fffbeb;
 $warning-text: #92400e;
 
 .teacher-dashboard {
+  .feedback-card {
+    border-radius: 16px;
+
+    &.error {
+      background: #fef2f2;
+      color: #b91c1c;
+    }
+  }
+
+  .loading-card,
+  .empty-panel {
+    border-radius: 16px;
+  }
+
   .current-class-card {
     background: linear-gradient(135deg, $green-primary, $green-dark);
     border-radius: 1rem;
+  }
+
+  .next-class-copy {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
   }
 
   .schedule-item {

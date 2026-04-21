@@ -1,9 +1,29 @@
 .admin-dashboard {
   .stat-card {
     border-radius: 12px;
-    .label { color: #64748b; font-size: 0.85rem; font-weight: 500; }
-    .value { font-size: 2rem; font-weight: 800; color: #0f172a; }
-    .sub-label { font-size: 0.75rem; font-weight: 500; }
+
+    .label {
+      color: #64748b;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 0.45rem;
+      line-height: 1.2;
+    }
+
+    .value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+
+    .sub-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      display: inline-block;
+      line-height: 1.3;
+    }
   }
 
   .icon-box {

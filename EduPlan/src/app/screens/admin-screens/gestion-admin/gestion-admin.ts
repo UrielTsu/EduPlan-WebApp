@@ -49,20 +49,41 @@ interface GroupItem {
   code: string;
   subject: string;
   teacher: string;
+  classroomId: number | null;
+  classroomName: string;
   students: number;
   semester: string;
+  days: string[];
+  day?: string;
+  startTime: string;
+  endTime: string;
   maxCapacity: number;
+  studentIds: number[];
+  enrolledStudents: Array<{
+    id: number;
+    enrollment: string;
+    name: string;
+    email: string;
+    program: string;
+    semester: string;
+    enrollmentDate?: string;
+  }>;
 }
 
 interface GroupFormModel {
   name: string;
   subject: string;
   teacher: string;
+  classroomId: number | null;
   semester: string;
+  days: string[];
+  startTime: string;
+  endTime: string;
   maxCapacity: number;
+  selectedStudentIds: number[];
 }
 
-type ClassroomStatus = 'Disponible' | 'En uso';
+type ClassroomStatus = 'Disponible' | 'Ocupado' | 'Fuera de servicio';
 
 interface ClassroomItem {
   id: number;
@@ -93,6 +114,8 @@ interface TeacherItem {
   specialization: string;
   contractType: string;
   hireDate: string;
+  officeHours?: string;
+  cubicle?: string;
   courses: number;
 }
 
@@ -124,6 +147,11 @@ interface StudentItem {
   emergencyContactName: string;
   emergencyContactPhone: string;
   status: 'Activo' | 'Inactivo';
+  enrolledCourses: Array<{
+    id: number;
+    code: string;
+    subject: string;
+  }>;
 }
 
 interface StudentFormModel {
@@ -153,6 +181,13 @@ interface ApiUser {
 interface ApiDocente {
   usuario: ApiUser;
   numero_empleado: string;
+  telefono?: string;
+  departamento?: string;
+  especializacion?: string;
+  tipo_contrato?: string;
+  fecha_contratacion?: string | null;
+  horario_atencion?: string;
+  cubiculo?: string;
 }
 
 interface ApiEstudiante {
@@ -165,6 +200,38 @@ interface ApiEstudiante {
   direccion: string;
   contacto_emergencia_nombre: string;
   contacto_emergencia_telefono: string;
+  grupos?: ApiStudentGroup[];
+}
+
+interface ApiStudentGroup {
+  id: number;
+  codigo: string;
+  materia: string;
+  docente: string;
+  aula?: {
+    id: number;
+    edificio: string;
+    numero: string;
+    capacidad: number;
+    estado: ClassroomStatus;
+  } | null;
+  semestre: string;
+  dia_semana: string[];
+  hora_inicio: string | null;
+  hora_fin: string | null;
+  cupo_max: number;
+  inscritos: number;
+  fecha_inscripcion: string | null;
+}
+
+interface ApiGroupStudent {
+  id: number;
+  matricula: string;
+  nombre: string;
+  email: string;
+  programa: string;
+  semestre: string;
+  fecha_inscripcion: string | null;
 }
 
 interface ApiPeriodo {
@@ -188,9 +255,20 @@ interface ApiGrupo {
   codigo: string;
   materia: string;
   docente: string;
+  aula?: {
+    id: number;
+    edificio: string;
+    numero: string;
+    capacidad: number;
+    estado: ClassroomStatus;
+  } | null;
   semestre: string;
+  dia_semana: string[];
+  hora_inicio: string | null;
+  hora_fin: string | null;
   cupo_max: number;
   inscritos: number;
+  estudiantes?: ApiGroupStudent[];
 }
 
 interface ApiAula {
@@ -212,6 +290,7 @@ interface ApiAula {
 export class GestionAdminComponent {
   private readonly adminService = inject(AdminService);
   private pendingConfirmationAction: (() => void) | null = null;
+  private readonly updatingClassroomStatusIds = signal<number[]>([]);
 
   private readonly storageKeys = {
     periods: 'edplan.gestion.periodos',
@@ -270,29 +349,49 @@ export class GestionAdminComponent {
       code: 'CS301-A',
       subject: 'Programación Orientada a Objetos',
       teacher: 'Prof. Carlos Ruiz',
+      classroomId: null,
+      classroomName: 'Sin aula asignada',
       students: 35,
       semester: '5° semestre',
-      maxCapacity: 35
+      days: ['Lunes', 'Miércoles'],
+      startTime: '07:00',
+      endTime: '09:00',
+      maxCapacity: 35,
+      studentIds: [],
+      enrolledStudents: []
     },
     {
       id: 2,
       code: 'CS302-B',
       subject: 'Estructuras de Datos Avanzadas',
       teacher: 'Dra. María González',
+      classroomId: null,
+      classroomName: 'Sin aula asignada',
       students: 28,
       semester: '5° semestre',
-      maxCapacity: 28
+      days: ['Martes', 'Jueves'],
+      startTime: '10:00',
+      endTime: '12:00',
+      maxCapacity: 28,
+      studentIds: [],
+      enrolledStudents: []
     }
   ]);
 
   showGroupModal = signal(false);
   editingGroupId = signal<number | null>(null);
+  groupDayOptions = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
   groupForm: GroupFormModel = {
     name: '',
     subject: '',
     teacher: '',
+    classroomId: null,
     semester: '',
-    maxCapacity: 40
+    days: [],
+    startTime: '',
+    endTime: '',
+    maxCapacity: 40,
+    selectedStudentIds: []
   };
 
   classrooms = signal<ClassroomItem[]>([
@@ -309,7 +408,7 @@ export class GestionAdminComponent {
       name: 'Lab 205',
       building: 'Edificio B',
       capacity: 25,
-      status: 'En uso',
+      status: 'Ocupado',
       resources: ['Equipo Especializado', 'Aire Acondicionado']
     }
   ]);
@@ -317,6 +416,7 @@ export class GestionAdminComponent {
   showClassroomModal = signal(false);
   editingClassroomId = signal<number | null>(null);
   buildingOptions = ['Edificio A', 'Edificio B', 'Edificio C'];
+  classroomStatusOptions: ClassroomStatus[] = ['Disponible', 'Ocupado', 'Fuera de servicio'];
   resourceOptions: Array<{ name: string; icon: string }> = [
     { name: 'Proyector', icon: 'tv' },
     { name: 'Aire Acondicionado', icon: 'ac_unit' },
@@ -395,7 +495,8 @@ export class GestionAdminComponent {
       address: 'Calle 10 #123, Puebla',
       emergencyContactName: 'Ana Pérez',
       emergencyContactPhone: '(222) 999-1111',
-      status: 'Activo'
+      status: 'Activo',
+      enrolledCourses: []
     },
     {
       id: 2,
@@ -411,7 +512,8 @@ export class GestionAdminComponent {
       address: 'Av. Universidad 450, Puebla',
       emergencyContactName: 'José López',
       emergencyContactPhone: '(222) 888-7777',
-      status: 'Activo'
+      status: 'Activo',
+      enrolledCourses: []
     }
   ]);
 
@@ -579,7 +681,10 @@ export class GestionAdminComponent {
         break;
       case 'grupos':
         this.adminService.deleteGrupo(id).subscribe({
-          next: () => this.groups.update((items) => items.filter((item) => item.id !== id)),
+          next: () => {
+            this.groups.update((items) => items.filter((item) => item.id !== id));
+            this.syncTeacherCourseCounts();
+          },
           error: (error) => alert(`No se pudo eliminar el grupo. ${this.getApiErrorMessage(error)}`)
         });
         break;
@@ -834,8 +939,13 @@ export class GestionAdminComponent {
       name: '',
       subject: '',
       teacher: '',
+      classroomId: null,
       semester: '',
-      maxCapacity: 40
+      days: [],
+      startTime: '',
+      endTime: '',
+      maxCapacity: 40,
+      selectedStudentIds: []
     };
     this.showGroupModal.set(true);
   }
@@ -852,8 +962,13 @@ export class GestionAdminComponent {
       name: selectedGroup.code,
       subject: selectedGroup.subject,
       teacher: selectedGroup.teacher,
+      classroomId: selectedGroup.classroomId,
       semester: selectedGroup.semester,
-      maxCapacity: selectedGroup.maxCapacity
+      days: this.getGroupDays(selectedGroup),
+      startTime: selectedGroup.startTime,
+      endTime: selectedGroup.endTime,
+      maxCapacity: selectedGroup.maxCapacity,
+      selectedStudentIds: [...selectedGroup.studentIds]
     };
     this.showGroupModal.set(true);
   }
@@ -889,13 +1004,55 @@ export class GestionAdminComponent {
     input.value = formatted;
   }
 
+  toggleGroupDay(day: string, checked: boolean): void {
+    if (checked) {
+      if (!this.groupForm.days.includes(day)) {
+        this.groupForm.days = [...this.groupForm.days, day];
+      }
+
+      return;
+    }
+
+    this.groupForm.days = this.groupForm.days.filter((item) => item !== day);
+  }
+
+  isGroupDaySelected(day: string): boolean {
+    return this.groupForm.days.includes(day);
+  }
+
+  toggleGroupStudent(studentId: number, checked: boolean): void {
+    if (checked) {
+      if (!this.groupForm.selectedStudentIds.includes(studentId)) {
+        this.groupForm.selectedStudentIds = [...this.groupForm.selectedStudentIds, studentId];
+      }
+
+      return;
+    }
+
+    this.groupForm.selectedStudentIds = this.groupForm.selectedStudentIds.filter((id) => id !== studentId);
+  }
+
+  isGroupStudentSelected(studentId: number): boolean {
+    return this.groupForm.selectedStudentIds.includes(studentId);
+  }
+
+  isStudentSelectionDisabled(studentId: number): boolean {
+    return !this.isGroupStudentSelected(studentId) && this.groupForm.selectedStudentIds.length >= Number(this.groupForm.maxCapacity);
+  }
+
   isGroupFormValid(): boolean {
     const f = this.groupForm;
-    if (!f.name.trim() || !f.subject || !f.teacher || !f.semester.trim() || !f.maxCapacity || this.isGroupNameTaken()) {
+    if (!f.name.trim() || !f.subject || !f.teacher || !f.semester.trim() || f.days.length === 0 || !f.startTime || !f.endTime || !f.maxCapacity || this.isGroupNameTaken()) {
       return false;
     }
     const nameRegex = /^[A-Z0-9]{5}-[A-Z]$/;
     if (!nameRegex.test(f.name.trim())) {
+      return false;
+    }
+    if (f.startTime >= f.endTime) {
+      return false;
+    }
+    if (f.selectedStudentIds.length > Number(f.maxCapacity)) {
       return false;
     }
     return true;
@@ -914,8 +1071,13 @@ export class GestionAdminComponent {
     const name = this.groupForm.name.trim();
     const subject = this.groupForm.subject;
     const teacher = this.groupForm.teacher;
+    const classroomId = this.groupForm.classroomId;
     const semester = this.groupForm.semester.trim();
+    const days = [...this.groupForm.days];
+    const startTime = this.groupForm.startTime;
+    const endTime = this.groupForm.endTime;
     const maxCapacity = Number(this.groupForm.maxCapacity);
+    const selectedStudentIds = [...this.groupForm.selectedStudentIds];
 
     if (!this.isGroupFormValid()) {
       return;
@@ -926,9 +1088,13 @@ export class GestionAdminComponent {
       codigo: name,
       materia: subject,
       docente: teacher,
+      aula_id: classroomId,
       semestre: semester,
+      dia_semana: days,
+      hora_inicio: startTime,
+      hora_fin: endTime,
       cupo_max: maxCapacity,
-      inscritos: maxCapacity
+      estudiante_ids: selectedStudentIds
     };
 
     if (currentId !== null) {
@@ -936,6 +1102,7 @@ export class GestionAdminComponent {
         next: (grupo) => {
           const mapped = this.mapApiGrupoToGroupItem(grupo as unknown as ApiGrupo);
           this.groups.update((items) => items.map((item) => (item.id === currentId ? mapped : item)));
+          this.syncTeacherCourseCounts();
           this.closeGroupModal();
         },
         error: (error) => alert(`No se pudo actualizar el grupo. ${this.getApiErrorMessage(error)}`)
@@ -947,6 +1114,7 @@ export class GestionAdminComponent {
       next: (grupo) => {
         const mapped = this.mapApiGrupoToGroupItem(grupo as unknown as ApiGrupo);
         this.groups.update((items) => [...items, mapped]);
+        this.syncTeacherCourseCounts();
         this.closeGroupModal();
       },
       error: (error) => alert(`No se pudo guardar el grupo. ${this.getApiErrorMessage(error)}`)
@@ -985,6 +1153,38 @@ export class GestionAdminComponent {
 
   closeClassroomModal(): void {
     this.showClassroomModal.set(false);
+  }
+
+  isUpdatingClassroomStatus(id: number): boolean {
+    return this.updatingClassroomStatusIds().includes(id);
+  }
+
+  updateClassroomStatus(id: number, status: ClassroomStatus): void {
+    const currentRoom = this.classrooms().find((item) => item.id === id);
+
+    if (!currentRoom) {
+      return;
+    }
+
+    const normalizedStatus = this.normalizeClassroomStatus(status);
+
+    if (currentRoom.status === normalizedStatus || this.isUpdatingClassroomStatus(id)) {
+      return;
+    }
+
+    this.updatingClassroomStatusIds.update((ids) => [...ids, id]);
+
+    this.adminService.updateAula(id, { estado: normalizedStatus } as unknown as AulaUpdate).subscribe({
+      next: (aula) => {
+        const mapped = this.mapApiAulaToClassroomItem(aula as unknown as ApiAula);
+        this.classrooms.update((items) => items.map((item) => (item.id === id ? mapped : item)));
+        this.updatingClassroomStatusIds.update((ids) => ids.filter((itemId) => itemId !== id));
+      },
+      error: (error) => {
+        this.updatingClassroomStatusIds.update((ids) => ids.filter((itemId) => itemId !== id));
+        alert(`No se pudo actualizar el estado del aula. ${this.getApiErrorMessage(error)}`);
+      }
+    });
   }
 
   decrementCapacity(): void {
@@ -1208,6 +1408,11 @@ export class GestionAdminComponent {
       last_name: lastName,
       email,
       numero_empleado: employeeId,
+      telefono: phone,
+      departamento: department,
+      especializacion: specialization,
+      tipo_contrato: contractType,
+      fecha_contratacion: hireDate || null,
       is_active: true
     };
 
@@ -1480,6 +1685,7 @@ export class GestionAdminComponent {
       next: (grupos) => {
         const mapped = (grupos as unknown as ApiGrupo[]).map((grupo) => this.mapApiGrupoToGroupItem(grupo));
         this.groups.set(mapped);
+        this.syncTeacherCourseCounts();
       }
     });
   }
@@ -1496,8 +1702,16 @@ export class GestionAdminComponent {
   private loadUsersFromApi(): void {
     this.adminService.getDocentes().subscribe({
       next: (docentes) => {
-        const mapped = (docentes as unknown as ApiDocente[]).map((docente) => this.mapApiDocenteToTeacherItem(docente));
+        const docentesApi = docentes as unknown as ApiDocente[];
+        const legacyTeachers = this.readFromStorage<TeacherItem>(this.storageKeys.teachers, []);
+        this.backfillTeachersFromLegacyStorage(docentesApi);
+        const mapped = docentesApi.map((docente) => {
+          const apiTeacher = this.mapApiDocenteToTeacherItem(docente);
+          const legacyTeacher = legacyTeachers.find((item) => this.isSameTeacher(docente, item));
+          return legacyTeacher ? this.mergeTeacherData(apiTeacher, legacyTeacher) : apiTeacher;
+        });
         this.teachers.set(mapped);
+        this.syncTeacherCourseCounts();
       }
     });
 
@@ -1560,13 +1774,129 @@ export class GestionAdminComponent {
       name: `${firstName} ${lastName}`.trim() || docente.usuario?.email || 'Docente',
       employeeId: docente.numero_empleado,
       email: docente.usuario?.email ?? '',
-      phone: '',
-      department: '',
-      specialization: '',
-      contractType: 'Tiempo Completo',
-      hireDate: '',
+      phone: docente.telefono ?? '',
+      department: docente.departamento ?? '',
+      specialization: docente.especializacion ?? '',
+      contractType: docente.tipo_contrato ?? 'Tiempo Completo',
+      hireDate: docente.fecha_contratacion ?? '',
+      officeHours: docente.horario_atencion ?? '',
+      cubicle: docente.cubiculo ?? '',
       courses: 0
     };
+  }
+
+  private backfillTeachersFromLegacyStorage(docentes: ApiDocente[]): void {
+    const legacyTeachers = this.readFromStorage<TeacherItem>(this.storageKeys.teachers, []);
+
+    if (legacyTeachers.length === 0) {
+      return;
+    }
+
+    for (const docente of docentes) {
+      const legacyMatch = legacyTeachers.find((legacyTeacher) => this.isSameTeacher(docente, legacyTeacher));
+
+      if (!legacyMatch) {
+        continue;
+      }
+
+      const payload = this.buildTeacherBackfillPayload(docente, legacyMatch);
+      if (!payload) {
+        continue;
+      }
+
+      const docenteId = docente.usuario?.id;
+      if (!docenteId) {
+        continue;
+      }
+
+      this.adminService.updateDocente(docenteId, payload as unknown as DocenteUpdate).subscribe({
+        next: (updatedDocente) => {
+          const mapped = this.mapApiDocenteToTeacherItem(updatedDocente as unknown as ApiDocente);
+          this.teachers.update((items) => {
+            const index = items.findIndex((item) => item.id === mapped.id);
+            if (index === -1) {
+              return [...items, mapped];
+            }
+
+            return items.map((item) => item.id === mapped.id ? mapped : item);
+          });
+        },
+        error: () => {
+          // La migracion es de rescate y no debe bloquear la carga del CRUD.
+        }
+      });
+    }
+  }
+
+  private buildTeacherBackfillPayload(docente: ApiDocente, legacyTeacher: TeacherItem): Record<string, unknown> | null {
+    const payload: Record<string, unknown> = {};
+
+    if (!docente.telefono?.trim() && legacyTeacher.phone.trim()) {
+      payload['telefono'] = legacyTeacher.phone.trim();
+    }
+
+    if (!docente.departamento?.trim() && legacyTeacher.department.trim()) {
+      payload['departamento'] = legacyTeacher.department.trim();
+    }
+
+    if (!docente.especializacion?.trim() && legacyTeacher.specialization.trim()) {
+      payload['especializacion'] = legacyTeacher.specialization.trim();
+    }
+
+    if (!docente.tipo_contrato?.trim() && legacyTeacher.contractType.trim()) {
+      payload['tipo_contrato'] = legacyTeacher.contractType.trim();
+    }
+
+    if (!docente.fecha_contratacion && legacyTeacher.hireDate.trim()) {
+      payload['fecha_contratacion'] = legacyTeacher.hireDate.trim();
+    }
+
+    if (!docente.horario_atencion?.trim() && legacyTeacher.officeHours?.trim()) {
+      payload['horario_atencion'] = legacyTeacher.officeHours.trim();
+    }
+
+    if (!docente.cubiculo?.trim() && legacyTeacher.cubicle?.trim()) {
+      payload['cubiculo'] = legacyTeacher.cubicle.trim();
+    }
+
+    return Object.keys(payload).length > 0 ? payload : null;
+  }
+
+  private mergeTeacherData(apiTeacher: TeacherItem, legacyTeacher: TeacherItem): TeacherItem {
+    return {
+      ...apiTeacher,
+      phone: apiTeacher.phone.trim() || legacyTeacher.phone.trim(),
+      department: apiTeacher.department.trim() || legacyTeacher.department.trim(),
+      specialization: apiTeacher.specialization.trim() || legacyTeacher.specialization.trim(),
+      contractType: this.isTeacherContractDefault(apiTeacher.contractType)
+        ? legacyTeacher.contractType.trim() || apiTeacher.contractType
+        : apiTeacher.contractType,
+      hireDate: apiTeacher.hireDate.trim() || legacyTeacher.hireDate.trim(),
+      officeHours: apiTeacher.officeHours?.trim() || legacyTeacher.officeHours?.trim() || '',
+      cubicle: apiTeacher.cubicle?.trim() || legacyTeacher.cubicle?.trim() || '',
+      courses: apiTeacher.courses || legacyTeacher.courses,
+    };
+  }
+
+  private isTeacherContractDefault(contractType: string): boolean {
+    return !contractType.trim() || contractType.trim() === 'Tiempo Completo';
+  }
+
+  private isSameTeacher(docente: ApiDocente, legacyTeacher: TeacherItem): boolean {
+    const docenteId = docente.usuario?.id ?? 0;
+    if (docenteId && legacyTeacher.id === docenteId) {
+      return true;
+    }
+
+    const apiEmployeeId = docente.numero_empleado?.trim().toUpperCase() ?? '';
+    const legacyEmployeeId = legacyTeacher.employeeId.trim().toUpperCase();
+    if (apiEmployeeId && legacyEmployeeId && apiEmployeeId === legacyEmployeeId) {
+      return true;
+    }
+
+    const apiEmail = docente.usuario?.email?.trim().toLowerCase() ?? '';
+    const legacyEmail = legacyTeacher.email.trim().toLowerCase();
+    return !!apiEmail && !!legacyEmail && apiEmail === legacyEmail;
   }
 
   private mapApiEstudianteToStudentItem(estudiante: ApiEstudiante): StudentItem {
@@ -1587,7 +1917,12 @@ export class GestionAdminComponent {
       address: estudiante.direccion ?? '',
       emergencyContactName: estudiante.contacto_emergencia_nombre ?? '',
       emergencyContactPhone: estudiante.contacto_emergencia_telefono ?? '',
-      status: estudiante.usuario?.is_active ? 'Activo' : 'Inactivo'
+      status: estudiante.usuario?.is_active ? 'Activo' : 'Inactivo',
+      enrolledCourses: (estudiante.grupos ?? []).map((grupo) => ({
+        id: grupo.id,
+        code: grupo.codigo,
+        subject: grupo.materia,
+      }))
     };
   }
 
@@ -1612,26 +1947,127 @@ export class GestionAdminComponent {
   }
 
   private mapApiGrupoToGroupItem(grupo: ApiGrupo): GroupItem {
+    const normalizedDays = this.normalizeGroupDays(grupo.dia_semana);
+    const enrolledStudents = (grupo.estudiantes ?? []).map((student) => ({
+      id: student.id,
+      enrollment: student.matricula,
+      name: student.nombre,
+      email: student.email,
+      program: student.programa,
+      semester: student.semestre,
+      enrollmentDate: student.fecha_inscripcion ?? '',
+    }));
+
     return {
       id: grupo.id,
       code: grupo.codigo,
       subject: grupo.materia,
       teacher: grupo.docente,
-      students: grupo.inscritos,
+      classroomId: grupo.aula?.id ?? null,
+      classroomName: this.formatClassroomLabel(grupo.aula),
+      students: enrolledStudents.length || grupo.inscritos,
       semester: grupo.semestre,
-      maxCapacity: grupo.cupo_max
+      days: normalizedDays,
+      day: normalizedDays[0] ?? '',
+      startTime: this.normalizeApiTime(grupo.hora_inicio),
+      endTime: this.normalizeApiTime(grupo.hora_fin),
+      maxCapacity: grupo.cupo_max,
+      studentIds: enrolledStudents.map((student) => student.id),
+      enrolledStudents,
     };
   }
 
+  private formatClassroomLabel(aula: ApiGrupo['aula'] | ApiStudentGroup['aula']): string {
+    if (!aula) {
+      return 'Sin aula asignada';
+    }
+
+    return `${aula.edificio} • ${aula.numero}`;
+  }
+
+  private syncTeacherCourseCounts(): void {
+    const courseCountByTeacher = new Map<string, number>();
+
+    for (const group of this.groups()) {
+      const teacherName = group.teacher.trim().toLowerCase();
+      if (!teacherName) {
+        continue;
+      }
+
+      courseCountByTeacher.set(teacherName, (courseCountByTeacher.get(teacherName) ?? 0) + 1);
+    }
+
+    this.teachers.update((items) => items.map((teacher) => ({
+      ...teacher,
+      courses: courseCountByTeacher.get(teacher.name.trim().toLowerCase()) ?? 0,
+    })));
+  }
+
+  getGroupDaysLabel(group: GroupItem): string {
+    const days = this.getGroupDays(group);
+
+    if (days.length === 0) {
+      return 'Sin asignar';
+    }
+
+    return days.join(', ');
+  }
+
+  getGroupScheduleLabel(group: GroupItem): string {
+    if (!group.startTime || !group.endTime) {
+      return 'Sin horario';
+    }
+
+    return `${group.startTime} - ${group.endTime}`;
+  }
+
+  private getGroupDays(group: GroupItem): string[] {
+    return this.normalizeGroupDays(group.days ?? group.day);
+  }
+
   private mapApiAulaToClassroomItem(aula: ApiAula): ClassroomItem {
+    const normalizedStatus = this.normalizeClassroomStatus(aula.estado);
+
     return {
       id: aula.id,
       name: aula.numero,
       building: aula.edificio,
       capacity: aula.capacidad,
-      status: aula.estado,
+      status: normalizedStatus,
       resources: Array.isArray(aula.recursos) ? aula.recursos : []
     };
+  }
+
+  private normalizeClassroomStatus(status: string | null | undefined): ClassroomStatus {
+    if (status === 'Ocupado' || status === 'Fuera de servicio') {
+      return status;
+    }
+
+    if (status === 'En uso') {
+      return 'Ocupado';
+    }
+
+    return 'Disponible';
+  }
+
+  private normalizeApiTime(time: string | null | undefined): string {
+    if (!time) {
+      return '';
+    }
+
+    return time.slice(0, 5);
+  }
+
+  private normalizeGroupDays(days: string[] | string | null | undefined): string[] {
+    if (Array.isArray(days)) {
+      return days.filter((day) => typeof day === 'string' && day.trim().length > 0);
+    }
+
+    if (typeof days === 'string' && days.trim()) {
+      return [days.trim()];
+    }
+
+    return [];
   }
 
   private getApiErrorMessage(error: unknown): string {

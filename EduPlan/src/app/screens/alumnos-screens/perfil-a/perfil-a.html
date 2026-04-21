@@ -4,6 +4,23 @@
     <span>Volver</span>
   </button>
 
+  @if (errorMessage()) {
+    <mat-card class="border-0 shadow-sm mb-4">
+      <mat-card-content class="p-4 text-danger">
+        <strong>No se pudo cargar el perfil del alumno.</strong>
+        <div class="mt-2">{{ errorMessage() }}</div>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  @if (isLoading()) {
+    <mat-card class="border-0 shadow-sm mb-4">
+      <mat-card-content class="p-4 text-center text-muted">
+        Cargando información del perfil...
+      </mat-card-content>
+    </mat-card>
+  }
+
   <mat-card class="header-card border-0 shadow-sm mb-4">
     <mat-card-content class="p-4">
       <div class="row align-items-center g-4">
@@ -48,6 +65,21 @@
                 <label class="info-label">Teléfono</label>
                 <p class="info-value">{{ profileData().phone }}</p>
               </div>
+
+              <div class="col-12 col-md-6">
+                <label class="info-label">Dirección</label>
+                <p class="info-value">{{ profileData().address }}</p>
+              </div>
+
+              <div class="col-12 col-md-6">
+                <label class="info-label">Contacto de Emergencia</label>
+                <p class="info-value">{{ profileData().emergencyContactName }}</p>
+              </div>
+
+              <div class="col-12 col-md-6">
+                <label class="info-label">Teléfono de Emergencia</label>
+                <p class="info-value">{{ profileData().emergencyContactPhone }}</p>
+              </div>
             </div>
           </mat-card-content>
         </mat-card>
@@ -61,16 +93,33 @@
 
             <div class="row g-4">
               <div class="col-md-6">
+                <label class="info-label">Matrícula</label>
+                <p class="info-value">{{ profileData().studentId }}</p>
+              </div>
+
+              <div class="col-md-6">
                 <label class="info-label">Institución</label>
                 <p class="info-value">{{ profileData().institution }}</p>
               </div>
+
               <div class="col-md-6">
                 <label class="info-label">Facultad</label>
                 <p class="info-value">{{ profileData().faculty }}</p>
               </div>
+
               <div class="col-md-6">
-                <label class="info-label">Asesor Académico</label>
-                <p class="info-value">{{ profileData().advisor }}</p>
+                <label class="info-label">Programa Académico</label>
+                <p class="info-value">{{ profileData().program }}</p>
+              </div>
+
+              <div class="col-md-6">
+                <label class="info-label">Semestre</label>
+                <p class="info-value">{{ profileData().semester }}</p>
+              </div>
+
+              <div class="col-md-6">
+                <label class="info-label">Fecha de Inscripción</label>
+                <p class="info-value">{{ profileData().enrollmentDate }}</p>
               </div>
             </div>
           </mat-card-content>

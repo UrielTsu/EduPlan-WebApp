@@ -36,6 +36,21 @@
   }
 }
 
+.feedback-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.95rem 1rem;
+  border-radius: 14px;
+  font-weight: 600;
+
+  &.error {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+  }
+}
+
 .stat-card {
   border: 1px solid #d9dde5;
   border-radius: 18px;
@@ -292,6 +307,10 @@
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
   }
+
+  &.single-column {
+    grid-template-columns: 1fr;
+  }
 }
 
 .meta-label {
@@ -309,6 +328,18 @@
 
 .request-reason .meta-value {
   font-weight: 500;
+}
+
+.request-information {
+  border-radius: 14px;
+  padding: 0.9rem 1rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+
+  .meta-value {
+    font-weight: 500;
+    color: #334155;
+  }
 }
 
 .request-actions {
@@ -333,6 +364,11 @@
   color: #ffffff;
   font-size: 0.85rem;
   font-weight: 700;
+
+  &:disabled {
+    opacity: 0.72;
+    cursor: wait;
+  }
 
   mat-icon {
     font-size: 18px;

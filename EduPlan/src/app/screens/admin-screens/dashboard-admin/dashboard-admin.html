@@ -4,6 +4,23 @@
     <p class="text-secondary">Gestión académica y administrativa del sistema</p>
   </div>
 
+  @if (errorMessage()) {
+    <mat-card class="border-0 shadow-sm mb-4">
+      <mat-card-content class="p-4 text-danger">
+        <strong>No se pudo cargar el panel del administrador.</strong>
+        <div class="mt-2">{{ errorMessage() }}</div>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  @if (isLoading()) {
+    <mat-card class="border-0 shadow-sm mb-4">
+      <mat-card-content class="p-4 text-center text-muted">
+        Cargando indicadores del panel...
+      </mat-card-content>
+    </mat-card>
+  }
+
   <div class="row g-4 mb-5">
     <div class="col-12 col-md-4">
       <mat-card class="stat-card border-0 shadow-sm">
@@ -73,10 +90,14 @@
               </div>
               <div class="text-end d-none d-sm-block">
                 <span class="text-muted extra-small me-3">{{ request.date }}</span>
-                <span class="badge-status pending">Pendiente</span>
+                <span class="badge-status" [ngClass]="request.status">{{ getStatusLabel(request.status) }}</span>
               </div>
             </div>
           </mat-list-item>
+        } @empty {
+          <div class="p-4 text-center text-muted">
+            No hay solicitudes recientes registradas.
+          </div>
         }
       </mat-list>
     </mat-card>

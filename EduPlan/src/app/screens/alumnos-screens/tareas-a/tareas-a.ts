@@ -1,10 +1,14 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { forkJoin } from 'rxjs';
+import { AdminService } from '../../../services/admin.service';
+import { AuthService } from '../../../services/auth.service';
 
 interface Task {
   id: string;
@@ -13,10 +17,39 @@ interface Task {
   courseCode: string;
   dueDate: string;
   dueTime: string;
-  priority: 'high' | 'medium' | 'low';
-  status: 'pending' | 'in-progress' | 'completed';
   description: string;
   color: string;
+}
+
+interface ApiUser {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+}
+
+interface ApiStudentGroup {
+  id: number;
+  codigo: string;
+  materia: string;
+}
+
+interface ApiEstudiante {
+  usuario: ApiUser;
+  grupos?: ApiStudentGroup[];
+}
+
+interface ApiTarea {
+  id: number;
+  titulo: string;
+  descripcion: string;
+  fecha_entrega: string;
+  grupo?: {
+    id: number;
+    codigo: string;
+    materia: string;
+    semestre: string;
+  };
 }
 
 @Component({
@@ -33,64 +66,57 @@ interface Task {
   templateUrl: './tareas-a.html',
   styleUrls: ['./tareas-a.scss']
 })
-export class TareasA{
-  filterStatus = signal<'all' | 'pending' | 'completed'>('all');
+export class TareasA implements OnInit {
+  private readonly authService = inject(AuthService);
+  private readonly adminService = inject(AdminService);
+  private readonly taskColors = ['blue', 'purple', 'green', 'orange', 'red'];
 
-  tasks = signal<Task[]>([
-    {
-      id: '1',
-      title: 'Proyecto Final - Sistema de Gestión',
-      course: 'Programación Orientada a Objetos',
-      courseCode: 'CS301',
-      dueDate: '2026-02-20',
-      dueTime: '23:59',
-      priority: 'high',
-      status: 'pending',
-      description: 'Desarrollar un sistema completo de gestión usando POO',
-      color: 'blue'
-    },
-    {
-      id: '2',
-      title: 'Tarea 3 - Árboles Binarios',
-      course: 'Estructuras de Datos Avanzadas',
-      courseCode: 'CS302',
-      dueDate: '2026-02-15',
-      dueTime: '18:00',
-      priority: 'high',
-      status: 'pending',
-      description: 'Implementar árbol binario de búsqueda con operaciones CRUD',
-      color: 'purple'
-    },
-    {
-      id: '3',
-      title: 'Laboratorio 4 - Consultas SQL',
-      course: 'Bases de Datos',
-      courseCode: 'CS303',
-      dueDate: '2026-02-14',
-      dueTime: '20:00',
-      priority: 'medium',
-      status: 'in-progress',
-      description: 'Resolver 10 consultas SQL complejas con joins y subconsultas',
-      color: 'green'
-    },
-    // ... el resto de tus tareas mock
-  ]);
+  filterStatus = signal<'all' | 'pending'>('all');
+  isLoading = signal(true);
+  errorMessage = signal('');
+  tasks = signal<Task[]>([]);
 
-  filteredTasks = computed(() => {
-    const status = this.filterStatus();
-    if (status === 'all') return this.tasks();
-    return this.tasks().filter(task => task.status === status);
-  });
+  filteredTasks = computed(() => this.tasks());
+  pendingCount = computed(() => this.tasks().length);
+  courseCount = computed(() => new Set(this.tasks().map((task) => task.courseCode)).size);
 
-  pendingCount = computed(() => this.tasks().filter(t => t.status === 'pending').length);
-  completedCount = computed(() => this.tasks().filter(t => t.status === 'completed').length);
+  ngOnInit(): void {
+    forkJoin({
+      user: this.authService.getCurrentUser(),
+      estudiantes: this.adminService.getEstudiantes(),
+      tareas: this.adminService.getTareasCurso(),
+    }).subscribe({
+      next: ({ user, estudiantes, tareas }) => {
+        const student = (estudiantes as unknown as ApiEstudiante[]).find((item) => item.usuario?.id === user.id);
+        const allowedGroupIds = new Set((student?.grupos ?? []).map((group) => group.id));
+        const filteredTasks = (tareas as unknown as ApiTarea[])
+          .filter((task) => task.grupo?.id && allowedGroupIds.has(task.grupo.id))
+          .sort((left, right) => left.fecha_entrega.localeCompare(right.fecha_entrega));
 
-  getStatusLabel(status: string): string {
-    const labels: Record<string, string> = {
-      'completed': 'Completada',
-      'in-progress': 'En progreso',
-      'pending': 'Pendiente'
-    };
-    return labels[status] || status;
+        this.tasks.set(filteredTasks.map((task, index) => ({
+          id: String(task.id),
+          title: task.titulo,
+          course: task.grupo?.materia ?? 'Curso no disponible',
+          courseCode: task.grupo?.codigo ?? 'SIN-COD',
+          dueDate: task.fecha_entrega,
+          dueTime: '23:59',
+          description: task.descripcion || 'Sin descripción adicional.',
+          color: this.taskColors[index % this.taskColors.length],
+        })));
+        this.isLoading.set(false);
+      },
+      error: (error: HttpErrorResponse) => {
+        this.errorMessage.set(this.getApiErrorMessage(error));
+        this.isLoading.set(false);
+      }
+    });
+  }
+
+  private getApiErrorMessage(error: HttpErrorResponse): string {
+    if (typeof error.error === 'string' && error.error.trim()) {
+      return error.error;
+    }
+
+    return 'No se pudieron cargar las tareas asignadas al alumno.';
   }
 }

@@ -9,6 +9,13 @@
     <p>Gestiona las solicitudes de los docentes</p>
   </div>
 
+  @if (errorMessage()) {
+    <div class="feedback-banner error mb-4">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ errorMessage() }}</span>
+    </div>
+  }
+
   <div class="row g-4 mb-4">
     <div class="col-12 col-md-4">
       <mat-card class="stat-card pending">
@@ -75,6 +82,13 @@
     </div>
   </mat-card>
 
+  @if (isLoading()) {
+    <mat-card class="request-card empty-state">
+      <mat-card-content>
+        <p>Cargando solicitudes...</p>
+      </mat-card-content>
+    </mat-card>
+  } @else {
   <div class="request-list">
     @for (req of filteredRequests(); track req.id) {
       <mat-card class="request-card">
@@ -98,14 +112,31 @@
                 </div>
 
                 <div>
+                  <p class="meta-label">Aula / Laboratorio</p>
+                  <p class="meta-value">{{ req.classroom }}</p>
+                </div>
+
+                <div>
                   <p class="meta-label">Fecha</p>
                   <p class="meta-value">{{ formatDate(req.date) }}</p>
+                </div>
+              </div>
+
+              <div class="request-meta single-column">
+                <div>
+                  <p class="meta-label">Correo del docente</p>
+                  <p class="meta-value">{{ req.teacherEmail }}</p>
                 </div>
               </div>
 
               <div class="request-reason">
                 <p class="meta-label">Motivo</p>
                 <p class="meta-value">{{ req.reason }}</p>
+              </div>
+
+              <div class="request-information">
+                <p class="meta-label">Informacion adicional</p>
+                <p class="meta-value">{{ req.information }}</p>
               </div>
             </div>
 
@@ -114,11 +145,11 @@
 
               @if (req.status === 'pending') {
                 <div class="request-actions">
-                  <button type="button" class="action-btn approve" (click)="handleStatus(req.id, 'approved')">
+                  <button type="button" class="action-btn approve" [disabled]="isUpdatingRequest(req.id)" (click)="handleStatus(req.id, 'approved')">
                     <mat-icon>check_circle</mat-icon>
                     Aprobar
                   </button>
-                  <button type="button" class="action-btn reject" (click)="handleStatus(req.id, 'rejected')">
+                  <button type="button" class="action-btn reject" [disabled]="isUpdatingRequest(req.id)" (click)="handleStatus(req.id, 'rejected')">
                     <mat-icon>cancel</mat-icon>
                     Rechazar
                   </button>
@@ -136,4 +167,5 @@
       </mat-card>
     }
   </div>
+  }
 </div>

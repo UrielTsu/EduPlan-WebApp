@@ -2,93 +2,133 @@
   <div class="row mb-4">
     <div class="col-12">
       <mat-card class="header-card shadow-sm border-0">
-        <mat-card-content class="d-flex align-items-center p-3">
-          <h2 class="h4 mb-0 fw-bold text-dark">Mi Horario</h2>
+        <mat-card-content class="d-flex align-items-center justify-content-between flex-wrap gap-3 p-3">
+          <div>
+            <h2 class="h4 mb-0 fw-bold text-dark">Mi Horario</h2>
+            <p class="header-copy mb-0">Vista semanal basada en los grupos que tienes asignados.</p>
+          </div>
+          <div class="schedule-summary">
+            <span>{{ totalClasses() }} clases programadas</span>
+          </div>
         </mat-card-content>
       </mat-card>
     </div>
   </div>
 
-  <div class="schedule-container shadow-sm">
-  <div class="table-responsive">
-    <div class="schedule-grid">
+  @if (errorMessage()) {
+    <mat-card class="border-0 shadow-sm mb-4">
+      <mat-card-content class="p-4 text-danger">
+        <strong>No se pudo cargar tu horario.</strong>
+        <div class="mt-2">{{ errorMessage() }}</div>
+      </mat-card-content>
+    </mat-card>
+  }
 
-      <div class="grid-header row g-0">
-        <div class="col-time header-cell border-end d-flex align-items-center justify-content-center">
-          <span class="fw-bold text-muted small">Hora</span>
-        </div>
+  @if (isLoading()) {
+    <mat-card class="border-0 shadow-sm">
+      <mat-card-content class="p-5 text-center">
+        <h3 class="h5 mb-2">Cargando horario...</h3>
+        <p class="text-muted mb-0">Estamos consultando las materias que te fueron asignadas.</p>
+      </mat-card-content>
+    </mat-card>
+  } @else if (totalClasses() === 0) {
+    <mat-card class="border-0 shadow-sm">
+      <mat-card-content class="p-5 text-center">
+        <h3 class="h5 mb-2">Aún no tienes clases asignadas</h3>
+        <p class="text-muted mb-0">Cuando te inscriban a grupos, tu horario aparecerá automáticamente aquí.</p>
+      </mat-card-content>
+    </mat-card>
+  } @else {
+    <div class="schedule-container shadow-sm">
+      <div class="table-responsive">
+        <div class="schedule-grid">
 
-        @for (day of weekSchedule; track day.day) {
-          <div class="col header-cell border-end p-2 text-center">
-            <div class="day-name">{{ day.day | uppercase }}</div>
-            <div class="day-date text-muted small">{{ day.date }}</div>
-          </div>
-        }
-      </div>
-
-      <div class="grid-body d-flex">
-        <div class="col-time border-end bg-light">
-          @for (time of timeSlots; track time) {
-            <div class="time-slot-label border-bottom">
-              {{ time }}
+          <div class="grid-header row g-0">
+            <div class="col-time header-cell border-end d-flex align-items-center justify-content-center">
+              <span class="fw-bold text-muted small">Hora</span>
             </div>
-          }
-        </div>
 
-        @for (day of weekSchedule; track day.day) {
-          <div class="col day-column position-relative border-end">
-            @for (time of timeSlots; track time) {
-              <div class="grid-row-line border-bottom"></div>
+            @for (day of weekSchedule(); track day.day) {
+              <div class="col header-cell border-end p-2 text-center">
+                <div class="day-name">{{ day.day | uppercase }}</div>
+                <div class="day-date text-muted small">{{ day.date }}</div>
+              </div>
             }
+          </div>
 
-            @for (classItem of day.classes; track classItem.id) {
-              <div class="class-positioner"
-                   [ngStyle]="getClassPosition(classItem.startTime, classItem.endTime)">
-                <div class="class-card shadow-sm" [ngClass]="classItem.color">
-                  <div class="class-content">
-                    <div class="class-title">{{ classItem.subject }}</div>
-                    <div class="class-meta">
-                      <div class="meta-item">
-                        <mat-icon>schedule</mat-icon>
-                        <span>{{ classItem.startTime }} - {{ classItem.endTime }}</span>
-                      </div>
-                      <div class="meta-item">
-                        <mat-icon>place</mat-icon>
-                        <span>{{ classItem.room }}</span>
+          <div class="grid-body d-flex">
+            <div class="col-time border-end bg-light">
+              @for (time of timeSlots(); track time) {
+                <div class="time-slot-label border-bottom">
+                  {{ time }}
+                </div>
+              }
+            </div>
+
+            @for (day of weekSchedule(); track day.day) {
+              <div class="col day-column position-relative border-end">
+                @for (time of timeSlots(); track time) {
+                  <div class="grid-row-line border-bottom"></div>
+                }
+
+                @for (classItem of day.classes; track classItem.id) {
+                  <div class="class-positioner"
+                       [ngStyle]="getClassPosition(classItem.startTime, classItem.endTime)">
+                    <div class="class-card shadow-sm" [ngClass]="[classItem.color, isCompactClass(classItem) ? 'compact' : '']">
+                      <div class="class-content">
+                        <div class="class-title">{{ classItem.subject }}</div>
+                        <div class="class-group-code">{{ classItem.groupCode }}</div>
+                        <div class="class-time">{{ classItem.startTime }} - {{ classItem.endTime }}</div>
+                        <div class="class-meta">
+                          <div class="meta-item">
+                            <mat-icon>person</mat-icon>
+                            <span>{{ classItem.teacher }}</span>
+                          </div>
+                          @if (shouldDisplayRoom(classItem)) {
+                            <div class="meta-item">
+                            <mat-icon>place</mat-icon>
+                            <span>{{ classItem.room }}</span>
+                            </div>
+                          }
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                }
               </div>
             }
           </div>
-        }
+        </div>
       </div>
     </div>
-  </div>
-</div>
+  }
 
   <div class="mobile-list d-lg-none mt-4">
-    @for (day of weekSchedule; track day.day) {
-      <div class="mobile-day-group mb-4">
-        <h3 class="h6 fw-bold text-muted mb-2 px-2">{{ day.day }} · {{ day.date }}</h3>
-        @for (classItem of day.classes; track classItem.id) {
-          <mat-card class="mobile-card mb-2 border-0 shadow-sm" [ngClass]="'border-left-' + classItem.color">
-            <mat-card-content class="p-3">
-              <div class="d-flex justify-content-between">
-                <div>
-                  <div class="fw-bold">{{ classItem.subject }}</div>
-                  <div class="small text-muted">{{ classItem.teacher }}</div>
-                </div>
-                <div class="text-end">
-                  <span class="badge bg-light text-dark rounded-pill">{{ classItem.startTime }}</span>
-                  <div class="small text-muted mt-1">{{ classItem.room }}</div>
-                </div>
-              </div>
-            </mat-card-content>
-          </mat-card>
+    @if (!isLoading() && totalClasses() > 0) {
+      @for (day of weekSchedule(); track day.day) {
+        @if (day.classes.length > 0) {
+          <div class="mobile-day-group mb-4">
+            <h3 class="h6 fw-bold text-muted mb-2 px-2">{{ day.day }} · {{ day.date }}</h3>
+            @for (classItem of day.classes; track classItem.id) {
+              <mat-card class="mobile-card mb-2 border-0 shadow-sm" [ngClass]="'border-left-' + classItem.color">
+                <mat-card-content class="p-3">
+                  <div class="d-flex justify-content-between gap-3">
+                    <div>
+                      <div class="fw-bold">{{ classItem.subject }}</div>
+                      <div class="small text-muted">{{ classItem.groupCode }}</div>
+                      <div class="small text-muted">{{ classItem.teacher }}</div>
+                    </div>
+                    <div class="text-end">
+                      <span class="badge bg-light text-dark rounded-pill">{{ classItem.startTime }} - {{ classItem.endTime }}</span>
+                      <div class="small text-muted mt-1">{{ classItem.room }}</div>
+                    </div>
+                  </div>
+                </mat-card-content>
+              </mat-card>
+            }
+          </div>
         }
-      </div>
+      }
     }
   </div>
 </div>

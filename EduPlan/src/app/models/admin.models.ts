@@ -1,4 +1,4 @@
-export type RegistroEstado = 'Activo' | 'Inactivo' | 'Finalizado' | 'Disponible' | 'En uso' | 'Pendiente' | 'Aprobada' | 'Rechazada';
+export type RegistroEstado = 'Activo' | 'Inactivo' | 'Finalizado' | 'Disponible' | 'Ocupado' | 'Fuera de servicio' | 'Pendiente' | 'Aprobada' | 'Rechazada';
 
 export interface Usuario {
   id: number;
@@ -17,12 +17,39 @@ export interface Administrador {
 export interface Docente {
   idUsuario: number;
   numeroEmpleado: string;
+  telefono?: string;
+  departamento?: string;
+  especializacion?: string;
+  tipoContrato?: string;
+  fechaContratacion?: string;
+  horarioAtencion?: string;
+  cubiculo?: string;
   usuario?: Usuario;
 }
 
 export interface Estudiante {
   idUsuario: number;
   matricula: string;
+  telefono?: string;
+  programa?: string;
+  semestre?: string;
+  fechaInscripcion?: string;
+  direccion?: string;
+  contactoEmergenciaNombre?: string;
+  contactoEmergenciaTelefono?: string;
+  grupos?: Array<{
+    id: number;
+    codigo: string;
+    materia: string;
+    docente: string;
+    semestre: string;
+    diaSemana?: string[];
+    horaInicio?: string;
+    horaFin?: string;
+    cupoMax?: number;
+    inscritos?: number;
+    fechaInscripcion?: string;
+  }>;
   usuario?: Usuario;
 }
 
@@ -44,11 +71,37 @@ export interface Materia {
 
 export interface Grupo {
   id: number;
-  nombre: string;
-  semestre: number;
+  codigo?: string;
+  nombre?: string;
+  materia?: string;
+  docente?: string;
+  aulaId?: number | null;
+  aula?: {
+    id: number;
+    edificio: string;
+    numero: string;
+    capacidad: number;
+    estado: Extract<RegistroEstado, 'Disponible' | 'Ocupado' | 'Fuera de servicio'>;
+  } | null;
+  semestre: number | string;
   cupoMax: number;
-  idMateria: number;
-  idPeriodo: number;
+  cupo_max?: number;
+  inscritos?: number;
+  idMateria?: number;
+  idPeriodo?: number;
+  diaSemana?: string[];
+  horaInicio?: string;
+  horaFin?: string;
+  estudianteIds?: number[];
+  estudiantes?: Array<{
+    id: number;
+    matricula: string;
+    nombre: string;
+    email: string;
+    programa: string;
+    semestre: string;
+    fechaInscripcion?: string;
+  }>;
 }
 
 export interface Aula {
@@ -57,7 +110,7 @@ export interface Aula {
   numero: string;
   capacidad: number;
   recursos: string[];
-  estado: Extract<RegistroEstado, 'Disponible' | 'En uso' | 'Inactivo'>;
+  estado: Extract<RegistroEstado, 'Disponible' | 'Ocupado' | 'Fuera de servicio'>;
 }
 
 export interface Horario {
@@ -79,13 +132,34 @@ export interface Inscripcion {
 
 export interface Solicitud {
   id: number;
-  idDocente: number;
-  idGrupo: number;
-  fechaPropuesta: string;
+  tipoSolicitud: string;
+  aula: string;
   motivo: string;
+  informacionAdicional: string;
+  fechaSolicitud: string;
   estado: Extract<RegistroEstado, 'Pendiente' | 'Aprobada' | 'Rechazada'>;
   fechaResolucion?: string;
-  idAdminResuelve?: number;
+  docente?: {
+    idUsuario: number;
+    numeroEmpleado: string;
+    nombreCompleto: string;
+    correo: string;
+  };
+}
+
+export interface TareaCurso {
+  id: number;
+  grupoId: number;
+  titulo: string;
+  descripcion: string;
+  fechaEntrega: string;
+  creation?: string;
+  grupo?: {
+    id: number;
+    codigo: string;
+    materia: string;
+    semestre: string;
+  };
 }
 
 export type PeriodoCreate = Omit<Periodo, 'id'>;
@@ -113,5 +187,8 @@ export type EstudianteUpdate = Partial<EstudianteCreate>;
 export type HorarioCreate = Omit<Horario, 'id'>;
 export type HorarioUpdate = Partial<HorarioCreate>;
 
-export type SolicitudCreate = Omit<Solicitud, 'id' | 'fechaResolucion' | 'idAdminResuelve'>;
+export type SolicitudCreate = Omit<Solicitud, 'id' | 'fechaResolucion' | 'docente' | 'estado' | 'fechaSolicitud'>;
 export type SolicitudUpdate = Partial<Omit<Solicitud, 'id'>>;
+
+export type TareaCursoCreate = Omit<TareaCurso, 'id' | 'creation' | 'grupo'>;
+export type TareaCursoUpdate = Partial<Omit<TareaCursoCreate, 'grupoId'>> & Partial<Pick<TareaCursoCreate, 'grupoId'>>;

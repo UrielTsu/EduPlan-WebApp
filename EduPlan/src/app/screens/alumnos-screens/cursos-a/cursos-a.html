@@ -2,9 +2,22 @@
   <div class="row mb-4">
     <div class="col-12">
       <h1 class="display-6 fw-bold text-dark">Mis Cursos</h1>
-      <p class="text-secondary">Gestiona y consulta información de tus materias actuales</p>
+      <p class="text-secondary">Consulta los grupos en los que estás inscrito actualmente</p>
     </div>
   </div>
+
+  @if (errorMessage()) {
+    <div class="row mb-4">
+      <div class="col-12">
+        <mat-card class="border-0 shadow-sm">
+          <mat-card-content class="p-4 text-danger">
+            <strong>No se pudieron cargar tus cursos.</strong>
+            <div class="mt-2">{{ errorMessage() }}</div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  }
 
   <div class="row g-3 mb-5">
     <div class="col-12 col-sm-6">
@@ -36,61 +49,73 @@
     </div>
   </div>
 
-  <div class="row g-4">
-    @for (course of courses(); track course.id) {
-      <div class="col-12 col-lg-6">
-        <mat-card class="course-card border-0 shadow-sm overflow-hidden" [ngClass]="'card-' + course.color">
-          <div class="color-header" [ngClass]="'bg-' + course.color"></div>
-
-          <mat-card-content class="p-4">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-              <div class="flex-grow-1">
-                <h3 class="course-title h5 mb-1">{{ course.name }}</h3>
-                <div class="d-flex flex-wrap gap-2">
-                  <span class="badge-custom" [ngClass]="course.color">
-                    {{ course.code }}
-                  </span>
-                  <span class="meta-text">{{ course.semester }}</span>
-                  <span class="meta-text text-muted">• {{ course.credits }} créditos</span>
-                </div>
-              </div>
-              <mat-icon class="course-icon" [ngClass]="'text-' + course.color">menu_book</mat-icon>
-            </div>
-
-            <div class="course-details mt-4">
-              <div class="detail-row mb-2">
-                <mat-icon class="detail-icon">person</mat-icon>
-                <span>{{ course.professor }}</span>
-              </div>
-              <div class="detail-row mb-2">
-                <mat-icon class="detail-icon">schedule</mat-icon>
-                <span>{{ course.schedule }}</span>
-              </div>
-              <div class="detail-row mb-4">
-                <mat-icon class="detail-icon">groups</mat-icon>
-                <span>{{ course.students }}/{{ course.maxStudents }} estudiantes</span>
-              </div>
-            </div>
-
-            <button mat-flat-button class="w-100 action-button"
-                    [ngClass]="course.color"
-                    [routerLink]="['/cursos-d', course.id]">
-              Ver detalles del curso
-              <mat-icon class="ms-2">chevron_right</mat-icon>
-            </button>
-          </mat-card-content>
-        </mat-card>
-      </div>
-    } @empty {
+  @if (isLoading()) {
+    <div class="row">
       <div class="col-12 text-center py-5">
         <mat-card class="p-5 border-0 bg-light">
-          <div class="empty-icon-container mb-3">
-            <mat-icon class="empty-icon">search_off</mat-icon>
-          </div>
-          <h3 class="h5">No hay cursos disponibles</h3>
-          <p class="text-muted">No tienes cursos registrados en este momento</p>
+          <h3 class="h5 mb-2">Cargando cursos...</h3>
+          <p class="text-muted mb-0">Estamos consultando tus inscripciones actuales.</p>
         </mat-card>
       </div>
-    }
-  </div>
+    </div>
+  } @else {
+    <div class="row g-4">
+      @for (course of courses(); track course.id) {
+        <div class="col-12 col-lg-6">
+          <mat-card class="course-card border-0 shadow-sm overflow-hidden" [ngClass]="'card-' + course.color">
+            <div class="color-header" [ngClass]="'bg-' + course.color"></div>
+
+            <mat-card-content class="p-4">
+              <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="flex-grow-1">
+                  <h3 class="course-title h5 mb-1">{{ course.name }}</h3>
+                  <div class="d-flex flex-wrap gap-2">
+                    <span class="badge-custom" [ngClass]="course.color">
+                      {{ course.code }}
+                    </span>
+                    <span class="meta-text">{{ course.semester }}</span>
+                    <span class="meta-text text-muted">• {{ course.credits }} créditos</span>
+                  </div>
+                </div>
+                <mat-icon class="course-icon" [ngClass]="'text-' + course.color">menu_book</mat-icon>
+              </div>
+
+              <div class="course-details mt-4">
+                <div class="detail-row mb-2">
+                  <mat-icon class="detail-icon">person</mat-icon>
+                  <span>{{ course.professor }}</span>
+                </div>
+                <div class="detail-row mb-2">
+                  <mat-icon class="detail-icon">schedule</mat-icon>
+                  <span>{{ course.schedule }}</span>
+                </div>
+                <div class="detail-row mb-2">
+                  <mat-icon class="detail-icon">event_available</mat-icon>
+                  <span>{{ course.nextClass }}</span>
+                </div>
+                <div class="mb-4"></div>
+              </div>
+
+              <button mat-flat-button class="w-100 action-button"
+                      [ngClass]="course.color"
+                      [routerLink]="['/cursos-d', course.id]">
+                Ver detalles del curso
+                <mat-icon class="ms-2">chevron_right</mat-icon>
+              </button>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      } @empty {
+        <div class="col-12 text-center py-5">
+          <mat-card class="p-5 border-0 bg-light">
+            <div class="empty-icon-container mb-3">
+              <mat-icon class="empty-icon">search_off</mat-icon>
+            </div>
+            <h3 class="h5">No hay cursos disponibles</h3>
+            <p class="text-muted">Todavía no estás inscrito en ningún grupo.</p>
+          </mat-card>
+        </div>
+      }
+    </div>
+  }
 </div>

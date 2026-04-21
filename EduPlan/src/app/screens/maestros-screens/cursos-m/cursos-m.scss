@@ -6,49 +6,260 @@ $colors: (
 );
 
 .courses-m-wrapper {
-  .stat-card {
-    border-radius: 1.25rem;
-    .label { font-size: 0.8rem; font-weight: 600; color: #64748b; }
-    .value { font-size: 1.75rem; font-weight: 800; color: #1e293b; }
-    .icon-box {
-      width: 48px; height: 48px; border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      &.green { background: #dcfce7; color: #16a34a; }
-      &.blue { background: #dbeafe; color: #2563eb; }
-      &.purple { background: #f3e8ff; color: #7e22ce; }
+  color: #0f172a;
+
+  .header-block {
+    margin-bottom: 22px;
+
+    h1 {
+      margin: 0;
+      color: #0b2347;
+      font-size: 2.3rem;
+      font-weight: 700;
+    }
+
+    p {
+      margin: 6px 0 0;
+      color: #334155;
+      font-size: 1rem;
     }
   }
 
-  .course-selector-card {
-    border-radius: 1.25rem;
-    cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    border-top: 5px solid transparent;
+  .feedback-card {
+    border-radius: 1rem;
 
-    &:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1) !important; }
-    &.active { border-width: 2px; transform: scale(1.01); }
-
-    @each $name, $val in $colors {
-      &.border-top-#{$name} { border-top-color: $val; }
-      &.active.border-top-#{$name} { border-color: $val; }
-      .text-#{$name} { color: $val; }
-      .badge-code.#{$name} { background: rgba($val, 0.1); color: $val; padding: 2px 10px; border-radius: 6px; font-weight: 700; font-size: 0.75rem; }
+    &.error {
+      background: #fef2f2;
+      color: #b91c1c;
     }
   }
 
-  .info-grid {
-    display: grid; gap: 8px;
-    .item {
-      display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #475569;
-      mat-icon { font-size: 18px; width: 18px; height: 18px; color: #94a3b8; }
+  .loading-card {
+    border-radius: 1rem;
+  }
+
+  .content-block {
+    margin-top: 8px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 14px;
+
+    h2 {
+      margin: 0;
+      color: #0b2347;
+      font-size: 1.9rem;
+      font-weight: 700;
+    }
+
+    &.compact {
+      margin-bottom: 12px;
     }
   }
 
-  .assignment-item-row {
-    background: #f8fafc;
-    border-color: #e2e8f0;
-    transition: background 0.2s;
-    &:hover { background: #f1f5f9; }
+  .section-subtitle {
+    margin: 6px 0 0;
+    color: #334155;
+    font-size: 1rem;
+  }
+
+  .add-btn {
+    border: none;
+    border-radius: 12px;
+    min-height: 46px;
+    padding: 0 18px;
+    background: #16a34a;
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+  }
+
+  .table-shell {
+    border: 1px solid #d9dde5;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+  }
+
+  .management-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    thead {
+      background: #f8fafc;
+    }
+
+    th,
+    td {
+      padding: 16px 24px;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+      font-size: 1rem;
+      vertical-align: top;
+    }
+
+    th {
+      color: #64748b;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      font-size: 0.9rem;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .name-col {
+      color: #0b2347;
+      font-weight: 700;
+    }
+  }
+
+  .actions-col {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .icon-btn {
+    border: none;
+    background: transparent;
+    padding: 0;
+    width: 22px;
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    mat-icon {
+      width: 20px;
+      height: 20px;
+      font-size: 20px;
+    }
+
+    &.edit {
+      color: #2563eb;
+    }
+
+    &.delete {
+      color: #ef4444;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  .placeholder {
+    border: 1px dashed #cbd5e1;
+    border-radius: 12px;
+    padding: 22px;
+
+    p {
+      margin: 0;
+      color: #64748b;
+      font-size: 1rem;
+      text-align: center;
+    }
+  }
+
+  .course-record-shell {
+    border: 1px solid #d9dde5;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+    padding: 20px 24px;
+  }
+
+  .course-record-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .summary-shell {
+    padding-top: 22px;
+    padding-bottom: 22px;
+  }
+
+  .summary-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .record-label {
+    color: #64748b;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+  }
+
+  .record-value {
+    color: #0b2347;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  .task-description-cell {
+    max-width: 420px;
+    color: #475569;
+    line-height: 1.5;
+  }
+
+  .task-title-cell {
+    min-width: 190px;
+  }
+
+  .task-placeholder {
+    margin: 10px 0;
+  }
+
+  .course-management-table {
+    .course-row {
+      transition: background-color 0.18s ease;
+
+      &.active {
+        background: #f0fdf4;
+      }
+    }
+  }
+
+  .select-row-btn {
+    border: none;
+    border-radius: 10px;
+    min-height: 38px;
+    padding: 0 14px;
+    background: #e8f5e9;
+    color: #15803d;
+    font-size: 0.92rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .course-empty-state {
+    margin-top: 12px;
   }
 
   // Animación suave para la aparición de tareas
@@ -61,12 +272,38 @@ $colors: (
     to { opacity: 1; transform: translateY(0); }
   }
 
-  // Estilo Modal Simple
-  .custom-modal-backdrop {
-    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
-    display: flex; align-items: center; justify-content: center; z-index: 1000;
+  @media (max-width: 992px) {
+    .course-record-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 
-    .modal-card { width: 90%; max-width: 400px; border-radius: 1.5rem; }
+    .summary-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .management-table th,
+    .management-table td {
+      padding: 14px 16px;
+    }
   }
+
+  @media (max-width: 768px) {
+    .section-header {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .course-record-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .summary-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .task-description-cell {
+      max-width: none;
+    }
+  }
+
 }

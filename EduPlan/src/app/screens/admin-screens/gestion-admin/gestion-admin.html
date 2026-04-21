@@ -130,6 +130,9 @@
               <th>CÓDIGO</th>
               <th>MATERIA</th>
               <th>PROFESOR</th>
+              <th>AULA</th>
+              <th>DÍA</th>
+              <th>HORARIO</th>
               <th>ALUMNOS</th>
               <th class="text-end">ACCIONES</th>
             </tr>
@@ -140,7 +143,10 @@
                 <td class="name-col">{{ group.code }}</td>
                 <td>{{ group.subject }}</td>
                 <td>{{ group.teacher }}</td>
-                <td>{{ group.students }}</td>
+                <td>{{ group.classroomName }}</td>
+                <td>{{ getGroupDaysLabel(group) }}</td>
+                <td>{{ getGroupScheduleLabel(group) }}</td>
+                <td>{{ group.students }}/{{ group.maxCapacity }}</td>
                 <td class="actions-col">
                   <button type="button" class="icon-btn edit" (click)="editItem(group.id, 'grupos')">
                     <mat-icon>edit</mat-icon>
@@ -185,9 +191,26 @@
                 <td>{{ room.building }}</td>
                 <td>{{ room.capacity }} estudiantes</td>
                 <td>
-                  <span class="status-pill" [class.available]="room.status === 'Disponible'" [class.in-use]="room.status === 'En uso'">
-                    {{ room.status }}
-                  </span>
+                  <div class="table-status-editor">
+                    <span
+                      class="status-pill"
+                      [class.available]="room.status === 'Disponible'"
+                      [class.busy]="room.status === 'Ocupado'"
+                      [class.out-of-service]="room.status === 'Fuera de servicio'">
+                      {{ room.status }}
+                    </span>
+
+                    <select
+                      class="table-status-select"
+                      [ngModel]="room.status"
+                      (ngModelChange)="updateClassroomStatus(room.id, $event)"
+                      [disabled]="isUpdatingClassroomStatus(room.id)"
+                      [ngModelOptions]="{ standalone: true }">
+                      @for (status of classroomStatusOptions; track status) {
+                        <option [ngValue]="status">{{ status }}</option>
+                      }
+                    </select>
+                  </div>
                 </td>
                 <td class="actions-col">
                   <button type="button" class="icon-btn edit" (click)="editItem(room.id, 'aulas')">
@@ -482,12 +505,57 @@
           </div>
 
           <div class="form-group">
+            <label>Aula Asignada</label>
+            <select [(ngModel)]="groupForm.classroomId" [ngModelOptions]="{ standalone: true }">
+              <option [ngValue]="null">Sin aula asignada</option>
+              @for (room of classrooms(); track room.id) {
+                <option [ngValue]="room.id">{{ room.building }} • {{ room.name }} • Cap. {{ room.capacity }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
             <label>Semestre</label>
             <input
               type="text"
               placeholder="Ej. 3er semestre"
               [(ngModel)]="groupForm.semester"
               [ngModelOptions]="{ standalone: true }">
+          </div>
+
+          <div class="form-group">
+            <label>Días de Clase</label>
+            <div class="checkbox-grid">
+              @for (day of groupDayOptions; track day) {
+                <label class="checkbox-card" [class.active]="isGroupDaySelected(day)">
+                  <input
+                    type="checkbox"
+                    [checked]="isGroupDaySelected(day)"
+                    (change)="toggleGroupDay(day, $any($event.target).checked)">
+                  <span class="checkbox-indicator" [class.active]="isGroupDaySelected(day)"></span>
+                  <span>{{ day }}</span>
+                </label>
+              }
+            </div>
+            <small class="field-hint">Selecciona uno o varios días para el horario del grupo.</small>
+          </div>
+
+          <div class="dual-input-row">
+            <div class="form-group">
+              <label>Hora de Inicio</label>
+              <input
+                type="time"
+                [(ngModel)]="groupForm.startTime"
+                [ngModelOptions]="{ standalone: true }">
+            </div>
+
+            <div class="form-group">
+              <label>Hora de Fin</label>
+              <input
+                type="time"
+                [(ngModel)]="groupForm.endTime"
+                [ngModelOptions]="{ standalone: true }">
+            </div>
           </div>
 
           <div class="form-group">
@@ -499,6 +567,39 @@
               [ngModelOptions]="{ standalone: true }">
           </div>
 
+          <div class="form-group">
+            <div class="student-picker-header">
+              <label>Alumnos del Grupo</label>
+              <span class="selection-counter">{{ groupForm.selectedStudentIds.length }}/{{ groupForm.maxCapacity }}</span>
+            </div>
+
+            @if (students().length > 0) {
+              <div class="checkbox-grid student-grid">
+                @for (student of students(); track student.id) {
+                  <label
+                    class="checkbox-card student-option"
+                    [class.active]="isGroupStudentSelected(student.id)"
+                    [class.disabled]="isStudentSelectionDisabled(student.id)">
+                    <input
+                      type="checkbox"
+                      [checked]="isGroupStudentSelected(student.id)"
+                      [disabled]="isStudentSelectionDisabled(student.id)"
+                      (change)="toggleGroupStudent(student.id, $any($event.target).checked)">
+                    <span class="checkbox-indicator" [class.active]="isGroupStudentSelected(student.id)"></span>
+                    <span class="student-option-copy">
+                      <strong>{{ student.name }}</strong>
+                      <small>{{ student.enrollment }} • {{ student.program || 'Programa no registrado' }}</small>
+                    </span>
+                  </label>
+                }
+              </div>
+            } @else {
+              <div class="empty-inline-state">No hay estudiantes registrados para asignar a este grupo.</div>
+            }
+
+            <small class="field-hint">Selecciona a los alumnos inscritos. El conteo del grupo se actualizará automáticamente.</small>
+          </div>
+
           <div class="info-box">
             <mat-icon>info</mat-icon>
             <p>Asegúrate de que el nombre del grupo sea único para evitar duplicados y materia asignada.</p>
@@ -506,6 +607,14 @@
 
           @if (isGroupNameTaken()) {
             <p class="error-text">Ya existe un grupo con este nombre.</p>
+          }
+
+          @if (groupForm.startTime && groupForm.endTime && groupForm.startTime >= groupForm.endTime) {
+            <p class="error-text">La hora de fin debe ser posterior a la hora de inicio.</p>
+          }
+
+          @if (groupForm.selectedStudentIds.length > groupForm.maxCapacity) {
+            <p class="error-text">La cantidad de alumnos seleccionados no puede exceder el cupo máximo del grupo.</p>
           }
         </div>
 
@@ -585,6 +694,15 @@
                 </button>
               }
             </div>
+          </div>
+
+          <div class="form-group">
+            <label>Estado del Aula</label>
+            <select [(ngModel)]="classroomForm.status" [ngModelOptions]="{ standalone: true }">
+              @for (status of classroomStatusOptions; track status) {
+                <option [ngValue]="status">{{ status }}</option>
+              }
+            </select>
           </div>
         </div>
 

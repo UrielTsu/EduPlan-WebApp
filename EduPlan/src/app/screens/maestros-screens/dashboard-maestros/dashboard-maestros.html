@@ -1,4 +1,21 @@
 <div class="container-fluid py-4 teacher-dashboard">
+  @if (errorMessage()) {
+    <mat-card class="border-0 shadow-sm mb-4 feedback-card error">
+      <mat-card-content class="p-3 d-flex align-items-center gap-2">
+        <mat-icon>error_outline</mat-icon>
+        <span>{{ errorMessage() }}</span>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  @if (isLoading()) {
+    <mat-card class="border-0 shadow-sm rounded-4 loading-card">
+      <mat-card-content class="p-4 text-center text-muted">
+        <mat-icon class="display-5 mb-2">dashboard</mat-icon>
+        <p class="mb-0">Cargando información del maestro...</p>
+      </mat-card-content>
+    </mat-card>
+  } @else {
   <div class="row g-4">
 
     <div class="col-12 col-lg-8">
@@ -9,22 +26,32 @@
             <mat-icon class="icon-sm">schedule</mat-icon>
             <span class="small fw-bold text-uppercase tracking-wider">Clase en curso</span>
           </div>
-          <h2 class="display-6 fw-bold mb-4">{{ currentClass.subject }}</h2>
+          @if (currentClass(); as activeClass) {
+            <h2 class="display-6 fw-bold mb-4">{{ activeClass.subject }}</h2>
 
-          <div class="row g-3">
-            <div class="col-sm-4 d-flex align-items-center gap-2">
-              <mat-icon>meeting_room</mat-icon>
-              <span>{{ currentClass.room }}</span>
+            <div class="row g-3">
+              <div class="col-sm-4 d-flex align-items-center gap-2">
+                <mat-icon>groups</mat-icon>
+                <span>{{ activeClass.group }}</span>
+              </div>
+              <div class="col-sm-4 d-flex align-items-center gap-2">
+                <mat-icon>timer</mat-icon>
+                <span>{{ activeClass.time }}</span>
+              </div>
+              <div class="col-sm-4 d-flex align-items-center gap-2">
+                <mat-icon>school</mat-icon>
+                <span>{{ activeClass.semester }}</span>
+              </div>
             </div>
-            <div class="col-sm-4 d-flex align-items-center gap-2">
-              <mat-icon>timer</mat-icon>
-              <span>{{ currentClass.time }}</span>
-            </div>
-            <div class="col-sm-4 d-flex align-items-center gap-2">
-              <mat-icon>groups</mat-icon>
-              <span>{{ currentClass.students }} estudiantes</span>
-            </div>
-          </div>
+          } @else {
+            <h2 class="display-6 fw-bold mb-3">No hay clase en curso</h2>
+
+            @if (nextClass(); as nextItem) {
+              <p class="mb-0 next-class-copy">La siguiente clase de hoy es {{ nextItem.subject }} de {{ nextItem.time }}.</p>
+            } @else {
+              <p class="mb-0 next-class-copy">No hay más clases registradas para hoy.</p>
+            }
+          }
         </mat-card-content>
       </mat-card>
 
@@ -32,24 +59,34 @@
         <mat-card-content class="p-4">
           <h3 class="h5 fw-bold text-dark mb-4">Horario de Hoy</h3>
 
-          <div class="schedule-list">
-            @for (item of todaySchedule; track $index) {
-              <div class="schedule-item d-flex align-items-start gap-3 p-3 mb-2 rounded-3 border transition-hover">
-                <div class="time-badge fw-bold text-success">{{ item.time }}</div>
-                <div class="flex-grow-1">
-                  <div class="fw-bold text-dark">{{ item.subject }}</div>
-                  <div class="d-flex gap-3 mt-1 text-muted small">
-                    <span class="d-flex align-items-center gap-1">
-                      <mat-icon class="icon-xs">place</mat-icon> {{ item.room }}
-                    </span>
-                    <span class="d-flex align-items-center gap-1">
-                      <mat-icon class="icon-xs">group</mat-icon> {{ item.students }} est.
-                    </span>
+          @if (todaySchedule().length > 0) {
+            <div class="schedule-list">
+              @for (item of todaySchedule(); track item.id) {
+                <div class="schedule-item d-flex align-items-start gap-3 p-3 mb-2 rounded-3 border transition-hover">
+                  <div class="time-badge fw-bold text-success">{{ item.time }}</div>
+                  <div class="flex-grow-1">
+                    <div class="fw-bold text-dark">{{ item.subject }}</div>
+                    <div class="d-flex gap-3 mt-1 text-muted small flex-wrap">
+                      <span class="d-flex align-items-center gap-1">
+                        <mat-icon class="icon-xs">groups</mat-icon> {{ item.group }}
+                      </span>
+                      <span class="d-flex align-items-center gap-1">
+                        <mat-icon class="icon-xs">school</mat-icon> {{ item.semester }}
+                      </span>
+                      <span class="d-flex align-items-center gap-1">
+                        <mat-icon class="icon-xs">group</mat-icon> {{ item.students }} est.
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            }
-          </div>
+              }
+            </div>
+          } @else {
+            <div class="empty-panel text-center py-5 text-muted">
+              <mat-icon class="display-5 mb-2">event_busy</mat-icon>
+              <p class="mb-0">No hay clases registradas para hoy.</p>
+            </div>
+          }
         </mat-card-content>
       </mat-card>
     </div>
@@ -100,15 +137,19 @@
           <div class="stats-list">
             <div class="stat-row d-flex justify-content-between py-2 border-bottom">
               <span class="small text-muted">Clases de hoy</span>
-              <span class="fw-bold">{{ todaySchedule.length }}</span>
+              <span class="fw-bold">{{ stats().classesToday }}</span>
             </div>
             <div class="stat-row d-flex justify-content-between py-2 border-bottom">
               <span class="small text-muted">Solicitudes activas</span>
-              <span class="fw-bold text-warning">{{ pendingRequests().length }}</span>
+              <span class="fw-bold text-warning">{{ stats().activeRequests }}</span>
+            </div>
+            <div class="stat-row d-flex justify-content-between py-2 border-bottom">
+              <span class="small text-muted">Grupos asignados</span>
+              <span class="fw-bold">{{ stats().totalGroups }}</span>
             </div>
             <div class="stat-row d-flex justify-content-between py-2">
               <span class="small text-muted">Total estudiantes</span>
-              <span class="fw-bold text-success">{{ totalStudents() }}</span>
+              <span class="fw-bold text-success">{{ stats().totalStudents }}</span>
             </div>
           </div>
         </mat-card-content>
@@ -116,4 +157,5 @@
 
     </div>
   </div>
+  }
 </div>

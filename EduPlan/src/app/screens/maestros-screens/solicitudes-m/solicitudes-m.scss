@@ -1,11 +1,46 @@
 $green-buap: #16a34a;
 
+.feedback-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.95rem 1rem;
+  border-radius: 14px;
+  font-weight: 600;
+
+  &.error {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+  }
+
+  &.info {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+  }
+}
+
+.loading-shell {
+  .loading-card {
+    border-radius: 18px;
+
+    mat-card-content {
+      padding: 1.4rem;
+      color: #475569;
+      font-weight: 600;
+    }
+  }
+}
+
 .solicitudes-container {
   .new-request-btn {
     background-color: $green-buap;
     color: white;
     padding: 12px 24px;
-    border-radius: 12px;
+    border-radius: 16px;
+    font-weight: 700;
+    box-shadow: 0 12px 28px rgba(22, 163, 74, 0.22);
   }
 
   .stat-card {
@@ -33,7 +68,7 @@ $green-buap: #16a34a;
     .btn-group-filter {
       display: flex; gap: 8px;
       button {
-        border: none; padding: 8px 16px; border-radius: 8px;
+        border: none; padding: 8px 16px; border-radius: 12px;
         font-size: 0.85rem; font-weight: 600; background: #f1f5f9;
         color: #475569; transition: all 0.2s;
         &.active { background: $green-buap; color: white; }

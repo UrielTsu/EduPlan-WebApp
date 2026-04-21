@@ -26,7 +26,10 @@ import {
   PeriodoUpdate,
   Solicitud,
   SolicitudCreate,
-  SolicitudUpdate
+  SolicitudUpdate,
+  TareaCurso,
+  TareaCursoCreate,
+  TareaCursoUpdate
 } from '../models/admin.models';
 
 @Injectable({ providedIn: 'root' })
@@ -179,18 +182,35 @@ export class AdminService {
   }
 
   getSolicitudes(): Observable<Solicitud[]> {
-    return this.http.get<Solicitud[]>(this.endpoint('/admin/solicitudes/'), this.options());
+    return this.http.get<Solicitud[]>(this.endpoint('/api/solicitudes/'), this.options());
   }
 
   createSolicitud(payload: SolicitudCreate): Observable<Solicitud> {
-    return this.http.post<Solicitud>(this.endpoint('/admin/solicitudes/'), payload, this.options());
+    return this.http.post<Solicitud>(this.endpoint('/api/solicitudes/'), payload, this.options());
   }
 
   updateSolicitud(id: number, payload: SolicitudUpdate): Observable<Solicitud> {
-    return this.http.patch<Solicitud>(this.endpoint(`/admin/solicitudes/${id}/`), payload, this.options());
+    return this.http.patch<Solicitud>(this.endpoint(`/api/solicitudes/${id}/`), payload, this.options());
   }
 
   deleteSolicitud(id: number): Observable<void> {
-    return this.http.delete<void>(this.endpoint(`/admin/solicitudes/${id}/`), this.options());
+    return this.http.delete<void>(this.endpoint(`/api/solicitudes/${id}/`), this.options());
+  }
+
+  getTareasCurso(grupoId?: number): Observable<TareaCurso[]> {
+    const query = typeof grupoId === 'number' ? `?grupo_id=${grupoId}` : '';
+    return this.http.get<TareaCurso[]>(this.endpoint(`/api/tareas/${query}`), this.options());
+  }
+
+  createTareaCurso(payload: TareaCursoCreate): Observable<TareaCurso> {
+    return this.http.post<TareaCurso>(this.endpoint('/api/tareas/'), payload, this.options());
+  }
+
+  updateTareaCurso(id: number, payload: TareaCursoUpdate): Observable<TareaCurso> {
+    return this.http.patch<TareaCurso>(this.endpoint(`/api/tareas/${id}/`), payload, this.options());
+  }
+
+  deleteTareaCurso(id: number): Observable<void> {
+    return this.http.delete<void>(this.endpoint(`/api/tareas/${id}/`), this.options());
   }
 }
