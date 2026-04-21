@@ -83,6 +83,8 @@ interface ClassroomFormModel {
 
 interface TeacherItem {
   id: number;
+  firstName: string;
+  lastName: string;
   name: string;
   employeeId: string;
   email: string;
@@ -95,7 +97,8 @@ interface TeacherItem {
 }
 
 interface TeacherFormModel {
-  name: string;
+  firstName: string;
+  lastName: string;
   employeeId: string;
   email: string;
   password: string;
@@ -108,6 +111,8 @@ interface TeacherFormModel {
 
 interface StudentItem {
   id: number;
+  firstName: string;
+  lastName: string;
   name: string;
   enrollment: string;
   email: string;
@@ -122,7 +127,8 @@ interface StudentItem {
 }
 
 interface StudentFormModel {
-  name: string;
+  firstName: string;
+  lastName: string;
   enrollment: string;
   email: string;
   password: string;
@@ -329,6 +335,8 @@ export class GestionAdminComponent {
   teachers = signal<TeacherItem[]>([
     {
       id: 1,
+      firstName: 'Prof. Carlos',
+      lastName: 'Ruiz',
       name: 'Prof. Carlos Ruiz',
       employeeId: 'EMP-2024-001',
       email: 'carlos.ruiz@universidad.edu',
@@ -341,6 +349,8 @@ export class GestionAdminComponent {
     },
     {
       id: 2,
+      firstName: 'Dra. María',
+      lastName: 'González',
       name: 'Dra. María González',
       employeeId: 'EMP-2024-002',
       email: 'maria.gonzalez@universidad.edu',
@@ -358,7 +368,8 @@ export class GestionAdminComponent {
   teacherDepartmentOptions = ['Sistemas', 'Matemáticas', 'Ciencias Básicas', 'Administración'];
   contractTypeOptions = ['Tiempo Completo', 'Medio Tiempo', 'Por Horas'];
   teacherForm: TeacherFormModel = {
-    name: '',
+    firstName: '',
+    lastName: '',
     employeeId: '',
     email: '',
     password: '',
@@ -372,6 +383,8 @@ export class GestionAdminComponent {
   students = signal<StudentItem[]>([
     {
       id: 1,
+      firstName: 'Juan',
+      lastName: 'Pérez',
       name: 'Juan Pérez',
       enrollment: 'A01234567',
       email: 'a01234567@alumno.buap.mx',
@@ -386,6 +399,8 @@ export class GestionAdminComponent {
     },
     {
       id: 2,
+      firstName: 'María',
+      lastName: 'López',
       name: 'María López',
       enrollment: 'A01234568',
       email: 'a01234568@alumno.buap.mx',
@@ -410,7 +425,8 @@ export class GestionAdminComponent {
   ];
   studentSemesterOptions = ['1° Semestre', '2° Semestre', '3° Semestre', '4° Semestre', '5° Semestre', '6° Semestre'];
   studentForm: StudentFormModel = {
-    name: '',
+    firstName: '',
+    lastName: '',
     enrollment: '',
     email: '',
     password: '',
@@ -1060,7 +1076,8 @@ export class GestionAdminComponent {
   openCreateTeacherModal(): void {
     this.editingTeacherId.set(null);
     this.teacherForm = {
-      name: '',
+      firstName: '',
+      lastName: '',
       employeeId: '',
       email: '',
       password: '',
@@ -1082,7 +1099,8 @@ export class GestionAdminComponent {
 
     this.editingTeacherId.set(id);
     this.teacherForm = {
-      name: selectedTeacher.name,
+      firstName: selectedTeacher.firstName,
+      lastName: selectedTeacher.lastName,
       employeeId: selectedTeacher.employeeId,
       email: selectedTeacher.email,
       password: '',
@@ -1099,10 +1117,10 @@ export class GestionAdminComponent {
     this.showTeacherModal.set(false);
   }
 
-  onTeacherNameInput(event: Event): void {
+  onTeacherNameInput(event: Event, field: 'firstName' | 'lastName'): void {
     const input = event.target as HTMLInputElement;
     const cleaned = input.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\.\s]/g, '');
-    this.teacherForm.name = cleaned;
+    this.teacherForm[field] = cleaned;
     input.value = cleaned;
   }
 
@@ -1139,7 +1157,7 @@ export class GestionAdminComponent {
 
   isTeacherFormValid(): boolean {
     const f = this.teacherForm;
-    if (!f.name.trim() || !f.employeeId.trim() || !f.email.trim() || !f.department || !f.contractType || !f.hireDate) {
+    if (!f.firstName.trim() || !f.lastName.trim() || !f.employeeId.trim() || !f.email.trim() || !f.department || !f.contractType || !f.hireDate) {
       return false;
     }
     const password = f.password.trim();
@@ -1169,7 +1187,8 @@ export class GestionAdminComponent {
   }
 
   private executeSaveTeacher(): void {
-    const name = this.teacherForm.name.trim();
+    const firstName = this.teacherForm.firstName.trim();
+    const lastName = this.teacherForm.lastName.trim();
     const employeeId = this.teacherForm.employeeId.trim().toUpperCase();
     const email = this.teacherForm.email.trim().toLowerCase();
     const password = this.teacherForm.password.trim();
@@ -1183,11 +1202,10 @@ export class GestionAdminComponent {
       return;
     }
 
-    const nameParts = this.splitFullName(name);
     const currentId = this.editingTeacherId();
     const basePayload = {
-      first_name: nameParts.firstName,
-      last_name: nameParts.lastName,
+      first_name: firstName,
+      last_name: lastName,
       email,
       numero_empleado: employeeId,
       is_active: true
@@ -1249,7 +1267,8 @@ export class GestionAdminComponent {
   openCreateStudentModal(): void {
     this.editingStudentId.set(null);
     this.studentForm = {
-      name: '',
+      firstName: '',
+      lastName: '',
       enrollment: '',
       email: '',
       password: '',
@@ -1274,7 +1293,8 @@ export class GestionAdminComponent {
 
     this.editingStudentId.set(id);
     this.studentForm = {
-      name: selectedStudent.name,
+      firstName: selectedStudent.firstName,
+      lastName: selectedStudent.lastName,
       enrollment: selectedStudent.enrollment,
       email: selectedStudent.email,
       password: '',
@@ -1294,7 +1314,7 @@ export class GestionAdminComponent {
     this.showStudentModal.set(false);
   }
 
-  onStudentNameInput(event: Event, field: 'name' | 'emergencyContactName'): void {
+  onStudentNameInput(event: Event, field: 'firstName' | 'lastName' | 'emergencyContactName'): void {
     const input = event.target as HTMLInputElement;
     const cleaned = input.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
     this.studentForm[field] = cleaned;
@@ -1326,7 +1346,7 @@ export class GestionAdminComponent {
 
   isStudentFormValid(): boolean {
     const f = this.studentForm;
-    if (!f.name.trim() || !f.enrollment.trim() || !f.email.trim() || !f.program || !f.semester || !f.enrollmentDate) {
+    if (!f.firstName.trim() || !f.lastName.trim() || !f.enrollment.trim() || !f.email.trim() || !f.program || !f.semester || !f.enrollmentDate) {
       return false;
     }
     const password = f.password.trim();
@@ -1356,7 +1376,8 @@ export class GestionAdminComponent {
   }
 
   private executeSaveStudent(): void {
-    const name = this.studentForm.name.trim();
+    const firstName = this.studentForm.firstName.trim();
+    const lastName = this.studentForm.lastName.trim();
     const enrollment = this.studentForm.enrollment.trim().toUpperCase();
     const email = this.studentForm.email.trim().toLowerCase();
     const password = this.studentForm.password.trim();
@@ -1374,12 +1395,11 @@ export class GestionAdminComponent {
     }
 
     const tableSemester = semester.replace(' Semestre', '');
-    const nameParts = this.splitFullName(name);
     const currentId = this.editingStudentId();
 
     const basePayload = {
-      first_name: nameParts.firstName,
-      last_name: nameParts.lastName,
+      first_name: firstName,
+      last_name: lastName,
       email,
       matricula: enrollment,
       telefono: phone,
@@ -1529,26 +1549,14 @@ export class GestionAdminComponent {
     return typeof window !== 'undefined' && !!window.localStorage;
   }
 
-  private splitFullName(fullName: string): { firstName: string; lastName: string } {
-    const cleaned = fullName.trim().replace(/\s+/g, ' ');
-
-    if (!cleaned) {
-      return { firstName: '', lastName: '' };
-    }
-
-    const parts = cleaned.split(' ');
-    return {
-      firstName: parts[0],
-      lastName: parts.slice(1).join(' ')
-    };
-  }
-
   private mapApiDocenteToTeacherItem(docente: ApiDocente): TeacherItem {
     const firstName = docente.usuario?.first_name?.trim() ?? '';
     const lastName = docente.usuario?.last_name?.trim() ?? '';
 
     return {
       id: docente.usuario?.id ?? 0,
+      firstName,
+      lastName,
       name: `${firstName} ${lastName}`.trim() || docente.usuario?.email || 'Docente',
       employeeId: docente.numero_empleado,
       email: docente.usuario?.email ?? '',
@@ -1567,6 +1575,8 @@ export class GestionAdminComponent {
 
     return {
       id: estudiante.usuario?.id ?? 0,
+      firstName,
+      lastName,
       name: `${firstName} ${lastName}`.trim() || estudiante.usuario?.email || 'Estudiante',
       enrollment: estudiante.matricula,
       email: estudiante.usuario?.email ?? '',

@@ -616,14 +616,26 @@
         </div>
 
         <div class="modal-body">
-          <div class="form-group">
-            <label>Nombre Completo</label>
-            <input
-              type="text"
-              placeholder="Ej. Dr. Carlos Ruiz Martínez"
-              [(ngModel)]="teacherForm.name"
-              (input)="onTeacherNameInput($event)"
-              [ngModelOptions]="{ standalone: true }">
+          <div class="dual-input-row">
+            <div class="form-group">
+              <label>Nombre</label>
+              <input
+                type="text"
+                placeholder="Ej. Carlos"
+                [(ngModel)]="teacherForm.firstName"
+                (input)="onTeacherNameInput($event, 'firstName')"
+                [ngModelOptions]="{ standalone: true }">
+            </div>
+
+            <div class="form-group">
+              <label>Apellidos</label>
+              <input
+                type="text"
+                placeholder="Ej. Ruiz Martínez"
+                [(ngModel)]="teacherForm.lastName"
+                (input)="onTeacherNameInput($event, 'lastName')"
+                [ngModelOptions]="{ standalone: true }">
+            </div>
           </div>
 
           <div class="form-group">
@@ -729,14 +741,26 @@
         </div>
 
         <div class="modal-body">
-          <div class="form-group">
-            <label>Nombre Completo</label>
-            <input
-              type="text"
-              placeholder="Ej. Juan Pérez García"
-              [(ngModel)]="studentForm.name"
-              (input)="onStudentNameInput($event, 'name')"
-              [ngModelOptions]="{ standalone: true }">
+          <div class="dual-input-row">
+            <div class="form-group">
+              <label>Nombre</label>
+              <input
+                type="text"
+                placeholder="Ej. Juan"
+                [(ngModel)]="studentForm.firstName"
+                (input)="onStudentNameInput($event, 'firstName')"
+                [ngModelOptions]="{ standalone: true }">
+            </div>
+
+            <div class="form-group">
+              <label>Apellidos</label>
+              <input
+                type="text"
+                placeholder="Ej. Pérez García"
+                [(ngModel)]="studentForm.lastName"
+                (input)="onStudentNameInput($event, 'lastName')"
+                [ngModelOptions]="{ standalone: true }">
+            </div>
           </div>
 
           <div class="form-group">
