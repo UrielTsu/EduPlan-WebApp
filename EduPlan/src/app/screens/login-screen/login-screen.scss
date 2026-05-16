@@ -12,8 +12,8 @@ $text-500: #6b7280;
 
 $border: #e5e7eb;
 
-$primary: #2563eb; // blue-600
-$primary-hover: #1d4ed8; // blue-700
+$primary: #3b82f6; // blue-500 (más claro)
+$primary-hover: #2563eb; // blue-600
 
 $danger: #dc2626;
 $danger-border: #fca5a5;
@@ -287,6 +287,7 @@ $shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.10), 0 10px 10px -5px rgba(0, 0, 0,
     background: $primary;
     color: #fff;
     padding: 0.75rem 1rem;
+    border-radius: 0.65rem; // más suave y sutil
     display: inline-flex;
     align-items: center;
     justify-content: center;
