@@ -45,7 +45,7 @@ export interface LogoutResponse {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
-  private readonly apiBaseUrl = 'http://127.0.0.1:8000';
+  private readonly apiBaseUrl = 'https://eduplan-api-s2ir.onrender.com';
 
   login(payload: LoginPayload): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiBaseUrl}/api/auth/login/`, payload);

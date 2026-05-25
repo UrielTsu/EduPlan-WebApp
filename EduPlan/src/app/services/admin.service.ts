@@ -37,7 +37,7 @@ export class AdminService {
   private readonly http = inject(HttpClient);
 
   // Cambia este valor por tu host real de API cuando ya tengas deploy.
-  private readonly apiBaseUrl = 'http://127.0.0.1:8000';
+  private readonly apiBaseUrl = 'https://eduplan-api-s2ir.onrender.com';
 
   private endpoint(path: string): string {
     return `${this.apiBaseUrl}${path}`;
