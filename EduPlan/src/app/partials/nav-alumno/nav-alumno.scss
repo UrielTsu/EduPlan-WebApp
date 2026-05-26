@@ -38,21 +38,6 @@ $transition: all 0.2s ease-in-out;
   align-items: center;
   gap: 0.75rem;
 
-  .mobile-menu-trigger {
-    display: none; // Oculto en desktop
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-
-    &:hover { background-color: #f3f4f6; }
-
-    @media (max-width: 1024px) {
-      display: block;
-    }
-  }
-
   .logo-title {
     text-decoration: none;
     h1 {

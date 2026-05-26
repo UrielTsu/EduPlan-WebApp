@@ -3,9 +3,6 @@
     <div class="header-container">
 
       <div class="brand-section">
-        <button class="mobile-menu-trigger">
-          <mat-icon>menu</mat-icon>
-        </button>
         <a [routerLink]="userRole === 'admin' ? '/admin' : (userRole === 'maestro' ? '/dashboard-maestros' : '/dashboard-alumno')" class="logo-title">
           <h1>EduPlan</h1>
         </a>

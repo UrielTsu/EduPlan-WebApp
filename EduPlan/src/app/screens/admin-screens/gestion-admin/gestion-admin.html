@@ -772,16 +772,26 @@
               type="email"
               placeholder="nombre@universidad.edu"
               [(ngModel)]="teacherForm.email"
+              (input)="onTeacherEmailInput($event)"
               [ngModelOptions]="{ standalone: true }">
           </div>
 
           <div class="form-group">
             <label>Contraseña de Acceso</label>
-            <input
-              type="password"
-              placeholder="Mínimo 6 caracteres"
-              [(ngModel)]="teacherForm.password"
-              [ngModelOptions]="{ standalone: true }">
+            <div class="password-input-shell">
+              <input
+                [type]="showTeacherPassword ? 'text' : 'password'"
+                placeholder="Mínimo 6 caracteres"
+                [(ngModel)]="teacherForm.password"
+                [ngModelOptions]="{ standalone: true }">
+              <button
+                type="button"
+                class="password-toggle-btn"
+                (click)="toggleTeacherPasswordVisibility()"
+                [attr.aria-label]="showTeacherPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+                <mat-icon>{{ showTeacherPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+            </div>
           </div>
 
           <div class="form-group">
@@ -897,16 +907,26 @@
               type="email"
               placeholder="matricula@alumno.buap.mx"
               [(ngModel)]="studentForm.email"
+              (input)="onStudentEmailInput($event)"
               [ngModelOptions]="{ standalone: true }">
           </div>
 
           <div class="form-group">
             <label>Contraseña de Acceso</label>
-            <input
-              type="password"
-              placeholder="Mínimo 6 caracteres"
-              [(ngModel)]="studentForm.password"
-              [ngModelOptions]="{ standalone: true }">
+            <div class="password-input-shell">
+              <input
+                [type]="showStudentPassword ? 'text' : 'password'"
+                placeholder="Mínimo 6 caracteres"
+                [(ngModel)]="studentForm.password"
+                [ngModelOptions]="{ standalone: true }">
+              <button
+                type="button"
+                class="password-toggle-btn"
+                (click)="toggleStudentPasswordVisibility()"
+                [attr.aria-label]="showStudentPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+                <mat-icon>{{ showStudentPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+            </div>
           </div>
 
           <div class="form-group">
