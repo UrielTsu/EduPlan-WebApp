@@ -465,6 +465,7 @@ export class GestionAdminComponent {
 
   showTeacherModal = signal(false);
   editingTeacherId = signal<number | null>(null);
+  showTeacherPassword = false;
   teacherDepartmentOptions = ['Sistemas', 'Matemáticas', 'Ciencias Básicas', 'Administración'];
   contractTypeOptions = ['Tiempo Completo', 'Medio Tiempo', 'Por Horas'];
   teacherForm: TeacherFormModel = {
@@ -519,6 +520,7 @@ export class GestionAdminComponent {
 
   showStudentModal = signal(false);
   editingStudentId = signal<number | null>(null);
+  showStudentPassword = false;
   studentProgramOptions = [
     'Ing. en Computación',
     'Ing. en Sistemas',
@@ -763,7 +765,8 @@ export class GestionAdminComponent {
   onPeriodNameInput(event: Event): void {
     const input = event.target as HTMLInputElement;
     const cleaned = input.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s]/g, '');
-    const capitalized = cleaned.replace(/(?:^|\s)\S/g, c => c.toUpperCase());
+    const normalized = this.normalizeSingleSpaces(cleaned);
+    const capitalized = normalized.replace(/(?:^|\s)\S/g, c => c.toUpperCase());
     this.periodForm.name = capitalized;
     input.value = capitalized;
   }
@@ -864,7 +867,8 @@ export class GestionAdminComponent {
   onSubjectNameInput(event: Event): void {
     const input = event.target as HTMLInputElement;
     const cleaned = input.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
-    const capitalized = cleaned.replace(/(?:^|\s)\S/g, c => c.toUpperCase());
+    const normalized = this.normalizeSingleSpaces(cleaned);
+    const capitalized = normalized.replace(/(?:^|\s)\S/g, c => c.toUpperCase());
     this.subjectForm.name = capitalized;
     input.value = capitalized;
   }
@@ -1275,6 +1279,7 @@ export class GestionAdminComponent {
 
   openCreateTeacherModal(): void {
     this.editingTeacherId.set(null);
+    this.showTeacherPassword = false;
     this.teacherForm = {
       firstName: '',
       lastName: '',
@@ -1298,6 +1303,7 @@ export class GestionAdminComponent {
     }
 
     this.editingTeacherId.set(id);
+    this.showTeacherPassword = false;
     this.teacherForm = {
       firstName: selectedTeacher.firstName,
       lastName: selectedTeacher.lastName,
@@ -1314,14 +1320,20 @@ export class GestionAdminComponent {
   }
 
   closeTeacherModal(): void {
+    this.showTeacherPassword = false;
     this.showTeacherModal.set(false);
+  }
+
+  toggleTeacherPasswordVisibility(): void {
+    this.showTeacherPassword = !this.showTeacherPassword;
   }
 
   onTeacherNameInput(event: Event, field: 'firstName' | 'lastName'): void {
     const input = event.target as HTMLInputElement;
     const cleaned = input.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\.\s]/g, '');
-    this.teacherForm[field] = cleaned;
-    input.value = cleaned;
+    const normalized = this.normalizeSingleSpaces(cleaned);
+    this.teacherForm[field] = normalized;
+    input.value = normalized;
   }
 
   onTeacherEmployeeIdInput(event: Event): void {
@@ -1337,6 +1349,13 @@ export class GestionAdminComponent {
     }
     this.teacherForm.employeeId = formatted;
     input.value = formatted;
+  }
+
+  onTeacherEmailInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const normalized = input.value.replace(/^\s+/, '');
+    this.teacherForm.email = normalized;
+    input.value = normalized;
   }
 
   onTeacherPhoneInput(event: Event): void {
@@ -1471,6 +1490,7 @@ export class GestionAdminComponent {
 
   openCreateStudentModal(): void {
     this.editingStudentId.set(null);
+    this.showStudentPassword = false;
     this.studentForm = {
       firstName: '',
       lastName: '',
@@ -1497,6 +1517,7 @@ export class GestionAdminComponent {
     }
 
     this.editingStudentId.set(id);
+    this.showStudentPassword = false;
     this.studentForm = {
       firstName: selectedStudent.firstName,
       lastName: selectedStudent.lastName,
@@ -1516,14 +1537,26 @@ export class GestionAdminComponent {
   }
 
   closeStudentModal(): void {
+    this.showStudentPassword = false;
     this.showStudentModal.set(false);
+  }
+
+  toggleStudentPasswordVisibility(): void {
+    this.showStudentPassword = !this.showStudentPassword;
   }
 
   onStudentNameInput(event: Event, field: 'firstName' | 'lastName' | 'emergencyContactName'): void {
     const input = event.target as HTMLInputElement;
     const cleaned = input.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
-    this.studentForm[field] = cleaned;
-    input.value = cleaned;
+    const normalized = this.normalizeSingleSpaces(cleaned);
+    this.studentForm[field] = normalized;
+    input.value = normalized;
+  }
+
+  private normalizeSingleSpaces(value: string): string {
+    return value
+      .replace(/^\s+/, '')
+      .replace(/\s{2,}/g, ' ');
   }
 
   onStudentEnrollmentInput(event: Event): void {
@@ -1531,6 +1564,13 @@ export class GestionAdminComponent {
     const cleaned = input.value.substring(0, 9);
     this.studentForm.enrollment = cleaned;
     input.value = cleaned;
+  }
+
+  onStudentEmailInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const normalized = input.value.replace(/^\s+/, '');
+    this.studentForm.email = normalized;
+    input.value = normalized;
   }
 
   onStudentPhoneInput(event: Event, field: 'phone' | 'emergencyContactPhone'): void {

@@ -127,13 +127,16 @@
 .table-shell {
   border: 1px solid #d9dde5;
   border-radius: 14px;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
   background: #ffffff;
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
 }
 
 .management-table {
   width: 100%;
+  min-width: 760px;
   border-collapse: collapse;
 
   thead {
@@ -373,6 +376,42 @@
 .field-hint {
   color: #64748b;
   font-size: 0.84rem;
+}
+
+.password-input-shell {
+  position: relative;
+
+  input {
+    padding-right: 46px !important;
+  }
+}
+
+.password-toggle-btn {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: #64748b;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  mat-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+  }
+
+  &:hover {
+    background: #f1f5f9;
+    color: #334155;
+  }
 }
 
 .checkbox-grid {
@@ -780,6 +819,10 @@
     flex-direction: column;
     align-items: stretch;
     gap: 10px;
+  }
+
+  .management-table {
+    min-width: 700px;
   }
 
   .add-btn {
